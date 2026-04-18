@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "CodeAppsDataMigration": {
+      "commandName": "Project",
+      "dotnetRunMessages": true
+    },
+    "WinFormsApp1": {
+      "commandName": "Project",
+      "dotnetRunMessages": true
+    }
+  }
+}
