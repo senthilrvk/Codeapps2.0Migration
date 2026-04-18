@@ -301,9 +301,9 @@ namespace CodeAppsDataMigration.Migration
            //     }
            // },
 
-             new TableMap
+            new TableMap
             {
-                  SqlTable = "Manufacture",
+                SqlTable = "Manufacture",
                 PgTable  = "manufacture"+nMainBranchId.ToString(),
 
                 Columns = new[]
@@ -431,10 +431,10 @@ namespace CodeAppsDataMigration.Migration
                  ("PurBillType","billtype","text"),
                  ("PurBillwithTIN","billwithtin", "text"),
                  ("PurBillHide","billhide","text"),
-                 ("PurPrintFileName","printfilename","text"),              
-                 ("PurPrintFilePreview","printfilepreview","text"),                
-                 ("Active","active","boolean"),                 
-                 ("PurBillSerAddCess","billseriesaddcess", "boolean"),                
+                 ("PurPrintFileName","printfilename","text"),
+                 ("PurPrintFilePreview","printfilepreview","text"),
+                 ("Active","active","boolean"),
+                 ("PurBillSerAddCess","billseriesaddcess", "boolean"),
                  ("branchid","branchid", "integer"),
                  ("mainbranchid","mainbranchid","integer"),
                  ("PurBillSerId","tempid","bigint"),
@@ -450,7 +450,7 @@ namespace CodeAppsDataMigration.Migration
                  {"bdataclear","False"},
                  {"bbilled","False"},
                  {"bdownloadprint","False"},
-                 
+
                  {"billseriescustomerlist",""},
                  {"billseriesorderno","0"},
                  {"billseriesstartdate",DateTime.Now.ToString("yyyy-MM-dd")},
@@ -1041,11 +1041,12 @@ namespace CodeAppsDataMigration.Migration
               ("ReceiptSub_NoField3","hsnrateperunit","numeric"),
               ("branchid","branchid","bigint"),
               ("mainbranchid","mainbranchid","bigint"),
+              ("PurchaseId","priceid","bigint"),
 
              },
              Constants = new Dictionary<string, object>
              {
-                  { "qtytype","NOS" },
+                  {"qtytype","NOS" },
                   {"prodpack","0"},
                   {"pcssellrate","0"},
                   {"pcswhrate","0"},
@@ -1056,7 +1057,7 @@ namespace CodeAppsDataMigration.Migration
                   {"pcssprate4","0"},
                   {"pcssprate5","0"},
                   {"purratewithtax","0"},
-                  {"priceid","0"},
+                  {"receiptid","0"}
              },
              condition="where   branchid ="+nFromBranchId.ToString()
           }
@@ -1164,7 +1165,165 @@ namespace CodeAppsDataMigration.Migration
             },
                  condition="where   branchid ="+nFromBranchId.ToString()
             },
+            new TableMap
+            {
+               SqlTable = "OpeningStockMain",
+               PgTable  = "openingstockmain"+nMainBranchId.ToString(),
+               Columns = new[]
+               {
+                  //  ("","openingstockid","bigint"),
+                      ("OpeningStockMain_No","openingstockno","bigint"),
+                      ("AcId","acid","bigint"),
+                      ("OpeningStockMain_BillDate","billdate1","date"),
+                      ("OpeningStockMain_EnterDate","billdate2","date"),
+                      ("OpeningStockMain_Id","paytermsid","bigint"),
+                      ("OpeningStockMain_PurType","purtype","text"),
+                      ("OpeningStockMain_Cancel","crno","text"),
+                      ("StaffId","staffid","bigint"),
+                      ("branchid","branchid","bigint"),
+                      ("mainbranchid","mainbranchid","bigint")
+               },
+               Constants = new Dictionary<string, object>
+               {
+                      {"receipttime",TimeOnly.FromDateTime(DateTime.Now) },
+                      {"total","0"},
+                      {"invdiffamt","0"},
+                      {"payterms",""},
+                      {"billserid","0"},
+                      {"suppliername",""},
+                      {"addr",""},
+                      {"gstno",""},
+                      {"baddcess","False"},
+                      {"currencyid","0"},
+                      {"currencyrate","0"},
+                      {"exchangeamt","0"},
+                      {"tcsinpers","0"},
+                      {"tcsinamt","0"},
+                      {"tcscalvalue","0"},
+                      {"tdsamt","0"},
+                      {"voucherno","0"},
+                      {"uniquevoucherid","0"},
+                      {"vprefixno","0"},
+                      {"exciseduty","0"},
+                      {"remarks",""},
+                      {"duedate",DateTime.Now.ToString("yyyy-MM-dd")},
+                      {"receiptcancel","False"},
+                      {"crdate",DateTime.Now.ToString("yyyy-MM-dd")},
+                      {"cramt","0"},
+                      {"noofdbnote","0"},
+                      {"dbno","0"},
+                      {"dbdate","date"},
+                      {"dbamt","0"},
+                      {"repamt","0"},
+                      {"rof","0"},
+                      {"freight","0"},
+                      {"dispers","0"},
+                      {"discamt","0"},
+                      {"disctype",""},
+                      {"othercharge1","0"},
+                      {"othercharge2","0"},
 
+               },
+               condition="where   branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+              SqlTable = "OpeningStock",
+              PgTable  = "openingstockdetails"+nMainBranchId.ToString(),
+              Columns = new[]
+              {
+                   
+                   ("","openingstockid","bigint"),
+                   ("OpeningStockNo","openingstockno","bigint"),
+                   ("","billserid","integer"),
+                   ("OpeningStock_ReceiptDate","openingstockdate","date"),
+                   ("OpeningStock_BatchSlNo","batchslno","bigint"),
+                   ("OpeningStock_Batch","batch","text"),
+                   ("OpeningStock_Pack","pack","numeric(18,0)"),
+                   ("","qtytype","text"),
+                   ("","prodpack","integer"),
+                   ("OpeningStock_ExpDate","expdate","date"),
+                   ("OpeningStock_ReceiptRate","receiptrate","numeric"),
+                   ("OpeningStock_SellRate","sellrate","numeric"),
+                   ("OpeningStock_MRP","mrp","numeric"),
+                   ("OpeningStock_PerRate","perrate","numeric"),
+                   ("OpeningStock_PerSellRate","perselrate","numeric"),
+                   ("OpeningStock_PerMRP","permrp","numeric"),
+                   ("OpeningStock_SaleQty","saleqty","numeric"),
+                   ("OpeningStock_SaleFreeQty","salefree","numeric"),
+                   ("OpeningStock_ReceiptQty","receiptqty","numeric"),
+                   ("OpeningStock_ReceiptFreeQty","receiptfree","numeric"),
+                   ("","replaceqty","numeric"),
+                   ("","looseqty","numeric"), 
+                   ("","totalqty","numeric"),
+                   ("","netamtperprod","numeric"),
+                   ("OpeningStock_Amount","amount","numeric"),
+                   ("OpeningStock_BarCode","actpurrate","numeric"),
+                   ("OpeningStock_BarCode","packactpurrate","numeric"),
+                   ("OpeningStock_DisributRate","whrate","numeric"),
+                   ("SpRate1","sprate1","numeric"),
+                   ("SpRate2","sprate2","numeric"),
+                   ("","sprate3","numeric"),
+                   ("","sprate4","numeric"),
+                   ("","sprate5","numeric"),
+                   ("","packsellrate","numeric"),
+                   ("","packwhrate","numeric"),
+                   ("","packmrp","numeric"),
+                   ("","packsprate1","numeric"),
+                   ("","packsprate2","numeric"),
+                   ("","packsprate3","numeric"),
+                   ("","packsprate4","numeric"),
+                   ("","packsprate5","numeric"),
+                   ("","taxpers","numeric"),
+                   ("","taxamt","numeric"),
+                   ("","wholsalmag","numeric"),
+                   ("","retlmargin","numeric"),
+                   ("","schmeperiod","date"),
+                   ("","productid","bigint"),
+                   ("","taxid","integer"),
+                   ("","landcost","numeric"),
+                   ("","dispers","numeric"),
+                   ("","disamt","numeric"),
+                   ("","schemepers","numeric"),
+                   ("","schemeamt","numeric"),
+                   ("","purratewithtax","numeric"),
+                   ("","freight","numeric"),
+                   ("","totlqty","numeric"),
+                   ("","neethidispers","numeric"),
+                   ("","amtbeforetax","numeric"),
+                   ("","wratedis","numeric"),
+                   ("","perlandcost","numeric(18,3)"),
+                   ("","hsncode","text"),
+                   ("","sgsttaxpers","numeric"),
+                   ("","sgsttaxamount","numeric"),
+                   ("","sgstamount","numeric"),
+                   ("","cgsttaxpers","numeric"),
+                   ("","cgsttaxamount","numeric(18,3)"),
+                   ("","cgstamount","numeric"),
+                   ("","igsttaxpers","numeric"),
+                   ("","igsttaxamount","numeric"),
+                   ("","igstamount","numeric"),
+                   ("","cesspers","numeric"),
+                   ("","cessamt","numeric(18,3)"),
+                   ("","imppurrate","numeric(18,3)"),
+                   ("","extracesspers","numeric"),
+                   ("","extracessamt","numeric"),
+                   ("","prodremarks","text"),
+                   ("OpeningStockMain_Id","dcinno","bigint"),
+                   ("","actratewithoutfre","numeric"),
+                   ("","hsnrateperunit","numeric"),
+                   ("branchid","branchid","bigint"),
+                   ("mainbranchid","mainbranchid","bigint")
+              },
+              Constants = new Dictionary<string, object>
+              {
+                 {"billsersource", "SALES" },
+
+              },
+              condition="where   branchid ="+nFromBranchId.ToString()
+            },
         };
+
     }
+
 }

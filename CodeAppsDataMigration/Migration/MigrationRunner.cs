@@ -19,11 +19,22 @@ namespace CodeAppsDataMigration.Migration
     {
         private readonly string _sql;
         private readonly string _pg;
+        private Action<string, int>? _onProgress;
 
         public MigrationRunner(string sql, string pg)
         {
             _sql = sql;
             _pg = pg;
+        }
+
+        public void SetProgressCallback(Action<string, int> onProgress)
+        {
+            _onProgress = onProgress;
+        }
+
+        private void ReportProgress(string message, int percent)
+        {
+            _onProgress?.Invoke(message, percent);
         }
 
         public void RunAll(Int64 nMainBranchId, Int64 nBranchId, int nFromBranchId)
@@ -46,6 +57,9 @@ namespace CodeAppsDataMigration.Migration
             // --------------------------------------------------
             foreach (var table in MigrationConfig.Tables)
             {
+                int pct = (int)((double)tableIndex / totalTables * 80); // 0-80% for tables
+                ReportProgress($"[{tableIndex}/{totalTables}] Migrating: {table.SqlTable}", pct);
+
                 Console.WriteLine(
                     $"[{tableIndex}/{totalTables}] " +
                     $"Migrating table: {table.SqlTable}");
@@ -58,12 +72,16 @@ namespace CodeAppsDataMigration.Migration
 
                     var end = DateTime.Now;
 
+                    ReportProgress($"Done: {table.SqlTable} - {rows:N0} rows ({(end - start).TotalSeconds:N1}s)", pct);
+
                     Console.WriteLine(
                         $" {table.SqlTable} → {rows:N0} rows " +
                         $"({(end - start).TotalSeconds:N1} sec)\n");
                 }
                 catch (Exception ex)
                 {
+                    ReportProgress($"FAILED: {table.SqlTable} - {ex.Message}", pct);
+
                     Console.ForegroundColor = ConsoleColor.Red;
 
                     Console.WriteLine(
@@ -134,15 +152,15 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE accounthead{nMainBranchId} ah SET areaid = a.area_id FROM area a WHERE a.tempid = ah.areaid AND ah.branchid = {nBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET categoryid = ca.categoryid FROM category ca WHERE ca.tempid = pm.categoryid AND pm.branchid = {nBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.prodlinkeshopid AND pm.branchid = {nBranchId}");
-                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId}");
-                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET hsnid = hs.hsn_id FROM hsn hs WHERE hs.tempid = pm.hsnid AND pm.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture{nMainBranchId} mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET hsnid = hs.hsn_id FROM hsn{nMainBranchId} hs WHERE hs.tempid = pm.hsnid AND pm.branchid = {nBranchId}");
                 stringBuilder.Add($"UPDATE hsn{nMainBranchId} hs SET taxid = pm.taxid FROM productmain{nMainBranchId} pm WHERE hs.hsn_id = pm.hsnid AND pm.branchid = {nBranchId}");
 
                 // Sales
                 stringBuilder.Add($"UPDATE issuesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId}");
-                stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET acid = ah.acid FROM accounthead ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId}");
-                stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId}");
-                stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET staffid = ah.acid FROM accounthead ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId}");
                 var strQuery = $"update issuemain{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
                 strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
                 strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
@@ -156,9 +174,9 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
 
                 // Purchase
-                stringBuilder.Add($"UPDATE receiptdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId}");
-                stringBuilder.Add($"UPDATE receiptmain{nMainBranchId} im SET acid = ah.acid FROM accounthead ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId}");
-                stringBuilder.Add($"UPDATE receiptmain{nMainBranchId} im SET staffid = ah.acid FROM accounthead ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE receiptdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE receiptmain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE receiptmain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId}");
                 strQuery = $"update receiptmain{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
                 strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
                 strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='PURCHASE'";
@@ -169,22 +187,30 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='PURCHASE'";
                 stringBuilder.Add(strQuery);
 
-                strQuery = $"update receiptdetails{nMainBranchId} rsub set receiptid =  rm.receiptid from receiptmain{nMainBranchId} rm where rm.paytermsid = rsub.receiptid";
+                strQuery = $"update receiptdetails{nMainBranchId} rsub set receiptid =  rm.receiptid from receiptmain{nMainBranchId} rm where rm.paytermsid = rsub.priceid";
                 strQuery += $"\n and rsub.branchid = rm.branchid and rsub.mainbranchid = rm.mainbranchid and rsub.receiptno=rm.receiptno";
                 strQuery += $"\n and rm.branchid ={nBranchId}    and rm.mainbranchid ={nMainBranchId}";
                 stringBuilder.Add(strQuery);
 
                 //store
                 stringBuilder.Add($"UPDATE store{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId}");
-                stringBuilder.Add($"UPDATE store{nMainBranchId} im SET acid = ah.acid FROM accounthead ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE store{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId}");
 
-                strQuery = $"update store{nMainBranchId} rsub set receiptid =  rm.receiptid from receiptdetails{nMainBranchId} rm where rm.paytermsid = rsub.receiptid";
-                strQuery += $"\n and rsub.branchid = rm.branchid and rsub.mainbranchid = rm.mainbranchid and rsub.receiptno=rm.receiptno and rsub.batchslno=rm.batchslno";
-                strQuery += $"\n and rm.branchid ={nBranchId}    and rm.mainbranchid ={nMainBranchId}";
+                strQuery = $"update store{nMainBranchId} st set receiptid =  rsub.receiptid from receiptdetails{nMainBranchId} rsub where rsub.priceid = st.receiptid";
+                strQuery += $"\n and st.branchid = rsub.branchid and st.mainbranchid = rsub.mainbranchid and st.receiptno=rsub.receiptno and st.batchslno=rsub.batchslno";
+                strQuery += $"\n and st.productid = rsub.productid and rsub.branchid ={nBranchId}    and rsub.mainbranchid ={nMainBranchId}";
                 stringBuilder.Add(strQuery);
 
+                stringBuilder.Add($"update receiptmain{nMainBranchId}    set paytermsid = 0  where branchid = {nBranchId};");
+                stringBuilder.Add($"update receiptdetails{nMainBranchId} set priceid    = 0  where branchid = {nBranchId}");
+
+                int totalQueries = stringBuilder.Count;
+                int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)
                 {
+                    int pct = 85 + (int)((double)queryIndex / totalQueries * 15); // 85-100%
+                    ReportProgress($"FK Update [{queryIndex}/{totalQueries}]", pct);
+
                     testquerytemplate = queryTemplate;
                     using var connection = PostgresConnection.Create();
                     connection.Open();
@@ -192,6 +218,7 @@ namespace CodeAppsDataMigration.Migration
                     using var command = new NpgsqlCommand(query, connection);
                     command.ExecuteNonQuery();
                     connection.Close();
+                    queryIndex++;
                 }
             }
             catch (Exception ex)
@@ -202,12 +229,15 @@ namespace CodeAppsDataMigration.Migration
 
         public void UpdatePrimaryKeyColumns(Int64 nMainBranchId, Int64 nBranchId)
         {
+            ReportProgress("Updating primary keys & foreign keys...", 85);
             ExecuteBulkUpdates(nMainBranchId, nBranchId);
+            ReportProgress("Primary key updates completed", 100);
         }
 
 
         public void FromDbTaxUpdate()
         {
+            ReportProgress("Updating tax data in SQL Server...", 0);
 
             string strQuery = @"update Product set ProdLinkEShopId = Tax.TaxPercent  from Product inner join TaxGroup on Product.TaxGroupId = TaxGroup.TaxGroupId
                inner join TaxDetails on TaxGroup.TaxGroupId = TaxDetails.TaxGroupId
@@ -224,10 +254,11 @@ namespace CodeAppsDataMigration.Migration
                 command.ExecuteNonQuery();
                 connection.Close();
 
+                ReportProgress("Tax data updated successfully", 2);
             }
             catch (Exception ex)
             {
-
+                ReportProgress($"Tax update failed: {ex.Message}", 2);
             }
         }
 
