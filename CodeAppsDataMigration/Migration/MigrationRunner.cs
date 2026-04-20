@@ -297,6 +297,45 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update outstanding{nMainBranchId}    set sourcetype = 'SALES'  where vprefixid=5 and branchid = {nBranchId};");
                 stringBuilder.Add($"update outstanding{nMainBranchId}    set sourcetype = 'PURCHASE'  where vprefixid=6 and branchid = {nBranchId};");
 
+                //issuereturnmain
+             
+                stringBuilder.Add($"UPDATE issuereturnmain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE issuereturnmain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE issuereturnmain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId}");
+                //strQuery = $"update issuereturnmain{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
+                //strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                //strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
+                //stringBuilder.Add(strQuery);
+
+
+                //issuereturndetails
+                stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId}");
+                //strQuery = $"update issuesubdetails{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
+                //strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                //strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
+                //stringBuilder.Add(strQuery);
+                stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId}");
+
+
+                //expiryreturnmain
+
+                stringBuilder.Add($"UPDATE expiryreturnmain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE expiryreturnmain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId}");
+                stringBuilder.Add($"UPDATE expiryreturnmain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId}");
+                //strQuery = $"update issuereturnmain{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
+                //strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                //strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
+                //stringBuilder.Add(strQuery);
+
+
+                //issuereturndetails
+                stringBuilder.Add($"UPDATE expiryreturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId}");
+                //strQuery = $"update issuesubdetails{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
+                //strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                //strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
+                //stringBuilder.Add(strQuery);
+                stringBuilder.Add($"UPDATE expiryreturndetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId}");
+
 
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
