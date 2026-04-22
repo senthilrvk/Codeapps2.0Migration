@@ -31,7 +31,7 @@ namespace CodeAppsDataMigration
             // SQL Server
             var sql = doc.Root!.Element("SqlServer")!;
             txtSqlServer.Text = sql.Element("Server")?.Value ?? "";
-            txtSqlDatabase.Text = sql.Element("Database")?.Value ?? "";
+            cmbSqlDatabase.Text = sql.Element("Database")?.Value ?? "";
             txtSqlUserId.Text = sql.Element("UserId")?.Value ?? "";
             txtSqlPassword.Text = sql.Element("Password")?.Value ?? "";
             txtSqlTimeout.Text = sql.Element("ConnectionTimeout")?.Value ?? "0";
@@ -43,7 +43,7 @@ namespace CodeAppsDataMigration
             var pg = doc.Root!.Element("Postgres")!;
             txtPgHost.Text = pg.Element("Host")?.Value ?? "";
             txtPgPort.Text = pg.Element("Port")?.Value ?? "5432";
-            txtPgDatabase.Text = pg.Element("Database")?.Value ?? "";
+            cmbPgDatabase.Text = pg.Element("Database")?.Value ?? "";
             txtPgUsername.Text = pg.Element("Username")?.Value ?? "";
             txtPgPassword.Text = pg.Element("Password")?.Value ?? "";
             txtPgTimeout.Text = pg.Element("Timeout")?.Value ?? "0";
@@ -60,7 +60,7 @@ namespace CodeAppsDataMigration
                 new XElement("ConnectionStrings",
                     new XElement("SqlServer",
                         new XElement("Server", txtSqlServer.Text.Trim()),
-                        new XElement("Database", txtSqlDatabase.Text.Trim()),
+                        new XElement("Database", cmbSqlDatabase.Text.Trim()),
                         new XElement("UserId", txtSqlUserId.Text.Trim()),
                         new XElement("Password", txtSqlPassword.Text.Trim()),
                         new XElement("TrustServerCertificate", chkSqlTrustCert.Checked),
@@ -71,7 +71,7 @@ namespace CodeAppsDataMigration
                     new XElement("Postgres",
                         new XElement("Host", txtPgHost.Text.Trim()),
                         new XElement("Port", txtPgPort.Text.Trim()),
-                        new XElement("Database", txtPgDatabase.Text.Trim()),
+                        new XElement("Database", cmbPgDatabase.Text.Trim()),
                         new XElement("Username", txtPgUsername.Text.Trim()),
                         new XElement("Password", txtPgPassword.Text.Trim()),
                         new XElement("Timeout", txtPgTimeout.Text.Trim()),
@@ -93,7 +93,7 @@ namespace CodeAppsDataMigration
         {
             var connStr =
                 $"Server={txtSqlServer.Text.Trim()};" +
-                $"Database={txtSqlDatabase.Text.Trim()};" +
+                $"Database={cmbSqlDatabase.Text.Trim()};" +
                 $"User Id={txtSqlUserId.Text.Trim()};" +
                 $"Password={txtSqlPassword.Text.Trim()};" +
                 $"TrustServerCertificate={chkSqlTrustCert.Checked};" +
@@ -119,7 +119,7 @@ namespace CodeAppsDataMigration
             var connStr =
                 $"Host={txtPgHost.Text.Trim()};" +
                 $"Port={txtPgPort.Text.Trim()};" +
-                $"Database={txtPgDatabase.Text.Trim()};" +
+                $"Database={cmbPgDatabase.Text.Trim()};" +
                 $"Username={txtPgUsername.Text.Trim()};" +
                 $"Password={txtPgPassword.Text.Trim()};" +
                 $"Timeout=5;";
@@ -134,6 +134,88 @@ namespace CodeAppsDataMigration
             catch (Exception ex)
             {
                 MessageBox.Show($"PostgreSQL connection failed:\n{ex.Message}", "Test",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnLoadSqlDbs_Click(object sender, EventArgs e)
+        {
+            var connStr =
+                $"Server={txtSqlServer.Text.Trim()};" +
+                $"User Id={txtSqlUserId.Text.Trim()};" +
+                $"Password={txtSqlPassword.Text.Trim()};" +
+                $"TrustServerCertificate={chkSqlTrustCert.Checked};" +
+                $"Connection Timeout=5;" +
+                $"Encrypt={chkSqlEncrypt.Checked};";
+
+            try
+            {
+                var currentDb = cmbSqlDatabase.Text;
+                cmbSqlDatabase.Items.Clear();
+
+                using var conn = new Microsoft.Data.SqlClient.SqlConnection(connStr);
+                conn.Open();
+                using var cmd = new Microsoft.Data.SqlClient.SqlCommand(
+                    "SELECT name FROM sys.databases ORDER BY name", conn);
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    cmbSqlDatabase.Items.Add(reader.GetString(0));
+                }
+
+                if (!string.IsNullOrEmpty(currentDb))
+                {
+                    int idx = cmbSqlDatabase.FindStringExact(currentDb);
+                    if (idx >= 0)
+                        cmbSqlDatabase.SelectedIndex = idx;
+                    else
+                        cmbSqlDatabase.Text = currentDb;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load SQL Server databases:\n{ex.Message}", "Error",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnLoadPgDbs_Click(object sender, EventArgs e)
+        {
+            var connStr =
+                $"Host={txtPgHost.Text.Trim()};" +
+                $"Port={txtPgPort.Text.Trim()};" +
+                $"Database=postgres;" +
+                $"Username={txtPgUsername.Text.Trim()};" +
+                $"Password={txtPgPassword.Text.Trim()};" +
+                $"Timeout=5;";
+
+            try
+            {
+                var currentDb = cmbPgDatabase.Text;
+                cmbPgDatabase.Items.Clear();
+
+                using var conn = new Npgsql.NpgsqlConnection(connStr);
+                conn.Open();
+                using var cmd = new Npgsql.NpgsqlCommand(
+                    "SELECT datname FROM pg_database WHERE datistemplate = false ORDER BY datname", conn);
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    cmbPgDatabase.Items.Add(reader.GetString(0));
+                }
+
+                if (!string.IsNullOrEmpty(currentDb))
+                {
+                    int idx = cmbPgDatabase.FindStringExact(currentDb);
+                    if (idx >= 0)
+                        cmbPgDatabase.SelectedIndex = idx;
+                    else
+                        cmbPgDatabase.Text = currentDb;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load PostgreSQL databases:\n{ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

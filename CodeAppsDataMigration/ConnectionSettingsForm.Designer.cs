@@ -24,7 +24,8 @@ namespace CodeAppsDataMigration
             lblSqlServer = new Label();
             txtSqlServer = new TextBox();
             lblSqlDatabase = new Label();
-            txtSqlDatabase = new TextBox();
+            cmbSqlDatabase = new ComboBox();
+            btnLoadSqlDbs = new Button();
             lblSqlUserId = new Label();
             txtSqlUserId = new TextBox();
             lblSqlPassword = new Label();
@@ -41,7 +42,8 @@ namespace CodeAppsDataMigration
             lblPgPort = new Label();
             txtPgPort = new TextBox();
             lblPgDatabase = new Label();
-            txtPgDatabase = new TextBox();
+            cmbPgDatabase = new ComboBox();
+            btnLoadPgDbs = new Button();
             lblPgUsername = new Label();
             txtPgUsername = new TextBox();
             lblPgPassword = new Label();
@@ -83,7 +85,8 @@ namespace CodeAppsDataMigration
             tabSqlServer.Controls.Add(lblSqlServer);
             tabSqlServer.Controls.Add(txtSqlServer);
             tabSqlServer.Controls.Add(lblSqlDatabase);
-            tabSqlServer.Controls.Add(txtSqlDatabase);
+            tabSqlServer.Controls.Add(cmbSqlDatabase);
+            tabSqlServer.Controls.Add(btnLoadSqlDbs);
             tabSqlServer.Controls.Add(lblSqlUserId);
             tabSqlServer.Controls.Add(txtSqlUserId);
             tabSqlServer.Controls.Add(lblSqlPassword);
@@ -126,11 +129,22 @@ namespace CodeAppsDataMigration
             lblSqlDatabase.Text = "Database:";
 
             //
-            // txtSqlDatabase
+            // cmbSqlDatabase
             //
-            txtSqlDatabase.Location = new Point(150, 47);
-            txtSqlDatabase.Name = "txtSqlDatabase";
-            txtSqlDatabase.Size = new Size(270, 23);
+            cmbSqlDatabase.Location = new Point(150, 47);
+            cmbSqlDatabase.Name = "cmbSqlDatabase";
+            cmbSqlDatabase.Size = new Size(200, 23);
+            cmbSqlDatabase.DropDownStyle = ComboBoxStyle.DropDown;
+
+            //
+            // btnLoadSqlDbs
+            //
+            btnLoadSqlDbs.Location = new Point(355, 46);
+            btnLoadSqlDbs.Name = "btnLoadSqlDbs";
+            btnLoadSqlDbs.Size = new Size(65, 25);
+            btnLoadSqlDbs.Text = "Load";
+            btnLoadSqlDbs.UseVisualStyleBackColor = true;
+            btnLoadSqlDbs.Click += btnLoadSqlDbs_Click;
 
             //
             // lblSqlUserId
@@ -221,7 +235,8 @@ namespace CodeAppsDataMigration
             tabPostgres.Controls.Add(lblPgPort);
             tabPostgres.Controls.Add(txtPgPort);
             tabPostgres.Controls.Add(lblPgDatabase);
-            tabPostgres.Controls.Add(txtPgDatabase);
+            tabPostgres.Controls.Add(cmbPgDatabase);
+            tabPostgres.Controls.Add(btnLoadPgDbs);
             tabPostgres.Controls.Add(lblPgUsername);
             tabPostgres.Controls.Add(txtPgUsername);
             tabPostgres.Controls.Add(lblPgPassword);
@@ -284,11 +299,22 @@ namespace CodeAppsDataMigration
             lblPgDatabase.Text = "Database:";
 
             //
-            // txtPgDatabase
+            // cmbPgDatabase
             //
-            txtPgDatabase.Location = new Point(150, 75);
-            txtPgDatabase.Name = "txtPgDatabase";
-            txtPgDatabase.Size = new Size(270, 23);
+            cmbPgDatabase.Location = new Point(150, 75);
+            cmbPgDatabase.Name = "cmbPgDatabase";
+            cmbPgDatabase.Size = new Size(200, 23);
+            cmbPgDatabase.DropDownStyle = ComboBoxStyle.DropDown;
+
+            //
+            // btnLoadPgDbs
+            //
+            btnLoadPgDbs.Location = new Point(355, 74);
+            btnLoadPgDbs.Name = "btnLoadPgDbs";
+            btnLoadPgDbs.Size = new Size(65, 25);
+            btnLoadPgDbs.Text = "Load";
+            btnLoadPgDbs.UseVisualStyleBackColor = true;
+            btnLoadPgDbs.Click += btnLoadPgDbs_Click;
 
             //
             // lblPgUsername
@@ -464,7 +490,8 @@ namespace CodeAppsDataMigration
         private Label lblSqlServer;
         private TextBox txtSqlServer;
         private Label lblSqlDatabase;
-        private TextBox txtSqlDatabase;
+        private ComboBox cmbSqlDatabase;
+        private Button btnLoadSqlDbs;
         private Label lblSqlUserId;
         private TextBox txtSqlUserId;
         private Label lblSqlPassword;
@@ -481,7 +508,8 @@ namespace CodeAppsDataMigration
         private Label lblPgPort;
         private TextBox txtPgPort;
         private Label lblPgDatabase;
-        private TextBox txtPgDatabase;
+        private ComboBox cmbPgDatabase;
+        private Button btnLoadPgDbs;
         private Label lblPgUsername;
         private TextBox txtPgUsername;
         private Label lblPgPassword;
