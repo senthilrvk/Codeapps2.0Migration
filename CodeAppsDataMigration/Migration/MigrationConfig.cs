@@ -539,7 +539,7 @@ namespace CodeAppsDataMigration.Migration
                     ("ProductLinkId", "productlinkid", "bigint"),
 
                     // ---------- Type ----------
-                    ("ProductType", "producttype", "text"),
+                   
 
                     // ---------- More ----------
                     ("ProdSpecification", "prodspecification", "text"),
@@ -576,7 +576,12 @@ namespace CodeAppsDataMigration.Migration
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint")
                 },
-                 condition="where   branchid ="+nFromBranchId.ToString()
+                 condition="where   branchid ="+nFromBranchId.ToString()        
+                ,
+               Constants = new Dictionary<string, object>
+               {
+                    {  "producttype", "product"},
+               }
             },
 
            new TableMap

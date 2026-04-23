@@ -154,6 +154,9 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.prodlinkeshopid AND pm.branchid = {nBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture{nMainBranchId} mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET hsnid = hs.hsn_id FROM hsn{nMainBranchId} hs WHERE hs.tempid = pm.hsnid AND pm.branchid = {nBranchId}");
+
+                stringBuilder.Add($"UPDATE productsub{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId}");
+
                 stringBuilder.Add($"UPDATE hsn{nMainBranchId} hs SET taxid = pm.taxid FROM productmain{nMainBranchId} pm WHERE hs.hsn_id = pm.hsnid AND pm.branchid = {nBranchId}");
 
                 // Sales

@@ -21,6 +21,7 @@ namespace CodeAppsDataMigration
             lblTitle = new Label();
             pnlMenu = new Panel();
             btnDataMigration = new Button();
+            btnBranchList = new Button();
             btnConnectionSettings = new Button();
             btnExit = new Button();
             pnlContent = new Panel();
@@ -52,6 +53,7 @@ namespace CodeAppsDataMigration
             pnlMenu.Padding = new Padding(10, 20, 10, 10);
             pnlMenu.Controls.Add(btnExit);
             pnlMenu.Controls.Add(btnConnectionSettings);
+            pnlMenu.Controls.Add(btnBranchList);
             pnlMenu.Controls.Add(btnDataMigration);
 
             // Data Migration button
@@ -67,6 +69,20 @@ namespace CodeAppsDataMigration
             btnDataMigration.Cursor = Cursors.Hand;
             btnDataMigration.Margin = new Padding(0, 0, 0, 5);
             btnDataMigration.Click += btnDataMigration_Click;
+
+            // Branch List button
+            btnBranchList.Text = "  Branch List";
+            btnBranchList.Dock = DockStyle.Top;
+            btnBranchList.Size = new Size(200, 50);
+            btnBranchList.FlatStyle = FlatStyle.Flat;
+            btnBranchList.FlatAppearance.BorderSize = 0;
+            btnBranchList.BackColor = Color.FromArgb(159, 122, 234);
+            btnBranchList.ForeColor = Color.White;
+            btnBranchList.Font = new Font("Segoe UI", 11F, FontStyle.Regular);
+            btnBranchList.TextAlign = ContentAlignment.MiddleLeft;
+            btnBranchList.Cursor = Cursors.Hand;
+            btnBranchList.Margin = new Padding(0, 0, 0, 5);
+            btnBranchList.Click += btnBranchList_Click;
 
             // Connection Settings button
             btnConnectionSettings.Text = "  Connection Settings";
@@ -112,6 +128,7 @@ namespace CodeAppsDataMigration
             // Description label
             lblDescription.Text = "Select an option from the menu to get started.\n\n" +
                 "  Data Migration  -  Transfer data from SQL Server to PostgreSQL\n\n" +
+                "  Branch List  -  View SQL Server branches and create in PostgreSQL\n\n" +
                 "  Connection Settings  -  Configure database connection strings";
             lblDescription.Font = new Font("Segoe UI", 11F);
             lblDescription.ForeColor = Color.FromArgb(113, 128, 150);
@@ -145,6 +162,7 @@ namespace CodeAppsDataMigration
         private Label lblTitle;
         private Panel pnlMenu;
         private Button btnDataMigration;
+        private Button btnBranchList;
         private Button btnConnectionSettings;
         private Button btnExit;
         private Panel pnlContent;
