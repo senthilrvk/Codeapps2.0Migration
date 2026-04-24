@@ -349,7 +349,7 @@ namespace CodeAppsDataMigration.Migration
                 strQuery  = $"update issuereturnmain{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
                 strQuery += $"\n  where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billtype = 'CREDIT NOTE'";
                 strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId};";
-
+                stringBuilder.Add(strQuery);
 
                 //issuereturndetails
                 stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId}");

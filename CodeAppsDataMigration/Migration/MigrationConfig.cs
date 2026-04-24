@@ -820,11 +820,14 @@ namespace CodeAppsDataMigration.Migration
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint")
                 },
-                 condition="where   branchid ="+nFromBranchId.ToString()
-            },
-
-           new TableMap
-            {
+                condition="where   branchid ="+nFromBranchId.ToString()
+               ,Constants = new Dictionary<string, object>
+               {
+                  {"rewardcardid","0" }
+               }
+             },
+             new TableMap
+             {
                 SqlTable = "IssueSubDetails",
                 PgTable  = "issuesubdetails"+nMainBranchId.ToString(),
 
