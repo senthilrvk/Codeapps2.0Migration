@@ -1,30 +1,51 @@
 using CodeAppsDataMigration.Data;
 using Npgsql;
 using System.Data;
+using System.Net.Http;
+using System.Text;
+using System.Text.Json;
+using System.Xml.Linq;
 
 namespace CodeAppsDataMigration
 {
     public class BranchDetailForm : Form
     {
         private Panel pnlTop;
-        private Button btnSave;
+        private Button btnCreate;
         private Label lblTitle;
         private Panel pnlBranchType;
         private RadioButton rbMainBranch;
         private RadioButton rbSubBranch;
         private Label lblParentBranch;
         private ComboBox cmbParentBranch;
+        private Label lblApiUrl;
+        private TextBox txtApiUrl;
         private Panel pnlContent;
         private readonly DataGridViewRow _row;
         private readonly DataTable _dataTable;
         private readonly Dictionary<string, TextBox> _textBoxes = new();
+        private static readonly HttpClient _httpClient = new();
+        private string _mainBranchUrl = "";
+        private string _subBranchUrl = "";
 
         public BranchDetailForm(DataGridViewRow row, DataTable dataTable)
         {
             _row = row;
             _dataTable = dataTable;
+            LoadApiUrlsFromXml();
             InitializeControls();
             LoadData();
+        }
+
+        private void LoadApiUrlsFromXml()
+        {
+            var xmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ConnectionStrings.xml");
+            if (!File.Exists(xmlPath)) return;
+
+            var doc = XDocument.Load(xmlPath);
+            var apiUrls = doc.Root?.Element("ApiUrls");
+            _mainBranchUrl = apiUrls?.Element("MainBranchUrl")?.Value ?? "";
+            _subBranchUrl = apiUrls?.Element("SubBranchUrl")?.Value ?? "";
         }
 
         private void InitializeControls()
@@ -55,29 +76,29 @@ namespace CodeAppsDataMigration
                 Location = new Point(15, 15)
             };
 
-            btnSave = new Button
+            btnCreate = new Button
             {
-                Text = "Save",
+                Text = "Create Main Branch",
                 Font = new Font("Segoe UI", 9F, FontStyle.Bold),
                 ForeColor = Color.White,
                 BackColor = Color.FromArgb(72, 187, 120),
                 FlatStyle = FlatStyle.Flat,
-                Size = new Size(100, 32),
+                Size = new Size(150, 32),
                 Anchor = AnchorStyles.Top | AnchorStyles.Right,
-                Location = new Point(380, 12),
+                Location = new Point(330, 12),
                 Cursor = Cursors.Hand
             };
-            btnSave.FlatAppearance.BorderSize = 0;
-            btnSave.Click += BtnSave_Click;
+            btnCreate.FlatAppearance.BorderSize = 0;
+            btnCreate.Click += BtnCreate_Click;
 
             pnlTop.Controls.Add(lblTitle);
-            pnlTop.Controls.Add(btnSave);
+            pnlTop.Controls.Add(btnCreate);
 
-            // ── Branch Type panel (radio buttons + dropdown) ──
+            // ── Branch Type panel (radio buttons + dropdown + API URL) ──
             pnlBranchType = new Panel
             {
                 Dock = DockStyle.Top,
-                Height = 100,
+                Height = 95,
                 BackColor = Color.FromArgb(237, 242, 247),
                 Padding = new Padding(15, 10, 15, 10)
             };
@@ -132,11 +153,32 @@ namespace CodeAppsDataMigration
                 Visible = false
             };
 
+            lblApiUrl = new Label
+            {
+                Text = "API URL:",
+                Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                ForeColor = Color.FromArgb(74, 85, 104),
+                Location = new Point(15, 95),
+                AutoSize = true
+            };
+
+            txtApiUrl = new TextBox
+            {
+                Text = _mainBranchUrl,
+                Font = new Font("Segoe UI", 10F),
+                Location = new Point(80, 62),
+                Size = new Size(380, 25),
+                BorderStyle = BorderStyle.FixedSingle,
+                BackColor = Color.FromArgb(247, 250, 252)
+            };
+
             pnlBranchType.Controls.Add(lblBranchType);
             pnlBranchType.Controls.Add(rbMainBranch);
             pnlBranchType.Controls.Add(rbSubBranch);
             pnlBranchType.Controls.Add(lblParentBranch);
             pnlBranchType.Controls.Add(cmbParentBranch);
+            pnlBranchType.Controls.Add(lblApiUrl);
+            pnlBranchType.Controls.Add(txtApiUrl);
 
             // ── Scrollable content panel for textboxes ──
             pnlContent = new Panel
@@ -158,8 +200,23 @@ namespace CodeAppsDataMigration
             lblParentBranch.Visible = isSub;
             cmbParentBranch.Visible = isSub;
 
-            // Adjust panel height
-            pnlBranchType.Height = isSub ? 100 : 65;
+            // Update API URL and Create button based on branch type
+            if (isSub)
+            {
+                txtApiUrl.Text = _subBranchUrl;
+                btnCreate.Text = "Create Sub Branch";
+                lblApiUrl.Location = new Point(15, 95);
+                txtApiUrl.Location = new Point(80, 92);
+                pnlBranchType.Height = 125;
+            }
+            else
+            {
+                txtApiUrl.Text = _mainBranchUrl;
+                btnCreate.Text = "Create Main Branch";
+                lblApiUrl.Location = new Point(15, 65);
+                txtApiUrl.Location = new Point(80, 62);
+                pnlBranchType.Height = 95;
+            }
 
             if (isSub && cmbParentBranch.Items.Count == 0)
             {
@@ -232,11 +289,21 @@ namespace CodeAppsDataMigration
                 pnlContent.Controls.Add(txt);
 
                 yPos += 38;
+
             }
+
         }
 
-        private void BtnSave_Click(object? sender, EventArgs e)
+        private async void BtnCreate_Click(object? sender, EventArgs e)
         {
+            // Validate API URL
+            if (string.IsNullOrWhiteSpace(txtApiUrl.Text))
+            {
+                MessageBox.Show("Please enter an API URL.",
+                    "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             // Validate sub-branch selection
             if (rbSubBranch.Checked && cmbParentBranch.SelectedItem == null)
             {
@@ -245,86 +312,91 @@ namespace CodeAppsDataMigration
                 return;
             }
 
+            var branchType = rbMainBranch.Checked ? "Main Branch" : "Sub Branch";
+
             try
             {
-                var columns = new List<string>();
-                var paramNames = new List<string>();
-                var parameters = new List<NpgsqlParameter>();
+                btnCreate.Enabled = false;
+                btnCreate.Text = $"Creating {branchType}...";
 
-                int idx = 0;
+                // Build JSON payload from all textboxes
+                var jsonData = new Dictionary<string, object?>();
                 foreach (var kvp in _textBoxes)
                 {
                     var colName = kvp.Key.ToLower();
                     var colType = _dataTable.Columns[kvp.Key]!.DataType;
-                    columns.Add(colName);
-                    paramNames.Add($"@p{idx}");
+                    var text = kvp.Value.Text;
 
-                    object val = kvp.Value.Text;
-                    if (string.IsNullOrWhiteSpace(kvp.Value.Text))
+                    if (string.IsNullOrWhiteSpace(text))
                     {
-                        val = DBNull.Value;
+                        jsonData[colName] = null;
                     }
                     else if (colType == typeof(int))
                     {
-                        val = int.Parse(kvp.Value.Text);
+                        jsonData[colName] = int.Parse(text);
                     }
                     else if (colType == typeof(long))
                     {
-                        val = long.Parse(kvp.Value.Text);
+                        jsonData[colName] = long.Parse(text);
                     }
                     else if (colType == typeof(decimal))
                     {
-                        val = decimal.Parse(kvp.Value.Text);
+                        jsonData[colName] = decimal.Parse(text);
                     }
                     else if (colType == typeof(double))
                     {
-                        val = double.Parse(kvp.Value.Text);
+                        jsonData[colName] = double.Parse(text);
                     }
                     else if (colType == typeof(bool))
                     {
-                        val = bool.Parse(kvp.Value.Text);
+                        jsonData[colName] = bool.Parse(text);
                     }
                     else if (colType == typeof(DateTime))
                     {
-                        val = DateTime.Parse(kvp.Value.Text);
+                        jsonData[colName] = DateTime.Parse(text);
                     }
-
-                    parameters.Add(new NpgsqlParameter($"@p{idx}", val));
-                    idx++;
+                    else
+                    {
+                        jsonData[colName] = text;
+                    }
                 }
 
-                // Add parentbranchid column for sub-branches
+                // Add parentbranchid for sub-branches
                 if (rbSubBranch.Checked)
                 {
                     var parentItem = (ParentBranchItem)cmbParentBranch.SelectedItem!;
-                    if (!columns.Contains("parentbranchid"))
-                    {
-                        columns.Add("parentbranchid");
-                        paramNames.Add($"@p{idx}");
-                        parameters.Add(new NpgsqlParameter($"@p{idx}", long.Parse(parentItem.Id)));
-                    }
+                    jsonData["parentbranchid"] = long.Parse(parentItem.Id);
                 }
 
-                var sql = $"INSERT INTO branch ({string.Join(", ", columns)}) " +
-                          $"VALUES ({string.Join(", ", paramNames)})";
+                var json = JsonSerializer.Serialize(jsonData);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
 
-                using var conn = PostgresConnection.Create();
-                conn.Open();
-                using var cmd = new NpgsqlCommand(sql, conn);
-                cmd.Parameters.AddRange(parameters.ToArray());
-                cmd.ExecuteNonQuery();
+                var response = await _httpClient.PostAsync(txtApiUrl.Text.Trim(), content);
+                var responseBody = await response.Content.ReadAsStringAsync();
 
-                var branchType = rbMainBranch.Checked ? "Main Branch" : "Sub Branch";
-                MessageBox.Show($"{branchType} created successfully in PostgreSQL!",
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                if (response.IsSuccessStatusCode)
+                {
+                    MessageBox.Show($"{branchType} created successfully!\n\nResponse: {responseBody}",
+                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                DialogResult = DialogResult.OK;
-                Close();
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                else
+                {
+                    MessageBox.Show($"API returned error ({response.StatusCode}):\n{responseBody}",
+                        "API Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to create branch in PostgreSQL:\n" + ex.Message,
+                MessageBox.Show("Failed to call API:\n" + ex.Message,
                     "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                btnCreate.Enabled = true;
+                btnCreate.Text = rbMainBranch.Checked ? "Create Main Branch" : "Create Sub Branch";
             }
         }
 

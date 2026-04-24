@@ -4,42 +4,42 @@ using System.Data;
 
 namespace CodeAppsDataMigration
 {
-    public partial class BranchListForm : Form
+    public partial class BranchDetailsLoadForm : Form
     {
-        public BranchListForm()
+        public BranchDetailsLoadForm()
         {
             InitializeComponent();
         }
 
-        private void BranchListForm_Load(object sender, EventArgs e)
+        private void BranchDetailsLoadForm_Load(object sender, EventArgs e)
         {
-            LoadBranches();
+            LoadData();
         }
 
         private void btnRefresh_Click(object sender, EventArgs e)
         {
-            LoadBranches();
+            LoadData();
         }
 
         // Columns to display in the GridView
         private readonly string[] _displayColumns = { "branchid", "branchcode", "branchname", "branchaddr1", "branchaddr2" };
 
-        private void LoadBranches()
+        private void LoadData()
         {
             try
             {
                 using var conn = SqlServerConnection.Create();
                 conn.Open();
-                using var cmd = new SqlCommand("SELECT * FROM branch", conn);
+                using var cmd = new SqlCommand("SELECT * FROM branchdetails", conn);
                 using var reader = cmd.ExecuteReader();
 
                 var dt = new DataTable();
                 dt.Load(reader);
 
-                dgvBranches.DataSource = dt;
+                dgvBranchDetails.DataSource = dt;
 
                 // Hide all columns, then show only the display columns
-                foreach (DataGridViewColumn col in dgvBranches.Columns)
+                foreach (DataGridViewColumn col in dgvBranchDetails.Columns)
                 {
                     if (col.Name != "colCreate")
                         col.Visible = false;
@@ -48,7 +48,7 @@ namespace CodeAppsDataMigration
                 int displayIndex = 1;
                 foreach (var colName in _displayColumns)
                 {
-                    var col = dgvBranches.Columns[colName];
+                    var col = dgvBranchDetails.Columns[colName];
                     if (col != null)
                     {
                         col.Visible = true;
@@ -57,7 +57,7 @@ namespace CodeAppsDataMigration
                 }
 
                 // Add Create button column if not already added
-                if (dgvBranches.Columns["colCreate"] == null)
+                if (dgvBranchDetails.Columns["colCreate"] == null)
                 {
                     var btnCol = new DataGridViewButtonColumn
                     {
@@ -73,34 +73,34 @@ namespace CodeAppsDataMigration
                     btnCol.DefaultCellStyle.ForeColor = Color.White;
                     btnCol.DefaultCellStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
                     btnCol.DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                    dgvBranches.Columns.Add(btnCol);
+                    dgvBranchDetails.Columns.Add(btnCol);
                 }
 
                 // Move the Create button column to the first (left) position
-                dgvBranches.Columns["colCreate"]!.DisplayIndex = 0;
+                dgvBranchDetails.Columns["colCreate"]!.DisplayIndex = 0;
 
-                lblStatus.Text = $"Total branches: {dt.Rows.Count}";
+                lblStatus.Text = $"Total branch details: {dt.Rows.Count}";
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Failed to load branches:\n" + ex.Message, "Error",
+                MessageBox.Show("Failed to load branch details:\n" + ex.Message, "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
-                lblStatus.Text = "Error loading branches";
+                lblStatus.Text = "Error loading branch details";
             }
         }
 
-        private void dgvBranches_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void dgvBranchDetails_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
-            if (dgvBranches.Columns[e.ColumnIndex].Name != "colCreate") return;
+            if (dgvBranchDetails.Columns[e.ColumnIndex].Name != "colCreate") return;
 
-            var row = dgvBranches.Rows[e.RowIndex];
-            var dt = (DataTable)dgvBranches.DataSource;
+            var row = dgvBranchDetails.Rows[e.RowIndex];
+            var dt = (DataTable)dgvBranchDetails.DataSource;
 
             using var detailForm = new BranchDetailForm(row, dt);
             if (detailForm.ShowDialog() == DialogResult.OK)
             {
-                lblStatus.Text = $"Branch '{row.Cells["BranchName"]?.Value}' created in PostgreSQL";
+                lblStatus.Text = $"Branch detail created in PostgreSQL successfully";
             }
         }
     }

@@ -23,4 +23,8 @@
     <MaxPoolSize>20</MaxPoolSize>
     <IncludeErrorDetail>true</IncludeErrorDetail>
   </Postgres>
+  <ApiUrls>
+    <MainBranchUrl>http://localhost:5000/api/mainbranch</MainBranchUrl>
+    <SubBranchUrl>http://localhost:5000/api/subbranch</SubBranchUrl>
+  </ApiUrls>
 </ConnectionStrings>

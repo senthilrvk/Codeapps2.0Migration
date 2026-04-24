@@ -237,7 +237,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE receiptreturndetails{nMainBranchId} rm SET reasonid = ah.categoryid FROM category ah WHERE ah.tempid = rm.reasonid AND rm.branchid = {nBranchId}");
 
                 strQuery = $"update receiptreturndetails{nMainBranchId} rsub set receiptreturnmainid =  rm.receiptreturnmainid from receiptreturnmain{nMainBranchId} rm where rm.billserid = rsub.receiptreturnmainid";
-                strQuery += $"\n and rsub.branchid = rm.branchid and rsub.mainbranchid = rm.mainbranchid and rsub.receiptreturnno=rm.receiptreturnno";
+                strQuery += $"\n and rsub.branchid = rm.branchid and rsub.mainbranchid = rm.mainbranchid";
                 strQuery += $"\n and rm.branchid ={nBranchId}    and rm.mainbranchid ={nMainBranchId}";
                 stringBuilder.Add(strQuery);
 
@@ -257,6 +257,11 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"UPDATE debitnotedetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxper AND pm.branchid = {nBranchId}");
 
+
+                strQuery = $"update debitnotemain{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
+                strQuery += $"\n  where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billtype = 'DEBIT NOTE'";
+                strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId};";
+
                 //expirydebitnotemain
 
                 stringBuilder.Add($"UPDATE expirydebitnotemain{nMainBranchId} rm SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.staffid AND rm.branchid = {nBranchId}");
@@ -270,6 +275,10 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
 
                 stringBuilder.Add($"UPDATE expirydebitnotedetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxper AND pm.branchid = {nBranchId}");
+
+                strQuery = $"update expirydebitnotemain{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
+                strQuery += $"\n  where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billtype = 'EXPIRY/DAMAGE DEBITNOTE'";
+                strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId};";
 
 
                 /// voucherdetails
@@ -331,10 +340,15 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE issuereturnmain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId}");
                 stringBuilder.Add($"UPDATE issuereturnmain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId}");
                 stringBuilder.Add($"UPDATE issuereturnmain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId}");
-                //strQuery = $"update issuereturnmain{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
-                //strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
-                //strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
-                //stringBuilder.Add(strQuery);
+               
+                strQuery = $"update issuereturnmain{nMainBranchId} im set salesbillserid =  bs.billserid from billseries bs where bs.tempid = im.salesbillserid";
+                strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
+                stringBuilder.Add(strQuery);
+
+                strQuery  = $"update issuereturnmain{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
+                strQuery += $"\n  where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billtype = 'CREDIT NOTE'";
+                strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId};";
 
 
                 //issuereturndetails
@@ -343,6 +357,7 @@ namespace CodeAppsDataMigration.Migration
                 //strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
                 //strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
                 //stringBuilder.Add(strQuery);
+                stringBuilder.Add($"update issuereturndetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId}");
                 stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId}");
 
 
@@ -364,7 +379,20 @@ namespace CodeAppsDataMigration.Migration
                 //strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
                 //stringBuilder.Add(strQuery);
                 stringBuilder.Add($"UPDATE expiryreturndetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId}");
+                stringBuilder.Add($"update expiryreturndetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId}");
 
+                strQuery = $"update expiryreturndetails{nMainBranchId} rsub set expiryreturnid =  rm.expiryreturnid from expiryreturnmain{nMainBranchId} rm where rm.billserid = rsub.billserid";
+                strQuery += $"\n and rsub.branchid = rm.branchid and rsub.mainbranchid = rm.mainbranchid and rsub.expiryreturnno=rm.expiryreturnno";
+                strQuery += $"\n and rm.branchid ={nBranchId}    and rm.mainbranchid ={nMainBranchId}";
+                stringBuilder.Add(strQuery);
+
+                strQuery  = $"update expiryreturnmain{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
+                strQuery += $"\n where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billtype = 'EXPIRY RETURN' and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId};";
+                stringBuilder.Add(strQuery);
+
+                strQuery  = $"update expiryreturndetails{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
+                strQuery += $"\n where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billtype = 'EXPIRY RETURN' and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId};";
+                stringBuilder.Add(strQuery);
 
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;

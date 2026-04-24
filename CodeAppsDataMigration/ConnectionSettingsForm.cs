@@ -52,6 +52,20 @@ namespace CodeAppsDataMigration
             txtPgMaxPool.Text = pg.Element("MaxPoolSize")?.Value ?? "20";
             chkPgPooling.Checked = bool.TryParse(pg.Element("Pooling")?.Value, out var pool) && pool;
             chkPgErrorDetail.Checked = bool.TryParse(pg.Element("IncludeErrorDetail")?.Value, out var err) && err;
+
+            // API URLs
+            var apiUrls = doc.Root!.Element("ApiUrls");
+            var mainUrl = apiUrls?.Element("MainBranchUrl")?.Value ?? "";
+            var subUrl = apiUrls?.Element("SubBranchUrl")?.Value ?? "";
+            txtMainBranchUrl.Text = mainUrl;
+            txtSubBranchUrl.Text = subUrl;
+
+            // Show saved API URLs list
+            lstSavedApiUrls.Items.Clear();
+            if (!string.IsNullOrWhiteSpace(mainUrl))
+                lstSavedApiUrls.Items.Add($"Main Branch  :  {mainUrl}");
+            if (!string.IsNullOrWhiteSpace(subUrl))
+                lstSavedApiUrls.Items.Add($"Sub Branch   :  {subUrl}");
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -80,6 +94,10 @@ namespace CodeAppsDataMigration
                         new XElement("Pooling", chkPgPooling.Checked),
                         new XElement("MaxPoolSize", txtPgMaxPool.Text.Trim()),
                         new XElement("IncludeErrorDetail", chkPgErrorDetail.Checked)
+                    ),
+                    new XElement("ApiUrls",
+                        new XElement("MainBranchUrl", txtMainBranchUrl.Text.Trim()),
+                        new XElement("SubBranchUrl", txtSubBranchUrl.Text.Trim())
                     )
                 )
             );
@@ -218,6 +236,11 @@ namespace CodeAppsDataMigration
                 MessageBox.Show($"Failed to load PostgreSQL databases:\n{ex.Message}", "Error",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void btnLoadMachine_Click(object sender, EventArgs e)
+        {
+            txtSqlServer.Text = Environment.MachineName;
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

@@ -20,9 +20,11 @@ namespace CodeAppsDataMigration
             tabControl = new TabControl();
             tabSqlServer = new TabPage();
             tabPostgres = new TabPage();
+            tabApiUrls = new TabPage();
 
             lblSqlServer = new Label();
             txtSqlServer = new TextBox();
+            btnLoadMachine = new Button();
             lblSqlDatabase = new Label();
             cmbSqlDatabase = new ComboBox();
             btnLoadSqlDbs = new Button();
@@ -60,12 +62,20 @@ namespace CodeAppsDataMigration
             chkPgErrorDetail = new CheckBox();
             btnTestPg = new Button();
 
+            lblMainBranchUrl = new Label();
+            txtMainBranchUrl = new TextBox();
+            lblSubBranchUrl = new Label();
+            txtSubBranchUrl = new TextBox();
+            lblSavedApiUrls = new Label();
+            lstSavedApiUrls = new ListBox();
+
             btnSave = new Button();
             btnCancel = new Button();
 
             tabControl.SuspendLayout();
             tabSqlServer.SuspendLayout();
             tabPostgres.SuspendLayout();
+            tabApiUrls.SuspendLayout();
             SuspendLayout();
 
             //
@@ -73,6 +83,7 @@ namespace CodeAppsDataMigration
             //
             tabControl.Controls.Add(tabSqlServer);
             tabControl.Controls.Add(tabPostgres);
+            tabControl.Controls.Add(tabApiUrls);
             tabControl.Location = new Point(12, 12);
             tabControl.Name = "tabControl";
             tabControl.SelectedIndex = 0;
@@ -84,6 +95,7 @@ namespace CodeAppsDataMigration
             //
             tabSqlServer.Controls.Add(lblSqlServer);
             tabSqlServer.Controls.Add(txtSqlServer);
+            tabSqlServer.Controls.Add(btnLoadMachine);
             tabSqlServer.Controls.Add(lblSqlDatabase);
             tabSqlServer.Controls.Add(cmbSqlDatabase);
             tabSqlServer.Controls.Add(btnLoadSqlDbs);
@@ -118,7 +130,17 @@ namespace CodeAppsDataMigration
             //
             txtSqlServer.Location = new Point(150, 15);
             txtSqlServer.Name = "txtSqlServer";
-            txtSqlServer.Size = new Size(270, 23);
+            txtSqlServer.Size = new Size(200, 23);
+
+            //
+            // btnLoadMachine
+            //
+            btnLoadMachine.Location = new Point(355, 14);
+            btnLoadMachine.Name = "btnLoadMachine";
+            btnLoadMachine.Size = new Size(65, 25);
+            btnLoadMachine.Text = "Machine";
+            btnLoadMachine.UseVisualStyleBackColor = true;
+            btnLoadMachine.Click += btnLoadMachine_Click;
 
             //
             // lblSqlDatabase
@@ -435,6 +457,75 @@ namespace CodeAppsDataMigration
             btnTestPg.Click += btnTestPg_Click;
 
             //
+            // tabApiUrls
+            //
+            tabApiUrls.Controls.Add(lblMainBranchUrl);
+            tabApiUrls.Controls.Add(txtMainBranchUrl);
+            tabApiUrls.Controls.Add(lblSubBranchUrl);
+            tabApiUrls.Controls.Add(txtSubBranchUrl);
+            tabApiUrls.Controls.Add(lblSavedApiUrls);
+            tabApiUrls.Controls.Add(lstSavedApiUrls);
+            tabApiUrls.Location = new Point(4, 24);
+            tabApiUrls.Name = "tabApiUrls";
+            tabApiUrls.Padding = new Padding(3);
+            tabApiUrls.Size = new Size(452, 352);
+            tabApiUrls.TabIndex = 2;
+            tabApiUrls.Text = "API URLs";
+            tabApiUrls.UseVisualStyleBackColor = true;
+
+            //
+            // lblMainBranchUrl
+            //
+            lblMainBranchUrl.AutoSize = true;
+            lblMainBranchUrl.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblMainBranchUrl.Location = new Point(15, 18);
+            lblMainBranchUrl.Name = "lblMainBranchUrl";
+            lblMainBranchUrl.Text = "Main Branch API URL:";
+
+            //
+            // txtMainBranchUrl
+            //
+            txtMainBranchUrl.Location = new Point(15, 40);
+            txtMainBranchUrl.Name = "txtMainBranchUrl";
+            txtMainBranchUrl.Size = new Size(420, 23);
+
+            //
+            // lblSubBranchUrl
+            //
+            lblSubBranchUrl.AutoSize = true;
+            lblSubBranchUrl.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblSubBranchUrl.Location = new Point(15, 75);
+            lblSubBranchUrl.Name = "lblSubBranchUrl";
+            lblSubBranchUrl.Text = "Sub Branch API URL:";
+
+            //
+            // txtSubBranchUrl
+            //
+            txtSubBranchUrl.Location = new Point(15, 97);
+            txtSubBranchUrl.Name = "txtSubBranchUrl";
+            txtSubBranchUrl.Size = new Size(420, 23);
+
+            //
+            // lblSavedApiUrls
+            //
+            lblSavedApiUrls.AutoSize = true;
+            lblSavedApiUrls.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblSavedApiUrls.ForeColor = Color.FromArgb(45, 55, 72);
+            lblSavedApiUrls.Location = new Point(15, 135);
+            lblSavedApiUrls.Name = "lblSavedApiUrls";
+            lblSavedApiUrls.Text = "Saved API URLs:";
+
+            //
+            // lstSavedApiUrls
+            //
+            lstSavedApiUrls.Font = new Font("Segoe UI", 9.5F);
+            lstSavedApiUrls.FormattingEnabled = true;
+            lstSavedApiUrls.Location = new Point(15, 158);
+            lstSavedApiUrls.Name = "lstSavedApiUrls";
+            lstSavedApiUrls.Size = new Size(420, 170);
+            lstSavedApiUrls.BorderStyle = BorderStyle.FixedSingle;
+
+            //
             // btnSave
             //
             btnSave.Location = new Point(290, 400);
@@ -478,6 +569,8 @@ namespace CodeAppsDataMigration
             tabSqlServer.PerformLayout();
             tabPostgres.ResumeLayout(false);
             tabPostgres.PerformLayout();
+            tabApiUrls.ResumeLayout(false);
+            tabApiUrls.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -486,9 +579,17 @@ namespace CodeAppsDataMigration
         private TabControl tabControl;
         private TabPage tabSqlServer;
         private TabPage tabPostgres;
+        private TabPage tabApiUrls;
+        private Label lblMainBranchUrl;
+        private TextBox txtMainBranchUrl;
+        private Label lblSubBranchUrl;
+        private TextBox txtSubBranchUrl;
+        private Label lblSavedApiUrls;
+        private ListBox lstSavedApiUrls;
 
         private Label lblSqlServer;
         private TextBox txtSqlServer;
+        private Button btnLoadMachine;
         private Label lblSqlDatabase;
         private ComboBox cmbSqlDatabase;
         private Button btnLoadSqlDbs;

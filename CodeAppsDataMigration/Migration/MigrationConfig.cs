@@ -1406,7 +1406,7 @@ namespace CodeAppsDataMigration.Migration
                  },
                  Constants = new Dictionary<string, object>
                  {
-                     {"qtytype", "" },
+                     {"qtytype", "NOS" },
                      { "totqty", "0"}
                  },
                  condition="where   branchid ="+nFromBranchId.ToString()
@@ -1507,18 +1507,16 @@ namespace CodeAppsDataMigration.Migration
                     ("DebitNoteSub_ExtraCessAmt", "extracessamt", "numeric"),
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint"),
-
                 },
                 Constants = new Dictionary<string, object>
                 {
-                    { "qtytype", "NOS" },
-                    {  "totqty", "0"   },
-                    {  "accid", "0"},
-                    {  "hsnid", "0"},
-                    {  "hsncode", ""},
-                    { "itemdisamt", "0"},
-                    { "totdisamt", "0" }
-
+                    { "qtytype",    "NOS" },
+                    {  "totqty",    "0"   },
+                    {  "accid",     "0"   },
+                    {  "hsnid",     "0"   },
+                    {  "hsncode",   ""    },
+                    { "itemdisamt", "0"   },
+                    { "totdisamt",  "0"   }
                 },
                 condition="where   branchid ="+nFromBranchId.ToString()
             },
@@ -1898,7 +1896,7 @@ namespace CodeAppsDataMigration.Migration
              Columns = new[]
              {
                     ("IssueRetSlNo", "issuereturnno", "bigint"),
-                    ("UniqueNo", "uniquereturnno", "bigint"),
+                    ("UniqueNo", "issuereturnid", "bigint"),
                     ("BillSerId", "salesbillserid", "bigint"),
                     ("Issue_SlNo", "issueno", "bigint"),
                     ("Issue_BillDate", "issuedate", "date"),
@@ -1941,6 +1939,7 @@ namespace CodeAppsDataMigration.Migration
              Constants = new Dictionary<string, object>
              {
 
+                    { "uniquereturnno", "0"},
                     { "qtytype", "NOS"},
                     { "advfre", "0"},
                     { "rqty", "0"},
