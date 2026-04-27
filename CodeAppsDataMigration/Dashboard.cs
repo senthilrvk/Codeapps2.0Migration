@@ -9,7 +9,7 @@ namespace CodeAppsDataMigration
 
         private void btnDataMigration_Click(object sender, EventArgs e)
         {
-            using var form = new Form1();
+            using var form = new DataMigrationConvertForm();
             form.ShowDialog(this);
         }
 

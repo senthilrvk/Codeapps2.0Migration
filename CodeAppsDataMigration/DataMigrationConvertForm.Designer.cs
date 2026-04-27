@@ -1,6 +1,6 @@
 namespace CodeAppsDataMigration
 {
-    partial class Form1
+    partial class DataMigrationConvertForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,8 +28,10 @@ namespace CodeAppsDataMigration
         /// </summary>
         private void InitializeComponent()
         {
+            grpSqlServer = new GroupBox();
             lblSqlBranch = new Label();
             cmbSqlBranch = new ComboBox();
+            grpPostgres = new GroupBox();
             lblPgMainBranch = new Label();
             cmbPgMainBranch = new ComboBox();
             lblPgBranch = new Label();
@@ -37,122 +39,150 @@ namespace CodeAppsDataMigration
             btnDataTransfer = new Button();
             progressBar = new ProgressBar();
             lblStatus = new Label();
+            grpSqlServer.SuspendLayout();
+            grpPostgres.SuspendLayout();
             SuspendLayout();
+            //
+            // grpSqlServer
+            //
+            grpSqlServer.Controls.Add(lblSqlBranch);
+            grpSqlServer.Controls.Add(cmbSqlBranch);
+            grpSqlServer.Location = new Point(15, 12);
+            grpSqlServer.Name = "grpSqlServer";
+            grpSqlServer.Size = new Size(320, 100);
+            grpSqlServer.TabIndex = 0;
+            grpSqlServer.TabStop = false;
+            grpSqlServer.Text = "SQL Server (From)";
             //
             // lblSqlBranch
             //
             lblSqlBranch.AutoSize = true;
-            lblSqlBranch.Location = new Point(30, 25);
+            lblSqlBranch.Location = new Point(15, 30);
             lblSqlBranch.Name = "lblSqlBranch";
-            lblSqlBranch.Size = new Size(120, 15);
-            lblSqlBranch.TabIndex = 1;
-            lblSqlBranch.Text = "SQL Server Branch (From):";
+            lblSqlBranch.Size = new Size(50, 15);
+            lblSqlBranch.TabIndex = 0;
+            lblSqlBranch.Text = "Branch:";
             //
             // cmbSqlBranch
             //
             cmbSqlBranch.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbSqlBranch.FormattingEnabled = true;
-            cmbSqlBranch.Location = new Point(220, 22);
+            cmbSqlBranch.Location = new Point(15, 55);
             cmbSqlBranch.Name = "cmbSqlBranch";
-            cmbSqlBranch.Size = new Size(250, 23);
-            cmbSqlBranch.TabIndex = 2;
+            cmbSqlBranch.Size = new Size(290, 23);
+            cmbSqlBranch.TabIndex = 1;
+            //
+            // grpPostgres
+            //
+            grpPostgres.Controls.Add(lblPgMainBranch);
+            grpPostgres.Controls.Add(cmbPgMainBranch);
+            grpPostgres.Controls.Add(lblPgBranch);
+            grpPostgres.Controls.Add(cmbPgBranch);
+            grpPostgres.Location = new Point(350, 12);
+            grpPostgres.Name = "grpPostgres";
+            grpPostgres.Size = new Size(320, 100);
+            grpPostgres.TabIndex = 1;
+            grpPostgres.TabStop = false;
+            grpPostgres.Text = "PostgreSQL (To)";
             //
             // lblPgMainBranch
             //
             lblPgMainBranch.AutoSize = true;
-            lblPgMainBranch.Location = new Point(30, 65);
+            lblPgMainBranch.Location = new Point(15, 30);
             lblPgMainBranch.Name = "lblPgMainBranch";
-            lblPgMainBranch.Size = new Size(150, 15);
-            lblPgMainBranch.TabIndex = 3;
-            lblPgMainBranch.Text = "PostgreSQL Main Branch:";
+            lblPgMainBranch.Size = new Size(80, 15);
+            lblPgMainBranch.TabIndex = 0;
+            lblPgMainBranch.Text = "Main Branch:";
             //
             // cmbPgMainBranch
             //
             cmbPgMainBranch.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbPgMainBranch.FormattingEnabled = true;
-            cmbPgMainBranch.Location = new Point(220, 62);
+            cmbPgMainBranch.Location = new Point(110, 27);
             cmbPgMainBranch.Name = "cmbPgMainBranch";
-            cmbPgMainBranch.Size = new Size(250, 23);
-            cmbPgMainBranch.TabIndex = 4;
+            cmbPgMainBranch.Size = new Size(195, 23);
+            cmbPgMainBranch.TabIndex = 1;
             cmbPgMainBranch.SelectedIndexChanged += cmbPgMainBranch_SelectedIndexChanged;
             //
             // lblPgBranch
             //
             lblPgBranch.AutoSize = true;
-            lblPgBranch.Location = new Point(30, 105);
+            lblPgBranch.Location = new Point(15, 65);
             lblPgBranch.Name = "lblPgBranch";
-            lblPgBranch.Size = new Size(120, 15);
-            lblPgBranch.TabIndex = 5;
-            lblPgBranch.Text = "PostgreSQL Branch (To):";
+            lblPgBranch.Size = new Size(75, 15);
+            lblPgBranch.TabIndex = 2;
+            lblPgBranch.Text = "Sub Branch:";
             //
             // cmbPgBranch
             //
             cmbPgBranch.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbPgBranch.FormattingEnabled = true;
-            cmbPgBranch.Location = new Point(220, 102);
+            cmbPgBranch.Location = new Point(110, 62);
             cmbPgBranch.Name = "cmbPgBranch";
-            cmbPgBranch.Size = new Size(250, 23);
-            cmbPgBranch.TabIndex = 6;
+            cmbPgBranch.Size = new Size(195, 23);
+            cmbPgBranch.TabIndex = 3;
             //
             // btnDataTransfer
             //
-            btnDataTransfer.Location = new Point(180, 150);
+            btnDataTransfer.Location = new Point(260, 125);
             btnDataTransfer.Name = "btnDataTransfer";
             btnDataTransfer.Size = new Size(179, 30);
-            btnDataTransfer.TabIndex = 0;
+            btnDataTransfer.TabIndex = 2;
             btnDataTransfer.Text = "Start Migration";
             btnDataTransfer.UseVisualStyleBackColor = true;
             btnDataTransfer.Click += btnDataTransfer_Click;
             //
             // progressBar
             //
-            progressBar.Location = new Point(30, 200);
+            progressBar.Location = new Point(15, 170);
             progressBar.Name = "progressBar";
-            progressBar.Size = new Size(460, 25);
-            progressBar.TabIndex = 7;
+            progressBar.Size = new Size(655, 25);
+            progressBar.TabIndex = 3;
             //
             // lblStatus
             //
             lblStatus.AutoSize = true;
-            lblStatus.Location = new Point(30, 232);
+            lblStatus.Location = new Point(15, 202);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(50, 15);
-            lblStatus.TabIndex = 8;
+            lblStatus.TabIndex = 4;
             lblStatus.Text = "Ready";
             //
-            // Form1
+            // DataMigrationConvertForm
             //
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(520, 260);
-            Controls.Add(lblSqlBranch);
-            Controls.Add(cmbSqlBranch);
-            Controls.Add(lblPgMainBranch);
-            Controls.Add(cmbPgMainBranch);
-            Controls.Add(lblPgBranch);
-            Controls.Add(cmbPgBranch);
+            ClientSize = new Size(685, 230);
+            Controls.Add(grpSqlServer);
+            Controls.Add(grpPostgres);
             Controls.Add(btnDataTransfer);
             Controls.Add(progressBar);
             Controls.Add(lblStatus);
             FormBorderStyle = FormBorderStyle.FixedDialog;
             MaximizeBox = false;
-            Name = "Form1";
+            Name = "DataMigrationConvertForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Data Migration";
-            Load += Form1_Load;
+            Load += DataMigrationConvertForm_Load;
+            grpSqlServer.ResumeLayout(false);
+            grpSqlServer.PerformLayout();
+            grpPostgres.ResumeLayout(false);
+            grpPostgres.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
 
         #endregion
 
-        private Button btnDataTransfer;
+        private GroupBox grpSqlServer;
         private Label lblSqlBranch;
         private ComboBox cmbSqlBranch;
+        private GroupBox grpPostgres;
         private Label lblPgMainBranch;
         private ComboBox cmbPgMainBranch;
         private Label lblPgBranch;
         private ComboBox cmbPgBranch;
+        private Button btnDataTransfer;
         private ProgressBar progressBar;
         private Label lblStatus;
     }

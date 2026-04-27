@@ -9,18 +9,18 @@ using System.Windows.Forms;
 
 namespace CodeAppsDataMigration
 {
-    public partial class Form1 : Form
+    public partial class DataMigrationConvertForm : Form
     {
         int nFromBranchId = 0;
         int nBranchId = 0, nMainBranchId = 0;
         private DataTable _pgBranchAll = new DataTable();
 
-        public Form1()
+        public DataMigrationConvertForm()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void DataMigrationConvertForm_Load(object sender, EventArgs e)
         {
             LoadSqlBranches();
             LoadPgMainBranches();
