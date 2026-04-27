@@ -162,6 +162,7 @@ namespace CodeAppsDataMigration
                     runner.FromDbTaxUpdate();
                     runner.RunAll(nMainBranchId, nBranchId, nFromBranchId);
                     runner.UpdatePrimaryKeyColumns(nMainBranchId, nBranchId);
+                    runner.fnMainSettingUpdate(nMainBranchId);
                 });
 
                 progressBar.Value = 100;

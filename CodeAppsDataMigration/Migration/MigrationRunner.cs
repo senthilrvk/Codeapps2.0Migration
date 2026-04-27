@@ -12,6 +12,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
+using System.Data;
 
 namespace CodeAppsDataMigration.Migration
 {
@@ -452,6 +453,62 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
+
+        public void fnMainSettingUpdate(long nMainBranchId)
+        {
+
+            ReportProgress("Updating mainsetting in SQL Server...", 0);
+
+            string strQuery = @"select * from Settings";
+
+            try
+            {
+                DataTable dtsql = new DataTable();
+                using var connection = SqlServerConnection.Create();
+                connection.Open();
+                var query = string.Format(strQuery);
+                using var command = new SqlCommand(query, connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                adapter.Fill(dtsql);
+                connection.Close();
+
+                strQuery = @"select * from mainsetting";
+                DataTable  dtposgres = new DataTable();
+                using var posconnection = PostgresConnection.Create();
+                posconnection.Open();
+                var posquery = string.Format(strQuery);
+                using var poscommand = new SqlCommand(query, connection);
+                adapter = new SqlDataAdapter(command);
+                adapter.Fill(dtposgres);
+                posconnection.Close();
+                string strUpdateQuery = "";
+                foreach(DataRow row in dtposgres.Rows)
+                {
+                    string settingname = row["settingname"].ToString();
+                    string settingvalue = row["settingvalue"].ToString();
+                    string settingbillno = row["settingvalue"].ToString();
+                    switch (settingname) {
+                        case :
+                    }
+
+                }
+
+
+
+                using var posconnection1 = PostgresConnection.Create();
+                posconnection1.Open();
+                var posquery1 = string.Format(strQuery);
+                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                poscommand1.ExecuteNonQuery();
+                posconnection1.Close();
+
+                ReportProgress("Updating mainsetting successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating mainsetting failed: {ex.Message}", 2);
+            }
+        }
     }
 
 }
