@@ -472,23 +472,102 @@ namespace CodeAppsDataMigration.Migration
                 adapter.Fill(dtsql);
                 connection.Close();
 
-                strQuery = @"select * from mainsetting";
-                DataTable  dtposgres = new DataTable();
-                using var posconnection = PostgresConnection.Create();
-                posconnection.Open();
-                var posquery = string.Format(strQuery);
-                using var poscommand = new SqlCommand(query, connection);
-                adapter = new SqlDataAdapter(command);
-                adapter.Fill(dtposgres);
-                posconnection.Close();
+                //strQuery = @"select * from mainsetting";
+                //DataTable  dtposgres = new DataTable();
+                //using var posconnection = PostgresConnection.Create();
+                //posconnection.Open();
+                //var posquery = string.Format(strQuery);
+                //using var poscommand = new SqlCommand(query, connection);
+                //adapter = new SqlDataAdapter(command);
+                //adapter.Fill(dtposgres);
+                //posconnection.Close();
                 string strUpdateQuery = "";
-                foreach(DataRow row in dtposgres.Rows)
+                foreach(DataRow row in dtsql.Rows)
                 {
-                    string settingname = row["settingname"].ToString();
-                    string settingvalue = row["settingvalue"].ToString();
-                    string settingbillno = row["settingvalue"].ToString();
-                    switch (settingname) {
-                        case :
+                    string KeyValue = row["KeyValue"].ToString();
+                    string Value = row["Value"].ToString();
+                    switch (KeyValue) {
+                        case "AccMonth":
+                            strUpdateQuery +="\n Update mainsetting set settingvalue = '"+Value+"' where mainbranchid = "+nMainBranchId+" and settingkey='AccMonth';";
+                            break;
+                        case "AdditionalCessInclusiveInSales":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='AdditionalCessInclusiveInSales';";
+                            break;
+                        case "Neethi":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='AddOrMinusNeethiDis';";
+                            break;
+                        case "AutoAdjustReceiptPending":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='AutoAdjustReceiptPending';";
+                            break;
+                        case "BatchDisplayName":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='BatchDisplayName';";
+                            break;
+                        case "CompanyBranchLink":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='CompanyBranchLink';";
+                            break;
+                        case "SaleExpiry":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ExpiryVisible';";
+                            break;
+                        case "SaleBatch":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='BatchVisible';";
+                            break;
+                        case "ExpMonthYearFormat":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ExpMonthYearFormat';";
+                            break;
+                        case "ImageSave":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ImageSave';";
+                            break;
+                        case "ImageSavePath":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ImageSavePath';";
+                            break;
+                        case "ItemSearch":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ItemSearch';";
+                            break;
+                        case "NegativeBilling":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='NegativeBilling';";
+                            break;
+                        case "PreviousHistoryPurchase":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='PreviousHistoryPurchase';";
+                            break;
+                        case "PreviousHistory":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='PreviousHistorySales';";
+                            break;
+                        case "ProductSaveOtherBranch":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ProductSaveOtherBranch';";
+                            break;
+                        case "PurchaseItemCode":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='PurchaseItemCodeVisible';";
+                            break;
+                        case "QtyDecPlace":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='QtyDecPlace';";
+                            break;
+                        case "RateConditionInSales":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='RateConditionInSales';";
+                            break;
+                        case "DecimalPlace":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='RateDecimalPlace';";
+                            break;
+                        case "SRof":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='Rof';";
+                            break;
+                        case "SalesInclusiveVisibleInSales":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='SalesInclusive';";
+                            break;
+                        case "SalesItemCode":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='SalesItemCodeVisible';";
+                            break;
+                        case "ProductName":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='SoftwareBusinessType';";
+                            break;
+                        case "TaxName":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='TaxName';";
+                            break;
+                        case "UniqueBarCode":
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='UniqueBarCode';";
+                            break;
+                        case "UniqueNo":
+                            strUpdateQuery += "\n Update mainsetting set settingbillno = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='UniqueBatchNo';";
+                            break;
                     }
 
                 }
@@ -497,7 +576,6 @@ namespace CodeAppsDataMigration.Migration
 
                 using var posconnection1 = PostgresConnection.Create();
                 posconnection1.Open();
-                var posquery1 = string.Format(strQuery);
                 using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
                 poscommand1.ExecuteNonQuery();
                 posconnection1.Close();
@@ -509,6 +587,125 @@ namespace CodeAppsDataMigration.Migration
                 ReportProgress($"Updating mainsetting failed: {ex.Message}", 2);
             }
         }
+
+        public void fnBranchSettingUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
+        {
+            ReportProgress("Updating mainsetting in SQL Server...", 0);
+
+            string strQuery = @"select * from branchsetting where branchid="+nFromBranchId;
+
+            try
+            {
+                DataTable dtsql = new DataTable();
+                using var connection = SqlServerConnection.Create();
+                connection.Open();
+                var query = string.Format(strQuery);
+                using var command = new SqlCommand(query, connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                adapter.Fill(dtsql);
+                connection.Close();
+
+                //strQuery = @"select * from branchsetting where branchid="+nBranchId+ " and mainbranchid=";
+                //DataTable dtposgres = new DataTable();
+                //using var posconnection = PostgresConnection.Create();
+                //posconnection.Open();
+                //var posquery = string.Format(strQuery);
+                //using var poscommand = new SqlCommand(query, connection);
+                //adapter = new SqlDataAdapter(command);
+                //adapter.Fill(dtposgres);
+                //posconnection.Close();
+                string strUpdateQuery = "";
+                foreach (DataRow row in dtsql.Rows)
+                {
+                    string KeyValue = row["KeyValue"].ToString();
+                    string Value = row["Value"].ToString();
+                    switch (KeyValue)
+                    {
+                        case "AccountHeadUpperCase":
+                            strUpdateQuery += "\n Update branchsettings set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='AccountHeadUpperCase' and branchid='"+nBranchId+"' and mainbranchid='"+nMainBranchId+"';";
+                            break;
+                        case "AgeRange1":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='AgeRange1' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "AgeRange2":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='AgeRange2' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "AgeRange3":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='AgeRange3' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "AgeRange4":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='AgeRange4' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "AgeRange5":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='AgeRange5' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "AgeRange6":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='AgeRange6' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "AmtPerPoint":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='AmtPerPoint' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "BarCodeBoxVisibleInSales":
+                            strUpdateQuery += "\n Update branchsettings set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='BarCodeBoxVisibleInSales' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "BillPrintSaveOrder":
+                            strUpdateQuery += "\n Update branchsettings set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='BillPrintSaveOrder' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "CancelledBillRemove":
+                            strUpdateQuery += "\n Update branchsettings set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='CancelledBillRemove' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "BillPost":
+                            strUpdateQuery += "\n Update branchsettings set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='BillPost' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "DcAccountsPost":
+                            strUpdateQuery += "\n Update branchsettings set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='DeliveryOutAccountsPost' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "ExpiryDebitNoteItemFromExpiryReceive":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='ExpiryDebitNoteItemFromExpiryReceive' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "GodownTransferNextNo":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='GodownTransferBillNo' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "GodownReturnNextNo":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='GodownTransferReturnNo' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "JobCardNo":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='JobCardNo' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "PointSystem":
+                            strUpdateQuery += "\n Update branchsettings set settingvalue= '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='PointSystem' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "PointValue":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='PointValue' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "SalesmanFixedInSales":
+                            strUpdateQuery += "\n Update branchsettings set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='SalesmanFixedInSales' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "ExpiryDebitNoteSameItemPrintOneLine":
+                            strUpdateQuery += "\n Update branchsettings set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='ExpiryDebitNoteSameItemPrintOneLine' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        case "TemporaryPurchaseNo":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='TemporaryPurchaseNo' and branchid='" + nBranchId + "' and mainbranchid='" + nMainBranchId + "';";
+                            break;
+                        
+                    }
+
+                }
+
+                using var posconnection1 = PostgresConnection.Create();
+                posconnection1.Open();
+                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                poscommand1.ExecuteNonQuery();
+                posconnection1.Close();
+
+                ReportProgress("Updating branchsetting successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating branchsetting failed: {ex.Message}", 2);
+            }
+        }
+
     }
 
 }

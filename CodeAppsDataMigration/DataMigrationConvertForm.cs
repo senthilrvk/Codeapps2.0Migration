@@ -163,6 +163,7 @@ namespace CodeAppsDataMigration
                     runner.RunAll(nMainBranchId, nBranchId, nFromBranchId);
                     runner.UpdatePrimaryKeyColumns(nMainBranchId, nBranchId);
                     runner.fnMainSettingUpdate(nMainBranchId);
+                    runner.fnBranchSettingUpdate(nMainBranchId, nBranchId, nFromBranchId);
                 });
 
                 progressBar.Value = 100;
