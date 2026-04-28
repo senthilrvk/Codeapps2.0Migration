@@ -164,6 +164,7 @@ namespace CodeAppsDataMigration
                     runner.UpdatePrimaryKeyColumns(nMainBranchId, nBranchId);
                     runner.fnMainSettingUpdate(nMainBranchId);
                     runner.fnBranchSettingUpdate(nMainBranchId, nBranchId, nFromBranchId);
+                    runner.fnVouchePrefixUpdate(nMainBranchId,nBranchId,nFromBranchId);
                 });
 
                 progressBar.Value = 100;

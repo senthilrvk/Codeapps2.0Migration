@@ -576,7 +576,7 @@ namespace CodeAppsDataMigration.Migration
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint")
                 },
-                 condition="where   branchid ="+nFromBranchId.ToString()        
+                 condition="where   branchid ="+nFromBranchId.ToString()
                 ,
                Constants = new Dictionary<string, object>
                {
@@ -2007,33 +2007,33 @@ namespace CodeAppsDataMigration.Migration
               SqlTable = "ExpiryReturn",
               PgTable  = "expiryreturnmain"+nMainBranchId.ToString(),
               Columns = new[]
-              {               
+              {
                     ("ExpiryRetSlNo", "expiryreturnno", "bigint"),
                     ("ExpiryRetDate", "expiryreturndate", "date"),
                     ("Expiry_Id", "billserid", "bigint"),
                     ("Expiry_DisPers", "dispers", "numeric"),
                     ("Expiry_DisAmt", "disamt", "numeric"),
-                    ("AcId", "acid", "bigint"),                    
+                    ("AcId", "acid", "bigint"),
                     ("SalesExeId", "salesexeid", "bigint"),
-                    ("Expiry_PayTerms", "payterms", "text"),                   
-                    ("Expiry_OtherCharge", "othercharge", "numeric"),                   
+                    ("Expiry_PayTerms", "payterms", "text"),
+                    ("Expiry_OtherCharge", "othercharge", "numeric"),
                     ("Expiry_DTotal", "dtotal", "numeric"),
-                    ("Expiry_ATotal", "atotal", "numeric"),                   
+                    ("Expiry_ATotal", "atotal", "numeric"),
                     ("Expiry_ROF", "rof", "numeric"),
                     ("Expiry_Total", "total", "numeric"),
-                    ("Expiry_Cancel", "expirycancel", "text"),                   
-                    ("StaffId", "staffid", "bigint"),                    
+                    ("Expiry_Cancel", "expirycancel", "text"),
+                    ("StaffId", "staffid", "bigint"),
                     ("VType_SlNo", "vprefixid", "integer"),
                     ("Trans_VoucherNo", "voucherno", "bigint"),
-                    ("SalesVoucherUniqueId", "uniquevoucherid", "bigint"),                   
+                    ("SalesVoucherUniqueId", "uniquevoucherid", "bigint"),
                     ("GodownId", "godownid", "numeric"),
-                    ("Expiry_GstNo", "gstinno", "text"),                    
+                    ("Expiry_GstNo", "gstinno", "text"),
                     ("branchid", "branchid", "integer"),
                     ("mainbranchid", "mainbranchid", "bigint")
               },
               Constants = new Dictionary<string, object>
               {
-               
+
 
                  {"custname", ""},
                     {"doctid", "0"},
@@ -2101,29 +2101,29 @@ namespace CodeAppsDataMigration.Migration
              {
                     ("ExpiryRetSlNo", "expiryreturnno", "bigint"),
                     ("Expiry_Id", "billserid", "bigint"),
-                    ("Issue_SlNo", "issueno", "bigint"),                   
+                    ("Issue_SlNo", "issueno", "bigint"),
                     ("Issue_BillDate", "issuedate", "date"),
                     ("ExpirySub_Batch", "batch", "text"),
                     ("ExpirySub_ExpDate", "expdate", "date"),
                     ("ExpirySub_OriginalRate", "originalrate", "numeric"),
-                    ("ExpirySub_SelRate", "selrate", "numeric"),                  
-                    ("ExpirySub_Mrp", "mrp", "numeric"),                    
+                    ("ExpirySub_SelRate", "selrate", "numeric"),
+                    ("ExpirySub_Mrp", "mrp", "numeric"),
                     ("ExpirySub_Qty", "qty", "numeric"),
                     ("ExpirySub_FreeQty", "freqty", "numeric"),
                     ("ExpirySub_TaxPers", "taxpers", "numeric"),
                     ("ExpirySub_TaxAmt", "taxamt", "numeric"),
                     ("ExpirySub_PdodDis", "itemdispers", "numeric"),
-                    ("ExpirySub_Amount", "amount", "numeric"),                   
+                    ("ExpirySub_Amount", "amount", "numeric"),
                     ("ProductId", "productid", "bigint"),
-                    ("Store_BatchSlNo", "batchslno", "bigint"),                    
-                    ("ExpirySub_ActualRate", "actualrate", "numeric"),                    
+                    ("Store_BatchSlNo", "batchslno", "bigint"),
+                    ("ExpirySub_ActualRate", "actualrate", "numeric"),
                     ("TaxId", "taxid", "integer"),
                     ("ExpirySub_ProdDisAmt", "itemdisamt", "numeric"),
                     ("ExpirySub_SpecialDisPers", "schmpers", "numeric"),
-                    ("ExpirySub_SpecialDisAmt", "schmamt", "numeric"),                   
-                    ("ExpirySub_Pack", "pack", "integer"),                    
-                    ("ExpirySub_InclusiveSales", "inclusivesales", "text"),                    
-                    ("ExpirySub_PurRate", "purrate", "numeric"),                   
+                    ("ExpirySub_SpecialDisAmt", "schmamt", "numeric"),
+                    ("ExpirySub_Pack", "pack", "integer"),
+                    ("ExpirySub_InclusiveSales", "inclusivesales", "text"),
+                    ("ExpirySub_PurRate", "purrate", "numeric"),
                     ("ExpirySub_SGSTTaxPers", "sgsttaxpers", "numeric"),
                     ("ExpirySub_SGSTTaxAmount", "sgsttaxamount", "numeric"),
                     ("ExpirySub_SGSTAmount", "sgstamount", "numeric"),
@@ -2132,9 +2132,9 @@ namespace CodeAppsDataMigration.Migration
                     ("ExpirySub_CGSTAmount", "cgstamount", "numeric"),
                     ("ExpirySub_IGSTTaxPers", "igsttaxpers", "numeric"),
                     ("ExpirySub_IGSTTaxAmount", "igsttaxamount", "numeric"),
-                    ("ExpirySub_IGSTAmount", "igstamount", "numeric"),                    
+                    ("ExpirySub_IGSTAmount", "igstamount", "numeric"),
                     ("ExpirySub_CessPers", "cesspers", "numeric"),
-                    ("ExpirySub_CessAmt", "cessamt", "numeric"),  
+                    ("ExpirySub_CessAmt", "cessamt", "numeric"),
                     ("BillSerId", "packageuniqueno", "numeric"),
                     ("ExpirySub_ExtraCessPers", "extracesspers", "numeric"),
                     ("ExpirySub_ExtraCessAmt", "extracessamt", "numeric"),
@@ -2144,7 +2144,7 @@ namespace CodeAppsDataMigration.Migration
                     ("Receipt_Date", "receiptdate", "date"),
                     ("ExpirySub_DebitFlag", "debitflag", "text"),
                     ("ExpirySub_DebitQty", "debitqty", "numeric"),
-                    ("ExpirySub_Id","salesmanid", "0"),                    
+                    ("ExpirySub_Id","salesmanid", "0"),
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint")
              },
@@ -2174,7 +2174,7 @@ namespace CodeAppsDataMigration.Migration
                     {"amountbeforedis", "0"},
                     {"adddispers", "0"},
                     {"pricemenuid", "0"},
-                  
+
                     {"agentprice", "0"},
                     {"orgpurrate", "0"},
                     {"salesmanprice", "0"},
@@ -2205,7 +2205,66 @@ namespace CodeAppsDataMigration.Migration
              },
              condition="where   branchid ="+nFromBranchId.ToString()
           },
-     };
+           new TableMap
+           {
+             SqlTable = "EBillUserDetails",
+             PgTable  = "ebilluserdetails".ToString(),
+
+              Columns = new[]
+              {
+       
+                    ("EBill_ClientId", "clientid", "text"),
+                    ("EBill_ClientSecretId", "clientsecretid", "text"),                   
+                    ("EBill_UserName", "ebill_username", "text"),
+                    ("EBill_Pwd", "ebill_pwd", "text"),
+                    ("EBill_UserClientId", "userclientid", "text"),
+                    ("EBill_UserClientPwd", "userclientpwd", "text"),
+                    ("EBill_EType", "etype", "text"),
+                    ("EBill_EInvoiceUserName", "einvoiceusername", "text"),
+                    ("EBill_EInvoicePwd", "einvoicepwd", "text"),
+                    ("branchid", "branchid", "bigint"),
+                    ("mainbranchid", "mainbranchid", "bigint"),
+              },
+              Constants = new Dictionary<string, object>
+              {
+                  { "ipaddress", "" },
+                  { "sourcefrom", "" },
+                  { "tempid", 0 },
+              },
+              condition="where   branchid ="+nFromBranchId.ToString()
+           },
+           new TableMap
+           {
+             SqlTable = "EInvoiceDetails",
+             PgTable  =  "expiryreturndetails"+nMainBranchId.ToString(),
+
+              Columns = new[]
+              {
+                                    
+                   ("AckNo", "ackno", "text"),
+                   ("Irn", "irn", "text"),
+                   ("SignedInvoice", "signedinvoice", "text"),
+                   ("SignedQRCod", "signedqrcod", "text"),
+                   ("Status", "statusflag", "text"),
+                   ("EwbNo", "ewbno", "text"),
+                   ("EwbDt", "ewbdt", "date"),
+                   ("EwbValidTill", "ewbvalidtill", "date"),
+                   ("Remarks", "remarks", "text"),
+                   ("BillSerId", "billserid", "bigint"),
+                   ("BillNo", "billno", "bigint"),
+                   ("UniqueBillNo", "uniquebillno", "bigint"),
+                   ("FromType", "fromtype", "text"),
+                   ("AckDt", "ackdt", "date"),
+                   ("EInvoiceHoldFlag", "bholdflag", "boolean"),
+                   ("branchid", "branchid", "bigint"),
+                   ("mainbranchid", "mainbranchid", "bigint")
+              },
+              Constants = new Dictionary<string, object>
+              {                 
+              },
+              condition="where   branchid ="+nFromBranchId.ToString()
+           },
+        };
 
     }
 
