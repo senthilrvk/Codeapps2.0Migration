@@ -401,6 +401,22 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n and im.fromtype= 'SALES'  and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
                 stringBuilder.Add(strQuery);
 
+                //DeliveryOutMain
+                strQuery = $"update deliveryoutmain{nMainBranchId} dom set billserid =  bs.billserid from billseries bs where bs.tempid = dom.billserid";
+                strQuery += $"\n and bs.branchid = dom.branchid and bs.mainbranchid = dom.mainbranchid";
+                strQuery += $"\n and dom.branchid ={nBranchId}    and dom.mainbranchid ={nMainBranchId} and bs.billsersource='DELIVERYOUT'";
+                stringBuilder.Add(strQuery);
+
+
+                //DeliveryOutDetails
+                strQuery = $"update deliveryoutdetails{nMainBranchId} dos set billserid =  bs.billserid from billseries bs where bs.tempid = dos.billserid";
+                strQuery += $"\n and bs.branchid = dos.branchid and bs.mainbranchid = dos.mainbranchid";
+                strQuery += $"\n and dos.branchid ={nBranchId} and dos.mainbranchid ={nMainBranchId} and bs.billsersource='DELIVERYOUT'";
+                stringBuilder.Add(strQuery);
+                stringBuilder.Add($"UPDATE deliveryoutdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId} AND isub.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"update deliveryoutdetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} and mainbranchid = {nMainBranchId}");
+
+
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)
@@ -801,7 +817,7 @@ namespace CodeAppsDataMigration.Migration
         {
             ReportProgress("Updating BillSeries in SQL Server...", 0);
 
-            string strQuery = @"select * from branchsetting where branchid=" + nFromBranchId;
+            string strQuery = @"select * from billseries where branchid=" + nFromBranchId;
 
             try
             {
@@ -840,6 +856,127 @@ namespace CodeAppsDataMigration.Migration
                 posconnection1.Close();
 
                 ReportProgress("Updating BillSeries successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating failed: {ex.Message}", 2);
+            }
+        }
+        public void fnBranchUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
+        {
+            ReportProgress("Updating Branch in SQL Server...", 0);
+            string strQuery = @"select * from branch where branchid=" + nFromBranchId;
+            try
+            {
+                DataTable dtsql = new DataTable();
+                using var connection = SqlServerConnection.Create();
+                connection.Open();
+                using var command = new SqlCommand(strQuery, connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                adapter.Fill(dtsql);
+                connection.Close();
+
+                string strUpdateQuery = "";
+                foreach (DataRow row in dtsql.Rows)
+                {
+                    string BranchCode = row["BranchCode"].ToString().Replace("'", "''");
+                    string BranchName = row["BranchName"].ToString().Replace("'", "''");
+                    string BranchAdr1 = row["BranchAdr1"].ToString().Replace("'", "''");
+                    string BranchAdr2 = row["BranchAdr2"].ToString().Replace("'", "''");
+                    string BranchAdr3 = row["BranchAdr3"].ToString().Replace("'", "''");
+                    string BranchFtr1 = row["BranchFtr1"].ToString().Replace("'", "''");
+                    string BranchFtr2 = row["BranchFtr2"].ToString().Replace("'", "''");
+                    string BranchFtr3 = row["BranchFtr3"].ToString().Replace("'", "''");
+                    string Phone = row["Phone"].ToString().Replace("'", "''");
+                    string Mail = row["Mail"].ToString().Replace("'", "''");
+                    string Active = Convert.ToBoolean(row["Active"]) ? "true" : "false";
+                    string TinNo1 = row["TinNo1"].ToString().Replace("'", "''");
+                    string TinNo2 = row["TinNo2"].ToString().Replace("'", "''");
+                    string DLNo1 = row["DLNo1"].ToString().Replace("'", "''");
+                    string DLNo2 = row["DLNo2"].ToString().Replace("'", "''");
+                    string MobileNo = row["MobileNo"].ToString().Replace("'", "''");
+                    string MailId = row["MailId"].ToString().Replace("'", "''");
+                    string MailPwd = row["MailPwd"].ToString().Replace("'", "''");
+                    string BarCodeName = row["BarCodeName"].ToString().Replace("'", "''");
+                    string BarCodeHeaderName = row["BarCodeHeaderName"].ToString().Replace("'", "''");
+                    string ComImage = row["ComImage"].ToString().Replace("'", "''");
+                    string Branch_StateCode = row["Branch_StateCode"].ToString().Replace("'", "''");
+                    string Branch_StateName = row["Branch_StateName"].ToString().Replace("'", "''");
+                    string Branch_BankName = row["Branch_BankName"].ToString().Replace("'", "''");
+                    string Branch_BankAddr1 = row["Branch_BankAddr1"].ToString().Replace("'", "''");
+                    string Branch_BankAddr2 = row["Branch_BankAddr2"].ToString().Replace("'", "''");
+                    string Branch_BankAcNo = row["Branch_BankAcNo"].ToString().Replace("'", "''");
+                    string Branch_IFSCCODE = row["Branch_IFSCCODE"].ToString().Replace("'", "''");
+                    string Branch_PanCardNo = row["Branch_PanCardNo"].ToString().Replace("'", "''");
+                    string Branch_QRCode = row["Branch_QRCode"].ToString().Replace("'", "''");
+                    string Branch_Declaration1 = row["Branch_Declaration1"].ToString().Replace("'", "''");
+                    string Branch_Declaration2 = row["Branch_Declaration2"].ToString().Replace("'", "''");
+                    string Branch_Declaration3 = row["Branch_Declaration3"].ToString().Replace("'", "''");
+                    string Branch_Declaration4 = row["Branch_Declaration4"].ToString().Replace("'", "''");
+                    string Branch_BankHolderName = row["Branch_BankHolderName"].ToString().Replace("'", "''");
+                    string Branch_OrderUserName = row["Branch_OrderUserName"].ToString().Replace("'", "''");
+                    string Branch_OrderPwd = row["Branch_OrderPwd"].ToString().Replace("'", "''");
+                    string Branch_WhatsAppNo = row["Branch_WhatsAppNo"].ToString().Replace("'", "''");
+                    string Branch_WhatsAppTokenNo = row["Branch_WhatsAppTokenNo"].ToString().Replace("'", "''");
+                    string Branch_WhatsAppUrl = row["Branch_WhatsAppUrl"].ToString().Replace("'", "''");
+                    string Branch_SecurePwd = row["Branch_SecurePwd"].ToString().Replace("'", "''");
+                    string Branch_BarCodeDesign = row["Branch_BarCodeDesign"].ToString().Replace("'", "''");
+                    string AcId = row["AcId"].ToString();
+
+                    strUpdateQuery += "\n UPDATE branch SET " +
+                        "branchcode = '" + BranchCode + "', " +
+                        "branchname = '" + BranchName + "', " +
+                        "branchadr1 = '" + BranchAdr1 + "', " +
+                        "branchadr2 = '" + BranchAdr2 + "', " +
+                        "branchadr3 = '" + BranchAdr3 + "', " +
+                        "branchftr1 = '" + BranchFtr1 + "', " +
+                        "branchftr2 = '" + BranchFtr2 + "', " +
+                        "branchftr3 = '" + BranchFtr3 + "', " +
+                        "branchphone = '" + Phone + "', " +
+                        "branchmail = '" + Mail + "', " +
+                        "branchactive = " + Active + ", " +
+                        "branchtinno1 = '" + TinNo1 + "', " +
+                        "branchtinno2 = '" + TinNo2 + "', " +
+                        "branchdlno1 = '" + DLNo1 + "', " +
+                        "branchdlno2 = '" + DLNo2 + "', " +
+                        "branchmobileno = '" + MobileNo + "', " +
+                        "branchmailid = '" + MailId + "', " +
+                        "branchmailpwd = '" + MailPwd + "', " +
+                        "branchbarcodename = '" + BarCodeName + "', " +
+                        "barcodeheadername = '" + BarCodeHeaderName + "', " +
+                        "branchcomimage = '" + ComImage + "', " +
+                        "branchstatecode = " + (string.IsNullOrEmpty(Branch_StateCode) ? 0 : Branch_StateCode) + ", " +
+                        "branchstatename = '" + Branch_StateName + "', " +
+                        "branchbankname = '" + Branch_BankName + "', " +
+                        "branchbankaddr1 = '" + Branch_BankAddr1 + "', " +
+                        "branchbankaddr2 = '" + Branch_BankAddr2 + "', " +
+                        "branchbankacno = '" + Branch_BankAcNo + "', " +
+                        "branchifsccode = '" + Branch_IFSCCODE + "', " +
+                        "branchpancardno = '" + Branch_PanCardNo + "', " +
+                        "branchqrcode = '" + Branch_QRCode + "', " +
+                        "branchdeclaration1 = '" + Branch_Declaration1 + "', " +
+                        "branchdeclaration2 = '" + Branch_Declaration2 + "', " +
+                        "branchdeclaration3 = '" + Branch_Declaration3 + "', " +
+                        "branchdeclaration4 = '" + Branch_Declaration4 + "', " +
+                        "branchbankholdername = '" + Branch_BankHolderName + "', " +
+                        "branchorderusername = '" + Branch_OrderUserName + "', " +
+                        "branchorderpwd = '" + Branch_OrderPwd + "', " +
+                        "branchwhatsappno = '" + Branch_WhatsAppNo + "', " +
+                        "branchwhatsapptokenno = '" + Branch_WhatsAppTokenNo + "', " +
+                        "branchwhatsappurl = '" + Branch_WhatsAppUrl + "', " +
+                        "branchsecurepwd = '" + Branch_SecurePwd + "', " +
+                        "branchbarcodedesign = '" + Branch_BarCodeDesign + "', " +
+                        "acid = " + (string.IsNullOrEmpty(AcId) ? 0 : AcId) +
+                        " WHERE mainbranchid = " + nMainBranchId +
+                        " AND branchid = " + nBranchId + ";";
+                }
+
+                using var posconnection1 = PostgresConnection.Create();
+                posconnection1.Open();
+                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                poscommand1.ExecuteNonQuery();
+                posconnection1.Close();
+                ReportProgress("Updating Branch successfully", 2);
             }
             catch (Exception ex)
             {

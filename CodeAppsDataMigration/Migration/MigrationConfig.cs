@@ -2267,7 +2267,7 @@ namespace CodeAppsDataMigration.Migration
            new TableMap
            {
              SqlTable =  "DeliveryNoteDetails",
-             PgTable  =  "deliveryoutmain"+nMainBranchId.ToString(),
+             PgTable  =  "deliveryoutdetails"+nMainBranchId.ToString(),
 
               Columns = new[]
               {
