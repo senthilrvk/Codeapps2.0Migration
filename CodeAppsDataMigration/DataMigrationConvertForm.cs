@@ -3,6 +3,7 @@ using CodeAppsDataMigration.Migration;
 using Microsoft.Data.SqlClient;
 using Npgsql;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -11,9 +12,8 @@ namespace CodeAppsDataMigration
 {
     public partial class DataMigrationConvertForm : Form
     {
-        int nFromBranchId = 0;
-        int nBranchId = 0, nMainBranchId = 0;
         private DataTable _pgBranchAll = new DataTable();
+        private DataTable _sqlBranches = new DataTable();
 
         public DataMigrationConvertForm()
         {
@@ -36,17 +36,27 @@ namespace CodeAppsDataMigration
                 using var cmd = new SqlCommand("SELECT * FROM branch", conn);
                 using var reader = cmd.ExecuteReader();
 
-                var dt = new DataTable();
-                dt.Load(reader);
+                _sqlBranches = new DataTable();
+                _sqlBranches.Load(reader);
 
-                dt.Columns.Add("DisplayText", typeof(string), "BranchName + ' [' + BranchId + ']'");
-                cmbSqlBranch.DataSource = dt;
-                cmbSqlBranch.DisplayMember = "DisplayText";
-                cmbSqlBranch.ValueMember = "BranchId";
+                _sqlBranches.Columns.Add("DisplayText", typeof(string), "BranchName + ' [' + BranchId + ']'");
+                PopulateGridSqlBranches();
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Failed to load SQL Server branches: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void PopulateGridSqlBranches()
+        {
+            grdBranchMap.Rows.Clear();
+            foreach (DataRow row in _sqlBranches.Rows)
+            {
+                int rowIdx = grdBranchMap.Rows.Add();
+                var gridRow = grdBranchMap.Rows[rowIdx];
+                gridRow.Cells[colSqlBranch.Name].Value = row["DisplayText"];
+                gridRow.Tag = Convert.ToInt32(row["BranchId"]);
             }
         }
 
@@ -115,31 +125,49 @@ namespace CodeAppsDataMigration
                 }
             }
 
-            cmbPgBranch.DataSource = filtered;
-            cmbPgBranch.DisplayMember = "DisplayText";
-            cmbPgBranch.ValueMember = "branchid";
+            colPgBranch.DataSource = filtered;
+            colPgBranch.DisplayMember = "DisplayText";
+            colPgBranch.ValueMember = "branchid";
+
+            foreach (DataGridViewRow gridRow in grdBranchMap.Rows)
+            {
+                gridRow.Cells[colPgBranch.Name].Value = null;
+            }
         }
 
         private async void btnDataTransfer_Click(object sender, EventArgs e)
         {
-            if (cmbSqlBranch.SelectedValue == null || cmbPgMainBranch.SelectedValue == null || cmbPgBranch.SelectedValue == null)
+            if (cmbPgMainBranch.SelectedValue == null)
             {
-                MessageBox.Show("Please select all branches.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Please select a PostgreSQL main branch.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
+            var mappings = new List<(int FromBranchId, int ToBranchId, string Display)>();
+            foreach (DataGridViewRow gridRow in grdBranchMap.Rows)
+            {
+                var pgVal = gridRow.Cells[colPgBranch.Name].Value;
+                if (pgVal == null) continue;
+
+                int fromId = (int)gridRow.Tag;
+                int toId = Convert.ToInt32(pgVal);
+                string display = Convert.ToString(gridRow.Cells[colSqlBranch.Name].Value);
+                mappings.Add((fromId, toId, display));
+            }
+
+            if (mappings.Count == 0)
+            {
+                MessageBox.Show("Please map at least one SQL branch to a PostgreSQL branch.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int nMainBranchId = Convert.ToInt32(cmbPgMainBranch.SelectedValue);
             string sql = SqlServerConnection.GetConnectionString();
             string pg = PostgresConnection.GetConnectionString();
 
-            nFromBranchId = Convert.ToInt32(cmbSqlBranch.SelectedValue);
-            nMainBranchId = Convert.ToInt32(cmbPgMainBranch.SelectedValue);
-            nBranchId = Convert.ToInt32(cmbPgBranch.SelectedValue);
-
-            // Disable controls during migration
             btnDataTransfer.Enabled = false;
-            cmbSqlBranch.Enabled = false;
             cmbPgMainBranch.Enabled = false;
-            cmbPgBranch.Enabled = false;
+            grdBranchMap.Enabled = false;
             progressBar.Value = 0;
             lblStatus.Text = "Starting migration...";
 
@@ -160,11 +188,17 @@ namespace CodeAppsDataMigration
                     });
 
                     runner.FromDbTaxUpdate();
-                    runner.RunAll(nMainBranchId, nBranchId, nFromBranchId);
-                    runner.UpdatePrimaryKeyColumns(nMainBranchId, nBranchId);
+
+                    foreach (var map in mappings)
+                    {
+                        ((IProgress<(string, int)>)progress).Report(($"Migrating {map.Display}...", 0));
+                        runner.RunAll(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                        runner.UpdatePrimaryKeyColumns(nMainBranchId, map.ToBranchId);
+                        runner.fnBranchSettingUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                        runner.fnVouchePrefixUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                    }
+
                     runner.fnMainSettingUpdate(nMainBranchId);
-                    runner.fnBranchSettingUpdate(nMainBranchId, nBranchId, nFromBranchId);
-                    runner.fnVouchePrefixUpdate(nMainBranchId,nBranchId,nFromBranchId);
                 });
 
                 progressBar.Value = 100;
@@ -178,11 +212,9 @@ namespace CodeAppsDataMigration
             }
             finally
             {
-                // Re-enable controls
                 btnDataTransfer.Enabled = true;
-                cmbSqlBranch.Enabled = true;
                 cmbPgMainBranch.Enabled = true;
-                cmbPgBranch.Enabled = true;
+                grdBranchMap.Enabled = true;
             }
         }
     }

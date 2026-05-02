@@ -2464,6 +2464,144 @@ namespace CodeAppsDataMigration.Migration
               },
               condition="where   branchid ="+nFromBranchId.ToString()
            },
+           new TableMap
+           {
+             SqlTable = "GodownTransfer",
+             PgTable  =  "godowntransfermain"+nMainBranchId.ToString(),
+
+              Columns = new[]
+              {
+
+                   
+                    ("GodownTransferNo","godowntransferno","bigint"),
+                    ("TransDate","godowntransferdate","date"),
+                    ("StaffId","staffid","bigint"),
+                    ("TransTime","transtime","text"),
+                    ("TransAmt","transamt","numeric(12,3)"),
+                    ("GodownId","godownid","integer"),                    
+                    ("TransferVoucherNo","voucherno","bigint"),
+                    ("TransferUniqueVoucherId","uniquevoucherid","bigint"),
+                    ("AcId","acid","bigint"),
+                    ("GodownTransfer_Cancel","billcancel","text"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+              },
+              Constants = new Dictionary<string, object>
+              {
+                  { "vprefixid",0 },
+              },
+              condition="where   branchid ="+nFromBranchId.ToString()
+           },
+           new TableMap
+           {
+             SqlTable = "GodownTransferDetails",
+             PgTable  =  "godowntransferdetails"+nMainBranchId.ToString(),
+
+              Columns = new[]
+              {
+
+                    ("TransId","godowntransferid","bigint"),
+                    ("ProductId","productid","bigint"),
+                    ("Batch","batch","text"),
+                    ("ExpDate","expdate","date"),
+                    ("TransQty","transqty","numeric(12,3)"),
+                    ("TransRate","transrate","numeric(12,3)"),
+                    ("TransAmt","transamt","numeric(12,3)"),
+                    ("BatchSlno","batchslno","bigint"),
+                    ("Pack","pack","integer"),
+                    ("TransTaxPers","taxpers","numeric(10,3)"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+              },
+              Constants = new Dictionary<string, object>
+              {
+
+                  { "godowntransferno",0},
+              },
+              condition="where   branchid ="+nFromBranchId.ToString()
+           },
+            new TableMap
+            {
+                 SqlTable = "StockTransfer",
+                 PgTable  =  "stocktransfermain"+nMainBranchId.ToString(),
+
+                  Columns = new[]
+                  {
+                        ("ToBranch","billserid","bigint"),
+                        ("TransDate","transdate","date"),
+                        ("StaffId","staffid","bigint"),
+                        ("TransTime","transtime","text"),
+                        ("TransAmt","transamt","numeric(18,3)"),
+                        ("branchid","frombranch","bigint"),
+                        ("TransferVoucherNo","voucherno","bigint"),
+                        ("TransferUniqueVoucherId","uniquevoucherid","bigint"),
+                        ("AcId","acid","bigint"),
+                        ("StockTransferNo","stocktransferno","bigint"),
+                        ("TransferPDVoucherNo","pdvoucherno","bigint"),
+                        ("TransferPDUniqueVoucherId","pduniquevoucherid","bigint"),
+                        ("FromAcId","fromacid","bigint"),
+                        ("StockTransfer_VerficationStaffId","verficationstaffid","bigint"),
+                        ("StockTransfer_VerficationDate","verficationdate","date"),
+                        ("StockTransfer_BilledFlag","billedflag","text"),
+                        ("StockTransfer_Cancel","bcancel","boolean"),
+                        ("StockTransfer_PriceMenuId","pricemenuid","integer"),
+                        ("mainbranchid","mainbranchid","bigint"),
+                  },
+                  Constants = new Dictionary<string, object>
+                  {
+                      { "tobranch",0 },
+                  },
+                condition="where   branchid ="+nFromBranchId.ToString()
+            },
+             new TableMap
+             {
+                 SqlTable = "StockTransferDetails",
+                 PgTable  =  "stocktransfermain"+nMainBranchId.ToString(),
+
+                  Columns = new[]
+                  {
+                        ("TransId","transid","bigint"),
+                        ("ProductId","productid","bigint"),
+                        ("TransQty","transqty","numeric(18,3)"),
+                        ("TransRate","transrate","numeric(18,3)"),
+                        ("[TransAmt","transamt","numeric(18,3)"),
+                        ("BatchSlno","batchslno","bigint"),
+                        ("branchid","branchid","bigint"),
+                        ("[Pack","pack","integer"),
+                        ("TransTaxPers","taxpers","numeric(18,3)"),
+                        ("tockTransfer_PurRate","purrate","numeric(18,3)"),
+                        ("StockTransfer_SelRate","selrate","numeric(18,3)"),
+                        ("StockTransfer_Mrp","mrp","numeric(18,3)"),
+                        ("StockTransfer_SpRate1","sprate1","numeric(18,3)"),
+                        ("StockTransfer_SpRate2","sprate2","numeric(18,3)"),
+                        ("StockTransfer_SpRate3","sprate3","numeric(18,3)"),
+                        ("[StockTransfer_SpRate4","sprate4","numeric(18,3)"),
+                        ("StockTransfer_SpRate5","sprate5","numeric(18,3)"),
+                        ("StockTransfer_WhRate","whrate","numeric(18,3)"),
+                        ("StockTransfer_LandingCost","landingcost","numeric(18,3)"),
+                        ("StockTransfer_FromLandingCost","fromlandingcost","numeric(18,3)"),
+                        ("StockTransfer_FromPurRate","frompurrate","numeric(18,3)"),
+                        ("StockTransfer_VerficationFlag","verficationflag","text"),
+                        ("StockTransfer_TaxId","taxid","numeric(18,3)"),
+                        ("StockTransfer_TaxAmt","taxamt","numeric(18,3)"),
+                        ("StockTransfer_SGSTTaxPers","sgsttaxpers","numeric(18,3)"),
+                        ("StockTransfer_SGSTTaxAmt","sgsttaxamt","numeric(18,3)"),
+                        ("StockTransfer_CGSTTaxPers","cgsttaxpers","numeric(18,3)"),
+                        ("StockTransfer_CGSTTaxAmt","cgsttaxamt","numeric(18,3)"),
+                        ("StockTransfer_IGSTTaxPers","igsttaxpers","numeric(18,3)"),
+                        ("StockTransfer_IGSTTaxAmt","igsttaxamt","numeric(18,3)"),
+                        ("StockTransfer_CessPers","cesspers","numeric(18,3)"),
+                        ("StockTransfer_CessAmt","cessamt","numeric(18,3)"),
+                        ("StockTransfer_Batch","batch","text"),
+                        ("StockTransfer_ToBatchNo","tobatchno","bigint"),
+                        ("mainbranchid","mainbranchid","bigint"),
+                  },
+                  Constants = new Dictionary<string, object>
+                  {
+                      
+                  },
+                  condition="where   branchid ="+nFromBranchId.ToString()
+             },
         };
 
     }
