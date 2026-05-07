@@ -1006,7 +1006,6 @@ namespace CodeAppsDataMigration.Migration
               ("ReceiptSub_NetAmtPerProd","netamtperprod","numeric"),
               ("ReceiptSub_Amount","amount","numeric"),
               ("ReceiptSub_BarCode","actpurrate","numeric"),
-              ("ReceiptSub_BarCode","pcsactpurrate","numeric"),
               ("ReceiptSub_WholeSaleRate","whrate","numeric"),
               ("ReceiptSub_SpRate1","sprate1","numeric"),
               ("ReceiptSub_SpRate2","sprate2","numeric"),
@@ -1068,7 +1067,8 @@ namespace CodeAppsDataMigration.Migration
                   {"pcssprate4","0"},
                   {"pcssprate5","0"},
                   {"purratewithtax","0"},
-                  {"receiptid","0"}
+                  {"receiptid","0"},
+                 { "pcsactpurrate","0" },
              },
              condition="where   branchid ="+nFromBranchId.ToString()
           }
@@ -1098,7 +1098,6 @@ namespace CodeAppsDataMigration.Migration
                  ("Store_ReceiptQty","receiptqty","numeric"),
                  ("Store_ReceiptFreeQty","receiptfree","numeric"),
                  ("Store_BarCode","actpurrate","numeric"),
-                 ("Store_BarCode","pcsactpurrate","numeric"),
                  ("Store_DisributRate","whrate","numeric"),
                  ("SpRate1","sprate1","numeric"),
                  ("SpRate2","sprate2","numeric"),
@@ -1173,6 +1172,7 @@ namespace CodeAppsDataMigration.Migration
                  {"extracessamt","0"},
                 {"actratewithoutfre","0"},
                  {"hsnrateperunit","0"},
+                { "pcsactpurrate","0" },
             },
                  condition="where   branchid ="+nFromBranchId.ToString()
             },
@@ -1240,7 +1240,7 @@ namespace CodeAppsDataMigration.Migration
             new TableMap
             {
               SqlTable = "OpeningStock",
-              PgTable  = "openingstockdetails"+nMainBranchId.ToString(),
+              PgTable  = "openingstock"+nMainBranchId.ToString(),
               Columns = new[]
               {
                    ("OpeningStockNo","openingstockno","bigint"),
