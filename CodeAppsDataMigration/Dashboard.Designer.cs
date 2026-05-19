@@ -21,6 +21,7 @@ namespace CodeAppsDataMigration
             lblTitle = new Label();
             pnlMenu = new Panel();
             btnDataMigration = new Button();
+            btnExcelImport = new Button();
             btnBranchList = new Button();
             btnConnectionSettings = new Button();
             btnExit = new Button();
@@ -54,6 +55,7 @@ namespace CodeAppsDataMigration
             pnlMenu.Controls.Add(btnExit);
             pnlMenu.Controls.Add(btnConnectionSettings);
             pnlMenu.Controls.Add(btnBranchList);
+            pnlMenu.Controls.Add(btnExcelImport);
             pnlMenu.Controls.Add(btnDataMigration);
 
             // Data Migration button
@@ -69,6 +71,20 @@ namespace CodeAppsDataMigration
             btnDataMigration.Cursor = Cursors.Hand;
             btnDataMigration.Margin = new Padding(0, 0, 0, 5);
             btnDataMigration.Click += btnDataMigration_Click;
+
+            // Excel Import button
+            btnExcelImport.Text = "  Excel Import";
+            btnExcelImport.Dock = DockStyle.Top;
+            btnExcelImport.Size = new Size(200, 50);
+            btnExcelImport.FlatStyle = FlatStyle.Flat;
+            btnExcelImport.FlatAppearance.BorderSize = 0;
+            btnExcelImport.BackColor = Color.FromArgb(237, 137, 54);
+            btnExcelImport.ForeColor = Color.White;
+            btnExcelImport.Font = new Font("Segoe UI", 11F, FontStyle.Regular);
+            btnExcelImport.TextAlign = ContentAlignment.MiddleLeft;
+            btnExcelImport.Cursor = Cursors.Hand;
+            btnExcelImport.Margin = new Padding(0, 0, 0, 5);
+            btnExcelImport.Click += btnExcelImport_Click;
 
             // Branch List button
             btnBranchList.Text = "  Branch List";
@@ -128,6 +144,7 @@ namespace CodeAppsDataMigration
             // Description label
             lblDescription.Text = "Select an option from the menu to get started.\n\n" +
                 "  Data Migration  -  Transfer data from SQL Server to PostgreSQL\n\n" +
+                "  Excel Import  -  Import Excel data into PostgreSQL\n\n" +
                 "  Branch List  -  View SQL Server branches and create in PostgreSQL\n\n" +
                 "  Connection Settings  -  Configure database connection strings";
             lblDescription.Font = new Font("Segoe UI", 11F);
@@ -162,6 +179,7 @@ namespace CodeAppsDataMigration
         private Label lblTitle;
         private Panel pnlMenu;
         private Button btnDataMigration;
+        private Button btnExcelImport;
         private Button btnBranchList;
         private Button btnConnectionSettings;
         private Button btnExit;

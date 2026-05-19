@@ -13,6 +13,12 @@ namespace CodeAppsDataMigration
             form.ShowDialog(this);
         }
 
+        private void btnExcelImport_Click(object sender, EventArgs e)
+        {
+            using var form = new ExcelImportForm();
+            form.ShowDialog(this);
+        }
+
         private void btnBranchList_Click(object sender, EventArgs e)
         {
             using var form = new BranchListForm();
