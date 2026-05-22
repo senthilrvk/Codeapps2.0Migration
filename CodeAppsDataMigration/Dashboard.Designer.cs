@@ -24,6 +24,7 @@ namespace CodeAppsDataMigration
             btnExcelImport = new Button();
             btnBranchList = new Button();
             btnConnectionSettings = new Button();
+            btnAesEncryption = new Button();
             btnExit = new Button();
             pnlContent = new Panel();
             lblWelcome = new Label();
@@ -53,6 +54,7 @@ namespace CodeAppsDataMigration
             pnlMenu.Size = new Size(220, 0);
             pnlMenu.Padding = new Padding(10, 20, 10, 10);
             pnlMenu.Controls.Add(btnExit);
+            pnlMenu.Controls.Add(btnAesEncryption);
             pnlMenu.Controls.Add(btnConnectionSettings);
             pnlMenu.Controls.Add(btnBranchList);
             pnlMenu.Controls.Add(btnExcelImport);
@@ -114,6 +116,20 @@ namespace CodeAppsDataMigration
             btnConnectionSettings.Margin = new Padding(0, 0, 0, 5);
             btnConnectionSettings.Click += btnConnectionSettings_Click;
 
+            // AES Encryption button
+            btnAesEncryption.Text = "  AES Encryption";
+            btnAesEncryption.Dock = DockStyle.Top;
+            btnAesEncryption.Size = new Size(200, 50);
+            btnAesEncryption.FlatStyle = FlatStyle.Flat;
+            btnAesEncryption.FlatAppearance.BorderSize = 0;
+            btnAesEncryption.BackColor = Color.FromArgb(56, 178, 172);
+            btnAesEncryption.ForeColor = Color.White;
+            btnAesEncryption.Font = new Font("Segoe UI", 11F, FontStyle.Regular);
+            btnAesEncryption.TextAlign = ContentAlignment.MiddleLeft;
+            btnAesEncryption.Cursor = Cursors.Hand;
+            btnAesEncryption.Margin = new Padding(0, 0, 0, 5);
+            btnAesEncryption.Click += btnAesEncryption_Click;
+
             // Exit button
             btnExit.Text = "  Exit";
             btnExit.Dock = DockStyle.Top;
@@ -146,7 +162,8 @@ namespace CodeAppsDataMigration
                 "  Data Migration  -  Transfer data from SQL Server to PostgreSQL\n\n" +
                 "  Excel Import  -  Import Excel data into PostgreSQL\n\n" +
                 "  Branch List  -  View SQL Server branches and create in PostgreSQL\n\n" +
-                "  Connection Settings  -  Configure database connection strings";
+                "  Connection Settings  -  Configure database connection strings\n\n" +
+                "  AES Encryption  -  Encrypt and decrypt text using AES-256";
             lblDescription.Font = new Font("Segoe UI", 11F);
             lblDescription.ForeColor = Color.FromArgb(113, 128, 150);
             lblDescription.AutoSize = true;
@@ -182,6 +199,7 @@ namespace CodeAppsDataMigration
         private Button btnExcelImport;
         private Button btnBranchList;
         private Button btnConnectionSettings;
+        private Button btnAesEncryption;
         private Button btnExit;
         private Panel pnlContent;
         private Label lblWelcome;
