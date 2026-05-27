@@ -283,7 +283,7 @@ namespace CodeAppsDataMigration.Migration
 
 
                 /// voucherdetails
-                stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.staffid AND rm.branchid = {nBranchId} and rm.mainbranch ={nMainBranchId}");
+                stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.staffid AND rm.branchid = {nBranchId} and rm.mainbranchid ={nMainBranchId}");
                 stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET repid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.repid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
 
                 stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");

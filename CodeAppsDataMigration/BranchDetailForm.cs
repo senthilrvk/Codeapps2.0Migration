@@ -582,6 +582,18 @@ namespace CodeAppsDataMigration
                         return;
                     }
 
+                    // 1a) Check the API's own success flag (HTTP 200 can still mean business failure).
+                    if (!IsApiResponseSuccess(mainBody, out var mainApiMsg))
+                    {
+                        WriteLogFile(combinedLog);
+                        MessageBox.Show(
+                            "Main Branch was NOT created.\n\n" +
+                            "API message: " + (string.IsNullOrWhiteSpace(mainApiMsg) ? "(no message)" : mainApiMsg) + "\n\n" +
+                            "Sub Branch was NOT created. See last_api_call.txt for full details.",
+                            "Not Created", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
                     // 2) Extract new mainbranchid from main response
                     long newMainBranchId = ExtractMainBranchId(mainBody);
                     combinedLog.AppendLine($"[INFO] Extracted mainbranchid from main response: {newMainBranchId}");
@@ -609,6 +621,16 @@ namespace CodeAppsDataMigration
                         return;
                     }
 
+                    if (!IsApiResponseSuccess(subBody, out var subApiMsg))
+                    {
+                        MessageBox.Show(
+                            $"Sub Branch was NOT created (Main {newMainBranchId} already created).\n\n" +
+                            "API message: " + (string.IsNullOrWhiteSpace(subApiMsg) ? "(no message)" : subApiMsg) + "\n\n" +
+                            "See last_api_call.txt for full details.",
+                            "Not Created", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
                     MessageBox.Show(
                         $"Both branches created successfully.\n\n" +
                         $"Main Branch ID: {newMainBranchId}\n\n" +
@@ -629,17 +651,26 @@ namespace CodeAppsDataMigration
                     AppendCallToLog(combinedLog, "Sub Branch", subUrl, subResp, subJson, subBody, subDebug);
                     WriteLogFile(combinedLog);
 
-                    if (subResp.IsSuccessStatusCode)
-                    {
-                        MessageBox.Show($"Sub Branch saved successfully!\n\nResponse: {subBody}",
-                            "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        DialogResult = DialogResult.OK;
-                        Close();
-                    }
-                    else
+                    if (!subResp.IsSuccessStatusCode)
                     {
                         ShowApiError("Sub Branch", subResp, subBody, subJson);
+                        return;
                     }
+
+                    if (!IsApiResponseSuccess(subBody, out var subOnlyApiMsg))
+                    {
+                        MessageBox.Show(
+                            "Sub Branch was NOT created.\n\n" +
+                            "API message: " + (string.IsNullOrWhiteSpace(subOnlyApiMsg) ? "(no message)" : subOnlyApiMsg) + "\n\n" +
+                            "See last_api_call.txt for full details.",
+                            "Not Created", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+
+                    MessageBox.Show($"Sub Branch saved successfully!\n\nResponse: {subBody}",
+                        "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult = DialogResult.OK;
+                    Close();
                 }
             }
             catch (Exception ex)
@@ -862,6 +893,48 @@ namespace CodeAppsDataMigration
                 $"---- Request sent ----\n{preview}\n\n" +
                 "Full request + response written to last_api_call.txt next to the exe.",
                 "API Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        // Treats the API body as failed when {"Flag": false} (or "flag": false) is present.
+        // Returns the API's Message text via apiMessage when available.
+        private static bool IsApiResponseSuccess(string responseBody, out string apiMessage)
+        {
+            apiMessage = string.Empty;
+            if (string.IsNullOrWhiteSpace(responseBody)) return true;
+
+            try
+            {
+                using var doc = JsonDocument.Parse(responseBody.Trim());
+                var root = doc.RootElement;
+                if (root.ValueKind != JsonValueKind.Object) return true;
+
+                foreach (var msgName in new[] { "Message", "message" })
+                {
+                    if (root.TryGetProperty(msgName, out var m) && m.ValueKind == JsonValueKind.String)
+                    {
+                        apiMessage = m.GetString() ?? string.Empty;
+                        break;
+                    }
+                }
+
+                foreach (var flagName in new[] { "Flag", "flag" })
+                {
+                    if (root.TryGetProperty(flagName, out var f))
+                    {
+                        if (f.ValueKind == JsonValueKind.False) return false;
+                        if (f.ValueKind == JsonValueKind.True) return true;
+                        if (f.ValueKind == JsonValueKind.String &&
+                            bool.TryParse(f.GetString(), out var fb))
+                            return fb;
+                    }
+                }
+            }
+            catch
+            {
+                // Non-JSON or unexpected shape — fall through and treat as success.
+            }
+
+            return true;
         }
 
         private static long ExtractMainBranchId(string responseBody)

@@ -1240,7 +1240,7 @@ namespace CodeAppsDataMigration.Migration
             new TableMap
             {
               SqlTable = "OpeningStock",
-              PgTable  = "openingstock"+nMainBranchId.ToString(),
+              PgTable  = "openingstockdetails"+nMainBranchId.ToString(),
               Columns = new[]
               {
                    ("OpeningStockNo","openingstockno","bigint"),
@@ -2551,7 +2551,7 @@ namespace CodeAppsDataMigration.Migration
                   {
                       { "tobranch",0 },
                   },
-                condition="where   branchid ="+nFromBranchId.ToString()
+                condition="where   frombranch ="+nFromBranchId.ToString()
             },
              new TableMap
              {
