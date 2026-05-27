@@ -549,6 +549,15 @@ namespace CodeAppsDataMigration
                 return;
             }
 
+            if (_textBoxes.TryGetValue("Phone", out var txtPhone) &&
+                string.IsNullOrWhiteSpace(txtPhone.Text))
+            {
+                MessageBox.Show("Please enter the phone number.",
+                    "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtPhone.Focus();
+                return;
+            }
+
             if (rbMainBranch.Checked && string.IsNullOrWhiteSpace(_subBranchUrl))
             {
                 MessageBox.Show(

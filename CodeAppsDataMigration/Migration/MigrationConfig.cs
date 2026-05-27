@@ -1,4 +1,7 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using DocumentFormat.OpenXml.VariantTypes;
+using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using static System.Net.Mime.MediaTypeNames;
@@ -186,7 +189,23 @@ namespace CodeAppsDataMigration.Migration
                 },
                  condition="where   branchid ="+nFromBranchId.ToString()
             },
+            new TableMap
+            {
+                SqlTable = "Chemical",
+                PgTable  = "chemical"+nMainBranchId.ToString(),
 
+                Columns = new[]
+                {
+                    ("ChemicalId", "tempid", "bigint"),
+                    ("Chemical1", "chemical1", "text"),
+                    ("Chemical2", "chemical2", "text"),
+                    ("Chemical3", "chemical3", "text"),
+                    ("Chemical_MapId", "chemical_mapid", "bigint"),
+                    ("branchid", "branchid", "bigint"),
+                    ("mainbranchid", "mainbranchid", "bigint")
+                },
+                 condition="where   branchid ="+nFromBranchId.ToString()
+            },
 
            new TableMap
            {
@@ -212,97 +231,28 @@ namespace CodeAppsDataMigration.Migration
                    {"printerid",0}
                }
            },
+           new TableMap
+            {
+                SqlTable = "CategoryHead",
+                PgTable  = "categoryhead",
 
-           //new TableMap
-           // {
-           //     SqlTable = "Branch",
-           //     PgTable  = "branch",
-
-           //     Columns = new[]
-           //     {
-           //         // ---------- Identity ----------
-           //         ("BranchId", "tempid", "bigint"),
-
-           //         // ---------- Basic ----------
-           //         ("BranchCode", "branchcode", "text"),
-           //         ("BranchName", "branchname", "text"),
-           //         ("BranchAdr1", "branchadr1", "text"),
-           //         ("BranchAdr2", "branchadr2", "text"),
-           //         ("BranchAdr3", "branchadr3", "text"),
-
-           //         ("BranchFtr1", "branchftr1", "text"),
-           //         ("BranchFtr2", "branchftr2", "text"),
-           //         ("BranchFtr3", "branchftr3", "text"),
-
-           //         // ---------- Contact ----------
-           //         ("Phone", "branchphone", "text"),
-           //         ("Mail", "branchmail", "text"),
-           //         ("Active", "branchactive", "boolean"),
-
-           //         ("MobileNo", "branchmobileno", "text"),
-           //         ("MailId", "branchmailid", "text"),
-           //         ("MailPwd", "branchmailpwd", "text"),
-
-           //         // ---------- Licenses ----------
-           //         ("TinNo1", "branchtinno1", "text"),
-           //         ("TinNo2", "branchtinno2", "text"),
-           //         ("DLNo1", "branchdlno1", "text"),
-           //         ("DLNo2", "branchdlno2", "text"),
-
-           //         // ---------- Barcode ----------
-           //         ("BarCodeName", "branchbarcodename", "text"),
-           //         ("BarCodeHeaderName", "barcodeheadername", "text"),
-           //         ("ComImage", "branchcomimage", "text"),
-
-           //         // ---------- State ----------
-           //         ("Branch_StateCode", "branchstatecode", "integer"),
-           //         ("Branch_StateName", "branchstatename", "text"),
-
-           //         // ---------- Bank ----------
-           //         ("Branch_BankName", "branchbankname", "text"),
-           //         ("Branch_BankAddr1", "branchbankaddr1", "text"),
-           //         ("Branch_BankAddr2", "branchbankaddr2", "text"),
-           //         ("Branch_BankAcNo", "branchbankacno", "text"),
-           //         ("Branch_IFSCCODE", "branchifsccode", "text"),
-           //         ("Branch_PanCardNo", "branchpancardno", "text"),
-
-           //         // ---------- QR & Declaration ----------
-           //         ("Branch_QRCode", "branchqrcode", "text"),
-
-           //         ("Branch_Declaration1", "branchdeclaration1", "text"),
-           //         ("Branch_Declaration2", "branchdeclaration2", "text"),
-           //         ("Branch_Declaration3", "branchdeclaration3", "text"),
-           //         ("Branch_Declaration4", "branchdeclaration4", "text"),
-
-           //         // ---------- Order login ----------
-           //         ("Branch_OrderUserName", "branchorderusername", "text"),
-           //         ("Branch_OrderPwd", "branchorderpwd", "text"),
-
-           //         // ---------- WhatsApp ----------
-           //         ("Branch_WhatsAppNo", "branchwhatsappno", "text"),
-           //         ("Branch_WhatsAppTokenNo", "branchwhatsapptokenno", "text"),
-           //         ("Branch_WhatsAppUrl", "branchwhatsappurl", "text"),
-
-           //         // ---------- Security ----------
-           //         ("Branch_SecurePwd", "branchsecurepwd", "text"),
-           //         ("Branch_BarCodeDesign", "branchbarcodedesign", "text"),
-
-           //         // ---------- Account ----------
-           //         ("AcId", "acid", "bigint"),
-
-           //         // ---------- Extra PostgreSQL only ----------
-           //         ("", "branchlocation", "text"),
-           //         ("", "taxtype", "text"),
-           //         ("", "username", "text"),
-           //         ("", "pwd", "text"),
-
-           //         // ---------- FSSAI ----------
-           //         ("", "fssai", "text"),
-
-           //         // ---------- Constants ----------
-           //         ("1", "mainbranchid", "bigint")
-           //     }
-           // },
+                Columns = new[]
+                {
+                    ("CategoryHead_Id", "tempid", "bigint"),
+                    ("CategoryHead_Name", "headname", "text"),
+                    ("CategoryHead_Description", "headdesc", "text"),
+                    ("CategoryHead_Field1", "headfield1", "text"),
+                    ("CategoryHeadType", "headtypeid", "integer"),
+                    ("ProductType_Id", "producttypeid", "integer"),
+                    ("CategoryHead_ImageLoc", "imageloc", "text"),
+                    ("CategoryHead_OrderNo", "orderno", "integer"),
+                    ("CategoryHead_DisplayName", "displayname", "text"),
+                    ("CategoryHead_Remarks", "remarks", "text"),
+                    ("branchid", "branchid", "bigint"),
+                    ("mainbranchid", "mainbranchid", "integer")
+                },
+                 condition="where   branchid ="+nFromBranchId.ToString()
+            },
 
             new TableMap
             {
@@ -419,6 +369,64 @@ namespace CodeAppsDataMigration.Migration
             },
             condition="where   branchid ="+nFromBranchId.ToString()
            },
+           new TableMap
+           {
+                SqlTable = "Notes",
+                PgTable  = "notes",
+
+                Columns = new[]
+                {
+                    ("Note_Name", "notename", "text"),
+                    ("Note_Description", "description", "text"),
+                    ("Note_UserName", "username", "text"),
+                    ("Note_Password", "pwd", "text"),
+                    ("Note_Link", "urllink", "text"),
+                    ("Note_ContactNo", "contactno", "text"),
+                    ("Note_EnterDate", "enterdate", "date"),
+                    ("Note_RemainterDate", "remainterdate", "date"),
+                    ("Note_RemainterFlag", "remainterflag", "boolean"),
+                    ("Note_RemainterCancel", "remaintercancel", "boolean"),
+                    ("Note_ImageOne", "imageone", "text"),
+                    ("Note_ImageTwo", "imagetwo", "text"),
+                    ("Note_RenewalDate", "renewaldate", "date"),
+                    ("CategoryId", "categoryid", "integer"),
+                    ("StaffId", "staffid", "bigint"),
+                    ("branchid", "branchid", "bigint"),
+                    ("mainbranchid", "mainbranchid", "bigint"),
+                    ("Note_Id", "tempid", "bigint")
+                },
+                 condition="where   branchid ="+nFromBranchId.ToString()
+           },
+           new TableMap
+            {
+                SqlTable = "Transporter",
+                PgTable  = "transporter",
+
+                Columns = new[]
+                {
+                    ("TransporterId", "transporterno", "text"),
+                    ("TransporterName", "transportername", "text"),
+                    ("branchid", "branchid", "bigint"),
+                    ("mainbranchid", "mainbranchid", "bigint"),
+                    ("UniqueKey", "tempid", "bigint")
+                },
+                 condition="where   branchid ="+nFromBranchId.ToString()
+            },
+           new TableMap
+            {
+                SqlTable = "ProductType",
+                PgTable  = "producttype",
+
+                Columns = new[]
+                {
+                    ("ProductType_Name", "producttypename", "text"),
+                    ("ProductType_Active", "productactive", "boolean"),
+                    ("ProductType_OnlineFlag", "producttypeonlineflag", "boolean"),
+                    ("branchid", "branchid", "bigint"),
+                    ("mainbranchid", "mainbranchid", "bigint")
+                },
+                 //condition="where   branchid ="+nFromBranchId.ToString()
+            },
           new TableMap
            {
             SqlTable = "PurBillSeries",
@@ -1190,14 +1198,14 @@ namespace CodeAppsDataMigration.Migration
                       ("OpeningStockMain_Id","paytermsid","bigint"),
                       ("OpeningStockMain_PurType","purtype","text"),
                       ("OpeningStockMain_Cancel","crno","text"),
+                      ("OpeningStockMain_Total","total","numeric"),
                       ("StaffId","staffid","bigint"),
                       ("branchid","branchid","bigint"),
                       ("mainbranchid","mainbranchid","bigint")
                },
                Constants = new Dictionary<string, object>
                {
-                      {"receipttime",TimeOnly.FromDateTime(DateTime.Now) },
-                      {"total","0"},
+                      {"receipttime",TimeOnly.FromDateTime(DateTime.Now) },                      
                       {"invdiffamt","0"},
                       {"payterms",""},
                       {"billserid","0"},
@@ -2602,6 +2610,143 @@ namespace CodeAppsDataMigration.Migration
                   },
                   condition="where   branchid ="+nFromBranchId.ToString()
              },
+             new TableMap
+            {
+                SqlTable = "SalesOrderMain",
+                PgTable  = "salesordermain" + nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("UniqueId","salesorderid","bigint"),
+                    ("SalesOrderMain_Id","salesorderno","bigint"),
+                    ("SalesOrderMain_CustomerName","custname","text"),
+                    ("AcId","acid","bigint"),
+                    ("SalesOrderMain_Total","total","numeric"),
+                    ("SalesOrderMain_Date","salesorderdate","date"),
+                    ("SalesOrderMain_DisPers","dispers","numeric"),
+                    ("SalesOrderMain_DisAmt","disamt","numeric"),
+                    ("SalesOrderMain_ShippingChrge","freight","numeric"),
+                    ("SalesOrder_Remarks","remarks","text"),
+                    ("SalesOrderMain_ATotal","atotal","numeric"),
+                    ("SalesOrderMain_OtherChg","othercharge","numeric"),
+                    ("SalesOrderMain_PriceMenuId","pricemenuid","integer"),
+                    ("SalesOrderMain_InclusiveFlag","inclusivesales","text"),
+                    ("SalesOrderMain_TotTaxAmt","cstamt","numeric"),
+                    ("SalesOrderMain_Time","issuetime","text"),        // time -> text
+                    ("SalesOrderMain_DeliverDate","duedate","date"),   // or dispdate
+                    ("SalesOrder_Cancel","issuecancel","text"),        // bit -> text
+                    ("SalesOrder_Flag","statusflag","text"),           // or delflag / billedflag
+                    ("SalesOrder_RepId","salesexeid","bigint"),        // or agentid
+                    ("SalesOrder_From","orderfrom","text"),            // or sourcefrom
+                    ("SalesOrderMain_Phone","phoneno","text"),         // or smsno
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+     
+                },
+                condition = "where branchid =" + nFromBranchId.ToString()
+            },
+             new TableMap
+            {
+                SqlTable = "SalesOrderDetails",
+                PgTable  = "salesorderdetails" + nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("UniqueId","salesordersubid","bigint"),
+                    ("SalesOrderMain_Id","salesorderid","bigint"),
+                    ("ProductId","productid","bigint"),
+                    ("SalesOrderSub_Qty","qty","numeric"),
+                    ("SalesOrderSub_TaxPers","taxpers","numeric"),
+                    ("SalesOrderSub_TaxAmt","taxamt","numeric"),
+                    ("SalesOrderSub_PurRate","purrate","numeric"),
+                    ("SalesOrderSub_SelRate","selrate","numeric"),
+                    ("SalesOrderSub_Mrp","mrp","numeric"),
+                    ("SalesOrderSub_DisPers","itemdispers","numeric"),
+                    ("SalesOrderSub_BeforeTax","amoutbefortax","numeric"),
+                    ("SalesOrderSub_Amount","amount","numeric"),
+                    ("SalesOrderSub_BatchSlNo","batchslno","bigint"),
+                    ("SalesOrderMain_Date","issuedate","date"),
+                    ("SalesOrderSub_FreeQty","freqty","numeric"),
+                    ("SalesOrderSub_TaxId","taxid","integer"),
+                    ("SalesOrderSub_PriceMenuId","pricemenuid","integer"),
+                    ("SalesOrderSub_RMrp","rmrp","numeric"),
+                    ("SalesOrderSub_WhRate","whrate","numeric"),
+                    ("SalesOrderSub_SpRate1","sprate1","numeric"),
+                    ("SalesOrderSub_SpRate2","sprate2","numeric"),
+                    ("SalesOrderSub_SpRate3","sprate3","numeric"),
+                    ("SalesOrderSub_SpRate4","sprate4","numeric"),
+                    ("SalesOrderSub_SpRate5","sprate5","numeric"),
+                    ("SalesOrderSub_InclusiveSales","inclusivesales","text"),        
+                    ("SalesOrderSub_ConvertBillFlag","bconvertflag","boolean"),
+                    ("SalesOrderSub_Wgt","itemweight","text"),           // weak — see note
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    { "repl","" },
+                    { "prodfrom","" },
+                    { "specialorgrate", 0 }, 
+        
+                },
+                condition = "where branchid =" + nFromBranchId.ToString()
+            },
+             new TableMap
+            {
+                SqlTable = "Quotation",
+                PgTable  = "quotationmain" + nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("UniqueId","quotationid","bigint"),
+                    ("Quotation_Id","quotationno","bigint"),
+                    ("Quotation_EnterDate","enterdate","date"),
+                    ("Quotation_DisPers","dispers","numeric"),
+                    ("Quotation_DisAmt","disamt","numeric"),
+                    ("AcId","acid","bigint"),
+                    ("SalesExeId","salesexeid","bigint"),
+                    ("Quotation_DTotal","dtotal","numeric"),
+                    ("Quotation_ATotal","atotal","numeric"),
+                    ("Quotation_ROF","rof","numeric"),
+                    ("Quotation_Total","total","numeric"),
+                    ("Quotation_Cancel","quotationcancel","text"),
+                    ("StaffId","staffid","bigint"),
+                    ("AgentId","agentid","bigint"),
+                    ("BillCancelDate","billcanceldate","date"),
+                    ("BranchId","branchid","bigint"),
+                    ("Quotation_Declaration","declaration","text"),
+                    ("Quotation_Date","quotationdate","date"),
+                    ("Quotation_OurRef","ourref","text"),
+                    ("Quotation_CusRef","cusref","text"),
+                    ("Quotation_OtherChg","othercharge","numeric"),
+                    ("Quotation_GstNo","gstno","text"),
+                    ("Quotation_SiteName","sitename","text"),
+                    ("Quotation_ClosingDate","closingdate","date"),
+                    ("Quotation_Enquiry","enquiry","text"),
+                    // ↓ type-changed / ambiguous — confirm ↓
+                    ("DelFlag","delflag","boolean"),            // varchar(10) -> boolean
+                    ("Quotation_Type","entrytype","text"),  // or entrytype
+                    ("Quotation_SaleType","pricemenuid","integer"),     // or quotationpurtype
+                    ("Field1","remarks","text"),                // mirrors Receipt's Field1->remarks
+                    ("branchid","branchId","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    { "billserid",          0},
+                    {" duedate ",           DateTime.Now.ToString("yyyy-MM-dd") },
+                    {" discname",           "" },
+                    {" quotationtime ",     "" },
+                    {" orderfrom ",         "" },
+                    {" pricemenuid"  ,      0 },
+                    {" remarks1 ",          "" },
+                    {" inclusivesales ",    ""},
+                    {" smsno ",             "" },
+                    {" phoneno  ",          "" },
+                    {" address1",           "" }
+                },
+                condition = "where branchid =" + nFromBranchId.ToString()
+            },
         };
 
     }

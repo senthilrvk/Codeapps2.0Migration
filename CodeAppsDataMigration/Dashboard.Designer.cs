@@ -25,6 +25,7 @@ namespace CodeAppsDataMigration
             btnBranchList = new Button();
             btnConnectionSettings = new Button();
             btnAesEncryption = new Button();
+            btnCountCompare = new Button();
             btnExit = new Button();
             pnlContent = new Panel();
             lblWelcome = new Label();
@@ -56,6 +57,7 @@ namespace CodeAppsDataMigration
             pnlMenu.Controls.Add(btnExit);
             pnlMenu.Controls.Add(btnAesEncryption);
             pnlMenu.Controls.Add(btnConnectionSettings);
+            pnlMenu.Controls.Add(btnCountCompare);
             pnlMenu.Controls.Add(btnBranchList);
             pnlMenu.Controls.Add(btnExcelImport);
             pnlMenu.Controls.Add(btnDataMigration);
@@ -116,6 +118,20 @@ namespace CodeAppsDataMigration
             btnConnectionSettings.Margin = new Padding(0, 0, 0, 5);
             btnConnectionSettings.Click += btnConnectionSettings_Click;
 
+            // Count Compare button
+            btnCountCompare.Text = "  Count Compare";
+            btnCountCompare.Dock = DockStyle.Top;
+            btnCountCompare.Size = new Size(200, 50);
+            btnCountCompare.FlatStyle = FlatStyle.Flat;
+            btnCountCompare.FlatAppearance.BorderSize = 0;
+            btnCountCompare.BackColor = Color.FromArgb(236, 72, 153);
+            btnCountCompare.ForeColor = Color.White;
+            btnCountCompare.Font = new Font("Segoe UI", 11F, FontStyle.Regular);
+            btnCountCompare.TextAlign = ContentAlignment.MiddleLeft;
+            btnCountCompare.Cursor = Cursors.Hand;
+            btnCountCompare.Margin = new Padding(0, 0, 0, 5);
+            btnCountCompare.Click += btnCountCompare_Click;
+
             // AES Encryption button
             btnAesEncryption.Text = "  AES Encryption";
             btnAesEncryption.Dock = DockStyle.Top;
@@ -162,6 +178,7 @@ namespace CodeAppsDataMigration
                 "  Data Migration  -  Transfer data from SQL Server to PostgreSQL\n\n" +
                 "  Excel Import  -  Import Excel data into PostgreSQL\n\n" +
                 "  Branch List  -  View SQL Server branches and create in PostgreSQL\n\n" +
+                "  Count Compare  -  Compare table row counts between SQL Server and PostgreSQL\n\n" +
                 "  Connection Settings  -  Configure database connection strings\n\n" +
                 "  AES Encryption  -  Encrypt and decrypt text using AES-256";
             lblDescription.Font = new Font("Segoe UI", 11F);
@@ -200,6 +217,7 @@ namespace CodeAppsDataMigration
         private Button btnBranchList;
         private Button btnConnectionSettings;
         private Button btnAesEncryption;
+        private Button btnCountCompare;
         private Button btnExit;
         private Panel pnlContent;
         private Label lblWelcome;

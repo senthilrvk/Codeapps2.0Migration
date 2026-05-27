@@ -37,6 +37,12 @@ namespace CodeAppsDataMigration
             form.ShowDialog(this);
         }
 
+        private void btnCountCompare_Click(object sender, EventArgs e)
+        {
+            using var form = new TableCountCompareForm();
+            form.ShowDialog(this);
+        }
+
         private void btnExit_Click(object sender, EventArgs e)
         {
             var result = MessageBox.Show("Are you sure you want to exit?", "Exit",

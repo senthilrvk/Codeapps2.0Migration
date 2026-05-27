@@ -50,6 +50,8 @@ namespace CodeAppsDataMigration.Migration
             MigrationConfig.nBranchId = nBranchId;
             MigrationConfig.nFromBranchId = nFromBranchId;
 
+            PreMigrationCleanup(nMainBranchId, nBranchId);
+
             int totalTables = MigrationConfig.Tables.Count;
             int tableIndex = 1;
 
@@ -143,6 +145,42 @@ namespace CodeAppsDataMigration.Migration
 
 
 
+        private void PreMigrationCleanup(Int64 nMainBranchId, Int64 nBranchId)
+        {
+            var cleanups = new (string Table, string ExtraWhere)[]
+            {
+                ("area",       ""),
+                ("billseries", " AND billsersource IN ('SALES','PURCHASE','SERVICE BILL')"),
+                ("category",   ""),
+                ("notes",      "")
+            };
+
+            ReportProgress("Pre-migration cleanup...", 0);
+            Console.WriteLine("Pre-migration cleanup (area, billseries [SALES/PURCHASE/SERVICE BILL only], category, notes)...");
+
+            try
+            {
+                using var pg = new NpgsqlConnection(_pg);
+                pg.Open();
+
+                foreach (var (table, extra) in cleanups)
+                {
+                    string sql = $"DELETE FROM {table} WHERE branchid = {nBranchId} AND mainbranchid = {nMainBranchId}{extra}";
+                    using var cmd = new NpgsqlCommand(sql, pg) { CommandTimeout = 120 };
+                    int affected = cmd.ExecuteNonQuery();
+                    ReportProgress($"Cleaned {table}: {affected} row(s) removed", 0);
+                    Console.WriteLine($" {table} → {affected} row(s) deleted");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine(" Pre-migration cleanup failed: " + ex.Message);
+                Console.ResetColor();
+                throw;
+            }
+        }
+
         private void ExecuteBulkUpdates(Int64 nMainBranchId, Int64 nBranchId)
         {
             string testquerytemplate = "";
@@ -176,6 +214,8 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
                 strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
                 stringBuilder.Add(strQuery);
+
+
 
                 // Purchase
                 stringBuilder.Add($"UPDATE receiptdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId} and isub.mainbranchid = {nMainBranchId}");
@@ -248,6 +288,7 @@ namespace CodeAppsDataMigration.Migration
                 //debitnotemain
                 stringBuilder.Add($"UPDATE debitnotemain{nMainBranchId} rm SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.staffid AND rm.branchid = {nBranchId} and rm.mainbranchid ={nMainBranchId}");
                 stringBuilder.Add($"UPDATE debitnotemain{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE debitnotemain{nMainBranchId} rm SET entrytype='product' WHERE rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId} ");
 
                 //debitnotedetails
                 stringBuilder.Add($"UPDATE debitnotedetails{nMainBranchId} os SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = os.productid AND os.branchid = {nBranchId} And os.mainbranchid = {nMainBranchId}");
