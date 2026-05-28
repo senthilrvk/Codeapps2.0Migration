@@ -2690,7 +2690,7 @@ namespace CodeAppsDataMigration.Migration
                     { "specialorgrate", 0 }, 
         
                 },
-                condition = "where branchid =" + nFromBranchId.ToString()
+                //condition = "where branchid =" + nFromBranchId.ToString()
             },
              new TableMap
             {
@@ -2713,7 +2713,6 @@ namespace CodeAppsDataMigration.Migration
                     ("StaffId","staffid","bigint"),
                     ("AgentId","agentid","bigint"),
                     ("BillCancelDate","billcanceldate","date"),
-                    ("BranchId","branchid","bigint"),
                     ("Quotation_Declaration","declaration","text"),
                     ("Quotation_Date","quotationdate","date"),
                     ("Quotation_OurRef","ourref","text"),
@@ -2728,7 +2727,7 @@ namespace CodeAppsDataMigration.Migration
                     ("Quotation_Type","entrytype","text"),  // or entrytype
                     ("Quotation_SaleType","pricemenuid","integer"),     // or quotationpurtype
                     ("Field1","remarks","text"),                // mirrors Receipt's Field1->remarks
-                    ("branchid","branchId","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
@@ -2744,6 +2743,55 @@ namespace CodeAppsDataMigration.Migration
                     {" smsno ",             "" },
                     {" phoneno  ",          "" },
                     {" address1",           "" }
+                },
+                condition = "where branchid =" + nFromBranchId.ToString()
+            },
+             new TableMap
+            {
+                SqlTable = "QuotationDetails",
+                PgTable  = "quotationdetails" + nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("QuotationSub_Id","quotationdetailsid","bigint"),
+                    ("UniqueId","quotationid","bigint"),
+                    ("Quotation_Id","quotationno","bigint"),
+                    ("ProductId","productid","bigint"),
+                    ("QuotationSub_SelRate","selrate","numeric"),
+                    ("QuotationSub_Mrp","mrp","numeric"),
+                    ("QuotationSub_Qty","qty","numeric"),
+                    ("QuotationSub_TaxPers","taxpers","numeric"),
+                    ("QuotationSub_TaxAmt","taxamt","numeric"),
+                    ("QuotationSub_Amount","amount","numeric"),
+                    ("TaxId","taxid","integer"),
+                    ("QuotationSub_ProdType","prodtype","text"),
+                    ("QuotationSub_AmountBeforeDis","amountbeforedis","numeric"),
+                    ("QuotationSub_OriginalRate","originalrate","numeric"),
+                    ("QuotationSub_DisPers","itemdispers","numeric"),
+                    ("QuotationSub_AddDisPers","adddispers","numeric"),
+                    ("QuotationSub_AmountBeforeTax","amoutbefortax","numeric"),
+                    ("QuotationSub_DisAmt","itemdisamt","numeric"),
+                    ("QuotationSub_PurRate","purrate","numeric"),
+                    ("QuotationSub_LandingCost","landingcost","numeric"),
+                    ("QuotationSub_IncluesiveSales","inclusivesales","text"),
+                    ("Quotation_Color","color","text"),
+                    ("QuotationSub_CessPers","cesspers","numeric"),
+                    ("QuotationSub_CessAmt","cessamt","numeric"),
+                    ("QuotationSub_RemarksOne","remarks1","text"),
+                    ("QuotationSub_RemarksTwo","remarks2","text"),
+                    ("QuotationSub_PriceMenuId","pricemenuid","integer"),
+                    ("QuotationSub_RMrp","rmrp","numeric"),
+                    ("QuotationSub_WhRate","whrate","numeric"),
+                    ("QuotationSub_SpRate1","sprate1","numeric"),
+                    ("QuotationSub_SpRate2","sprate2","numeric"),
+                    ("QuotationSub_SpRate3","sprate3","numeric"),
+                    ("QuotationSub_SpRate4","sprate4","numeric"),
+                    ("QuotationSub_SpRate5","sprate5","numeric"),                    
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    {"orgpurrate",0 }
                 },
                 condition = "where branchid =" + nFromBranchId.ToString()
             },
