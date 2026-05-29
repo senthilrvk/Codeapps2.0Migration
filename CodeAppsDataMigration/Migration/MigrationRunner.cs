@@ -614,9 +614,9 @@ namespace CodeAppsDataMigration.Migration
                         case "SRof":
                             strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='Rof';";
                             break;
-                        case "SalesInclusiveVisibleInSales":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='SalesInclusive';";
-                            break;
+                        //case "SalesInclusiveVisibleInSales":
+                        //    strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='SalesInclusive';";
+                        //    break;
                         case "SalesItemCode":
                             strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='SalesItemCodeVisible';";
                             break;
