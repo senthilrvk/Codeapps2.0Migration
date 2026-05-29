@@ -751,6 +751,9 @@ namespace CodeAppsDataMigration.Migration
                         case "TemporaryPurchaseNo":
                             strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='TemporaryPurchaseNo' and branchid='" + nBranchId + "';";
                             break;
+                        case "InclusiveInSales":
+                            strUpdateQuery += "\n Update branchsettings set settingbillno = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingkey='InclusiveInSales' and branchid='" + nBranchId + "';";
+                            break;
 
                     }
 
