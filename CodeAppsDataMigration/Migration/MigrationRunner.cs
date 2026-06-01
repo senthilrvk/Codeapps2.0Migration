@@ -587,85 +587,85 @@ namespace CodeAppsDataMigration.Migration
                     switch (KeyValue)
                     {
                         case "AccMonth":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='AccMonth';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='AccMonth';";
                             break;
                         case "AdditionalCessInclusiveInSales":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='AdditionalCessInclusiveInSales';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='AdditionalCessInclusiveInSales';";
                             break;
                         case "Neethi":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='AddOrMinusNeethiDis';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='AddOrMinusNeethiDis';";
                             break;
                         case "AutoAdjustReceiptPending":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='AutoAdjustReceiptPending';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='AutoAdjustReceiptPending';";
                             break;
                         case "BatchDisplayName":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='BatchDisplayName';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='BatchDisplayName';";
                             break;
                         case "CompanyBranchLink":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='CompanyBranchLink';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='CompanyBranchLink';";
                             break;
                         case "SaleExpiry":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ExpiryVisible';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='ExpiryVisible';";
                             break;
                         case "SaleBatch":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='BatchVisible';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='BatchVisible';";
                             break;
                         case "ExpMonthYearFormat":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ExpMonthYearFormat';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='ExpMonthYearFormat';";
                             break;
                         case "ImageSave":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ImageSave';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='ImageSave';";
                             break;
                         case "ImageSavePath":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ImageSavePath';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='ImageSavePath';";
                             break;
                         case "ItemSearch":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ItemSearch';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='ItemSearch';";
                             break;
                         case "NegativeBilling":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='NegativeBilling';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='NegativeBilling';";
                             break;
                         case "PreviousHistoryPurchase":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='PreviousHistoryPurchase';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='PreviousHistoryPurchase';";
                             break;
                         case "PreviousHistory":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='PreviousHistorySales';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='PreviousHistorySales';";
                             break;
                         case "ProductSaveOtherBranch":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='ProductSaveOtherBranch';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='ProductSaveOtherBranch';";
                             break;
                         case "PurchaseItemCode":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='PurchaseItemCodeVisible';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='PurchaseItemCodeVisible';";
                             break;
                         case "QtyDecPlace":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='QtyDecPlace';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='QtyDecPlace';";
                             break;
                         case "RateConditionInSales":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='RateConditionInSales';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='RateConditionInSales';";
                             break;
                         case "DecimalPlace":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='RateDecimalPlace';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='RateDecimalPlace';";
                             break;
                         case "SRof":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='Rof';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='Rof';";
                             break;
                         //case "SalesInclusiveVisibleInSales":
                         //    strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='SalesInclusive';";
                         //    break;
                         case "SalesItemCode":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='SalesItemCodeVisible';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='SalesItemCodeVisible';";
                             break;
                         case "ProductName":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='SoftwareBusinessType';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='SoftwareBusinessType';";
                             break;
                         case "TaxName":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='TaxName';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='TaxName';";
                             break;
                         case "UniqueBarCode":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='UniqueBarCode';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='UniqueBarCode';";
                             break;
                         case "UniqueNo":
-                            strUpdateQuery += "\n Update mainsetting set settingbillno = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingkey='UniqueBatchNo';";
+                            strUpdateQuery += "\n Update mainsetting set settingbillno = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='UniqueBatchNo';";
                             break;
                     }
 

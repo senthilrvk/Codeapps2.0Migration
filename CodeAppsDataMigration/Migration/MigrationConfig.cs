@@ -353,6 +353,7 @@ namespace CodeAppsDataMigration.Migration
                  ("BillSerBillNoFormat","billserbillnoformat","text"),
                  ("billserbillinclusive","billserbillinclusive","text"),
                  ("billsertaxadd","billsertaxadd","text"),
+                 ("BillSerField1","billalternativesymbol","text"),
                  ("branchid","branchid", "integer"),
                  ("mainbranchid","mainbranchid","integer"),
                  ("BillSerId","tempid","bigint"),
