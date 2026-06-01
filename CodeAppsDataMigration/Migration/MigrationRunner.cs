@@ -1,18 +1,20 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using CodeAppsDataMigration.Data;
+using CodeAppsDataMigration.Migration;
+using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Primitives;
 using Npgsql;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Reflection;
 using System.Text;
-using CodeAppsDataMigration.Data;
-using CodeAppsDataMigration.Migration;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
-using System.Data;
 
 namespace CodeAppsDataMigration.Migration
 {
@@ -458,6 +460,39 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update deliveryoutdetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} and mainbranchid = {nMainBranchId}");
 
 
+                strQuery = $" UPDATE category";
+                strQuery += $"\n SET categorytypeid = CASE categorytypeid";
+                strQuery += $"\n WHEN 13 THEN 2";
+                strQuery += $"\n WHEN 11  THEN 4";//unit
+                //strQuery += $"\n WHEN 9  THEN 7";
+                //strQuery += $"\n WHEN 14 THEN 5";
+                //strQuery += $"\n WHEN 4  THEN 11";
+                //strQuery += $"\n WHEN 5  THEN 9";
+                //strQuery += $"\n WHEN 6  THEN 10";
+                //strQuery += $"\n WHEN 7  THEN 12";
+                //strQuery += $"\n WHEN 15 THEN 12";
+                strQuery += $"\n ELSE categorytypeid";
+                strQuery += $"\n END";
+               // strQuery += $"\n WHERE categorytypeid >0";
+                strQuery += $"\n where tempid<> 0";
+                strQuery += $"\n AND branchid = {nBranchId}";
+                strQuery += $"\n AND mainbranchid = {nMainBranchId};";
+                stringBuilder.Add(strQuery);
+
+
+  //              { id: 1, categorytype: 'Product' },
+  //{ id: 2, categorytype: 'Reason' },
+  //{ id: 3, categorytype: 'Customer' },
+  //{ id: 4, categorytype: 'Unit' },
+  //{ id: 5, categorytype: 'AreaGroup' },
+  //{ id: 6, categorytype: 'CompGroup' },
+  //{ id: 7, categorytype: 'AccountHead' },
+  //{ id: 8, categorytype: 'Schedule' },
+  //{ id: 9, categorytype: 'Media' },
+  //{ id: 10, categorytype: 'Bank' },
+  //{ id: 11, categorytype: 'Agent' },
+  //{ id: 12, categorytype: 'Notes' }
+
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)
@@ -882,7 +917,7 @@ namespace CodeAppsDataMigration.Migration
                     string InclusiveSales = row["InclusiveSales"].ToString();
                     string TaxCondition = row["TaxCondition"].ToString();
 
-                   
+
                     strUpdateQuery += "\n UPDATE billseries SET billserbillinclusive = '" + InclusiveSales +
                                       "', billsertaxadd = '" + TaxCondition +
                                       "' WHERE tempid = '" + BillSerId +
