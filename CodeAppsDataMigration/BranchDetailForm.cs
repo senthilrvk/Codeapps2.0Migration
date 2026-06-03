@@ -104,8 +104,8 @@ namespace CodeAppsDataMigration
                 ["Branch_OrderUserName"]  = ("branchorderusername",   "text"),
                 ["Branch_OrderPwd"]       = ("branchorderpwd",        "text"),
                 ["Branch_WhatsAppNo"]     = ("branchwhatsappno",      "text"),
-                ["Branch_WhatsAppTokenNo"]= ("branchwhatsapptokenno", "text"),
-                ["Branch_WhatsAppUrl"]    = ("branchwhatsappurl",     "text"),
+                //["Branch_WhatsAppTokenNo"]= ("branchwhatsapptokenno", "text"),
+                //["Branch_WhatsAppUrl"]    = ("branchwhatsappurl",     "text"),
                 ["Branch_SecurePwd"]      = ("branchsecurepwd",       "text"),
                 ["Branch_BarCodeDesign"]  = ("branchbarcodedesign",   "text"),
                 ["AcId"]                  = ("acid",                  "bigint"),
@@ -798,6 +798,8 @@ namespace CodeAppsDataMigration
             AddIfMissing("lutno",               "");
             AddIfMissing("expectregno",         "");
             AddIfMissing("branchtokenpassword", "");
+            AddIfMissing("branchwhatsapptokenno", "");
+            AddIfMissing("branchwhatsappurl",     "");
             AddIfMissing("branchappcode",       0);
             AddIfMissing("tempid",              0);
 
