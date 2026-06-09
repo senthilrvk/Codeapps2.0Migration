@@ -323,18 +323,23 @@ namespace CodeAppsDataMigration.Migration
                 strQuery = $"update expirydebitnotemain{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
                 strQuery += $"\n  where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billtype = 'EXPIRY/DAMAGE DEBITNOTE'";
                 strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId};";
-
+                               
+                List <AccountIdMigration> accountIdMigrations = GetAccountIdMigrations();
+                foreach(AccountIdMigration acidmig in accountIdMigrations)
+                {
+                    stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} vd SET acid     = {acidmig.PosgresAcId}  WHERE vd.acid    = {acidmig.AcId} and vd.acid    < 55 AND vd.branchid = {nBranchId} and vd.mainbranchid = {nMainBranchId}");
+                    stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} vd SET revacid  = {acidmig.PosgresAcId}  WHERE vd.revacid = {acidmig.AcId} and vd.revacid < 55 AND vd.branchid = {nBranchId} and vd.mainbranchid = {nMainBranchId}");
+                }
 
                 /// voucherdetails
                 stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.staffid AND rm.branchid = {nBranchId} and rm.mainbranchid ={nMainBranchId}");
-                stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET repid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.repid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET repid   = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.repid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
 
-                stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET acid    = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET revacid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.revacid and rm.revacid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
 
-                stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET acid = -46 FROM accounthead{nMainBranchId} ah WHERE rm.acid=26 AND rm.branchid = {nBranchId} And rm.mainbranchid = {nMainBranchId}");
-                stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET revacid = -46 FROM accounthead{nMainBranchId} ah WHERE rm.revacid =26  AND rm.branchid = {nBranchId} And rm.mainbranchid = {nMainBranchId}");
-
+              //  stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET acid    = -46 FROM accounthead{nMainBranchId} ah WHERE rm.acid=26 AND rm.branchid = {nBranchId} And rm.mainbranchid = {nMainBranchId}");
+              //  stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET revacid = -46 FROM accounthead{nMainBranchId} ah WHERE rm.revacid =26  AND rm.branchid = {nBranchId} And rm.mainbranchid = {nMainBranchId}");
 
 
                 strQuery = $"INSERT INTO vouchermain{nMainBranchId}(";
@@ -473,25 +478,25 @@ namespace CodeAppsDataMigration.Migration
                 //strQuery += $"\n WHEN 15 THEN 12";
                 strQuery += $"\n ELSE categorytypeid";
                 strQuery += $"\n END";
-               // strQuery += $"\n WHERE categorytypeid >0";
+                // strQuery += $"\n WHERE categorytypeid >0";
                 strQuery += $"\n where tempid<> 0";
                 strQuery += $"\n AND branchid = {nBranchId}";
                 strQuery += $"\n AND mainbranchid = {nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
 
-  //              { id: 1, categorytype: 'Product' },
-  //{ id: 2, categorytype: 'Reason' },
-  //{ id: 3, categorytype: 'Customer' },
-  //{ id: 4, categorytype: 'Unit' },
-  //{ id: 5, categorytype: 'AreaGroup' },
-  //{ id: 6, categorytype: 'CompGroup' },
-  //{ id: 7, categorytype: 'AccountHead' },
-  //{ id: 8, categorytype: 'Schedule' },
-  //{ id: 9, categorytype: 'Media' },
-  //{ id: 10, categorytype: 'Bank' },
-  //{ id: 11, categorytype: 'Agent' },
-  //{ id: 12, categorytype: 'Notes' }
+                //              { id: 1, categorytype: 'Product' },
+                //{ id: 2, categorytype: 'Reason' },
+                //{ id: 3, categorytype: 'Customer' },
+                //{ id: 4, categorytype: 'Unit' },
+                //{ id: 5, categorytype: 'AreaGroup' },
+                //{ id: 6, categorytype: 'CompGroup' },
+                //{ id: 7, categorytype: 'AccountHead' },
+                //{ id: 8, categorytype: 'Schedule' },
+                //{ id: 9, categorytype: 'Media' },
+                //{ id: 10, categorytype: 'Bank' },
+                //{ id: 11, categorytype: 'Agent' },
+                //{ id: 12, categorytype: 'Notes' }
 
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
@@ -892,6 +897,7 @@ namespace CodeAppsDataMigration.Migration
                 ReportProgress($"Updating voucher prefix failed: {ex.Message}", 2);
             }
         }
+      
         public void fnBillSeriesUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
         {
             ReportProgress("Updating BillSeries in SQL Server...", 0);
@@ -941,6 +947,7 @@ namespace CodeAppsDataMigration.Migration
                 ReportProgress($"Updating failed: {ex.Message}", 2);
             }
         }
+
         public void fnBranchUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
         {
             ReportProgress("Updating Branch in SQL Server...", 0);
@@ -1062,6 +1069,54 @@ namespace CodeAppsDataMigration.Migration
                 ReportProgress($"Updating failed: {ex.Message}", 2);
             }
         }
-    }
+
+
+        public static List<AccountIdMigration> GetAccountIdMigrations()
+        {
+              return new List<AccountIdMigration>
+              {
+            new AccountIdMigration { AccountId = 34, HeadName = "TCS OUT", AcId = -8, PosgresAcId = -50 },
+        new AccountIdMigration { AccountId = 35, HeadName = "TCS IN", AcId = -7, PosgresAcId = -51 },
+        new AccountIdMigration { AccountId = 36, HeadName = "COURIER CHARGE", AcId = -6, PosgresAcId = -52 },
+        new AccountIdMigration { AccountId = 37, HeadName = "Output Cess", AcId = -5, PosgresAcId = -43 },
+        new AccountIdMigration { AccountId = 38, HeadName = "Input Cess", AcId = -4, PosgresAcId = -42 },
+        new AccountIdMigration { AccountId = 1, HeadName = "PURCHASE RETUN DEBIT NOT", AcId = 3, PosgresAcId = -5 },
+        new AccountIdMigration { AccountId = 2, HeadName = "SALES RETUN CREDITNOTE", AcId = 4, PosgresAcId = -4 },
+        new AccountIdMigration { AccountId = 3, HeadName = "AMOUNT 12%", AcId = 6, PosgresAcId = -53 },
+        new AccountIdMigration { AccountId = 4, HeadName = "TAX 12%", AcId = 7, PosgresAcId = -54 },
+        new AccountIdMigration { AccountId = 5, HeadName = "AMOUNT 18%", AcId = 8, PosgresAcId = -55 },
+        new AccountIdMigration { AccountId = 6, HeadName = "DISCOUNT PAID", AcId = 9, PosgresAcId = -56 },
+        new AccountIdMigration { AccountId = 7, HeadName = "PURCHASE NON TAXABLE", AcId = 11, PosgresAcId = -57 },
+        new AccountIdMigration { AccountId = 8, HeadName = "SALES NON TAXABLE", AcId = 12, PosgresAcId = -58 },
+        new AccountIdMigration { AccountId = 9, HeadName = "PURCHASE 5%", AcId = 15, PosgresAcId = -59 },
+        new AccountIdMigration { AccountId = 10, HeadName = "SALES 5%", AcId = 16, PosgresAcId = -60 },
+        new AccountIdMigration { AccountId = 11, HeadName = "CREDIT NOTE TAX 5%", AcId = 17, PosgresAcId = -61 },
+        new AccountIdMigration { AccountId = 12, HeadName = "CREDIT NOTE TAX 12%", AcId = 18, PosgresAcId = -62 },
+        new AccountIdMigration { AccountId = 13, HeadName = "DEBIT NOTE TAX 5%", AcId = 19, PosgresAcId = -63 },
+        new AccountIdMigration { AccountId = 14, HeadName = "DEBIT NOTE TAX 12%", AcId = 20, PosgresAcId = -64 },
+        new AccountIdMigration { AccountId = 15, HeadName = "TAX 18%", AcId = 22, PosgresAcId = -65 },
+        new AccountIdMigration { AccountId = 16, HeadName = "BANK CHARGE", AcId = 23, PosgresAcId = -49 },
+        new AccountIdMigration { AccountId = 17, HeadName = "AMOUNT 28%", AcId = 24, PosgresAcId = -66 },
+        new AccountIdMigration { AccountId = 18, HeadName = "TAX 28 %", AcId = 25, PosgresAcId = -67 },
+        new AccountIdMigration { AccountId = 19, HeadName = "CASH ACCOUNTS", AcId = 26, PosgresAcId = -46 },
+        new AccountIdMigration { AccountId = 20, HeadName = "CREDIT NOTE AMOUNT", AcId = 27, PosgresAcId = -68 },
+        new AccountIdMigration { AccountId = 21, HeadName = "PURCHASE AMOUNT 5 %", AcId = 31, PosgresAcId = -69 },
+        new AccountIdMigration { AccountId = 22, HeadName = "SALES AMOUNT 5 %", AcId = 32, PosgresAcId = -70 },
+        new AccountIdMigration { AccountId = 23, HeadName = "CREDIT NOTE TAX 18%", AcId = 33, PosgresAcId = -140 },
+        new AccountIdMigration { AccountId = 24, HeadName = "CREDIT NOTE TAX 28%", AcId = 34, PosgresAcId = -72 },
+        new AccountIdMigration { AccountId = 25, HeadName = "DEBIT NOTE AMOUNT", AcId = 35, PosgresAcId = -80 },
+        new AccountIdMigration { AccountId = 26, HeadName = "ROUND OFF", AcId = 39, PosgresAcId = -47 },
+        new AccountIdMigration { AccountId = 27, HeadName = "OTHER CHARGE", AcId = 40, PosgresAcId = -73 },
+        new AccountIdMigration { AccountId = 28, HeadName = "EXCISEDUTY", AcId = 41, PosgresAcId = -74 },
+        new AccountIdMigration { AccountId = 29, HeadName = "STAMPING CHARGE", AcId = 42, PosgresAcId = -75 },
+        new AccountIdMigration { AccountId = 30, HeadName = "INTERSTATE AMOUNT", AcId = 44, PosgresAcId = -76 },
+        new AccountIdMigration { AccountId = 31, HeadName = "TDS", AcId = 48, PosgresAcId = -77 },
+        new AccountIdMigration { AccountId = 32, HeadName = "DEBIT NOTE TAX 18%", AcId = 49, PosgresAcId = -78 },
+        new AccountIdMigration { AccountId = 33, HeadName = "DEBIT NOTE TAX 28%", AcId = 50, PosgresAcId = -79 },
+    };
+  
+   }
+     
+  }
 
 }
