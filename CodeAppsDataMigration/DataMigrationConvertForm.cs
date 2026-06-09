@@ -187,6 +187,8 @@ namespace CodeAppsDataMigration
                         ((IProgress<(string, int)>)progress).Report((msg, pct));
                     });
 
+                    runner.fnSqlMainBranchValueUpdate();
+
                     runner.FromDbTaxUpdate();
 
                     foreach (var map in mappings)
@@ -217,5 +219,7 @@ namespace CodeAppsDataMigration
                 grdBranchMap.Enabled = true;
             }
         }
+
+
     }
 }

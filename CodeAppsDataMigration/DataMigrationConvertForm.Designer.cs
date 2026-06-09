@@ -38,28 +38,28 @@ namespace CodeAppsDataMigration
             lblStatus = new Label();
             ((System.ComponentModel.ISupportInitialize)grdBranchMap).BeginInit();
             SuspendLayout();
-            //
+            // 
             // lblPgMainBranch
-            //
+            // 
             lblPgMainBranch.AutoSize = true;
             lblPgMainBranch.Location = new Point(15, 18);
             lblPgMainBranch.Name = "lblPgMainBranch";
-            lblPgMainBranch.Size = new Size(120, 15);
+            lblPgMainBranch.Size = new Size(141, 15);
             lblPgMainBranch.TabIndex = 0;
             lblPgMainBranch.Text = "PostgreSQL Main Branch:";
-            //
+            // 
             // cmbPgMainBranch
-            //
+            // 
             cmbPgMainBranch.DropDownStyle = ComboBoxStyle.DropDownList;
             cmbPgMainBranch.FormattingEnabled = true;
-            cmbPgMainBranch.Location = new Point(150, 15);
+            cmbPgMainBranch.Location = new Point(181, 15);
             cmbPgMainBranch.Name = "cmbPgMainBranch";
-            cmbPgMainBranch.Size = new Size(300, 23);
+            cmbPgMainBranch.Size = new Size(445, 23);
             cmbPgMainBranch.TabIndex = 1;
             cmbPgMainBranch.SelectedIndexChanged += cmbPgMainBranch_SelectedIndexChanged;
-            //
+            // 
             // grdBranchMap
-            //
+            // 
             grdBranchMap.AllowUserToAddRows = false;
             grdBranchMap.AllowUserToDeleteRows = false;
             grdBranchMap.AllowUserToResizeRows = false;
@@ -71,25 +71,24 @@ namespace CodeAppsDataMigration
             grdBranchMap.SelectionMode = DataGridViewSelectionMode.CellSelect;
             grdBranchMap.Size = new Size(770, 350);
             grdBranchMap.TabIndex = 2;
-            //
+            // 
             // colSqlBranch
-            //
+            // 
+            colSqlBranch.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            colSqlBranch.FillWeight = 50F;
             colSqlBranch.HeaderText = "SQL Server Branch (From)";
             colSqlBranch.Name = "colSqlBranch";
             colSqlBranch.ReadOnly = true;
-            colSqlBranch.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
-            colSqlBranch.FillWeight = 50F;
-            //
+            // 
             // colPgBranch
-            //
-            colPgBranch.HeaderText = "PostgreSQL Branch (To)";
-            colPgBranch.Name = "colPgBranch";
+            // 
             colPgBranch.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             colPgBranch.FillWeight = 50F;
-            colPgBranch.DisplayStyle = DataGridViewComboBoxDisplayStyle.DropDownButton;
-            //
+            colPgBranch.HeaderText = "PostgreSQL Branch (To)";
+            colPgBranch.Name = "colPgBranch";
+            // 
             // btnDataTransfer
-            //
+            // 
             btnDataTransfer.Location = new Point(610, 415);
             btnDataTransfer.Name = "btnDataTransfer";
             btnDataTransfer.Size = new Size(175, 30);
@@ -97,25 +96,25 @@ namespace CodeAppsDataMigration
             btnDataTransfer.Text = "Start Migration";
             btnDataTransfer.UseVisualStyleBackColor = true;
             btnDataTransfer.Click += btnDataTransfer_Click;
-            //
+            // 
             // progressBar
-            //
+            // 
             progressBar.Location = new Point(15, 460);
             progressBar.Name = "progressBar";
             progressBar.Size = new Size(770, 25);
             progressBar.TabIndex = 4;
-            //
+            // 
             // lblStatus
-            //
+            // 
             lblStatus.AutoSize = true;
             lblStatus.Location = new Point(15, 495);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(39, 15);
             lblStatus.TabIndex = 5;
             lblStatus.Text = "Ready";
-            //
+            // 
             // DataMigrationConvertForm
-            //
+            // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(800, 525);

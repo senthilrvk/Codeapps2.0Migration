@@ -1116,7 +1116,20 @@ namespace CodeAppsDataMigration.Migration
     };
   
    }
-     
-  }
+
+
+        public void fnSqlMainBranchValueUpdate()
+        {
+            var strQuery = "";
+            strQuery += "\n update Hsn set BranchId=17 where BranchId is null";
+            strQuery += "\n update Category set BranchId=17 where BranchId is null";
+
+            using var conn = SqlServerConnection.Create();
+            conn.Open();
+            using var cmd = new SqlCommand(strQuery, conn);
+            cmd.ExecuteNonQuery();
+        }
+
+    }
 
 }
