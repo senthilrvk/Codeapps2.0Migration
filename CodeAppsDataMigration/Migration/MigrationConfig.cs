@@ -2798,6 +2798,49 @@ namespace CodeAppsDataMigration.Migration
                 },
                 condition = "where branchid =" + nFromBranchId.ToString()
             },
+              new TableMap
+            {
+                SqlTable = "AddTables",
+                PgTable  = "restotable" ,
+                Columns = new[]
+                {
+                    ("Table_Id","tempid","bigint"),
+                    ("Table_Name","tablename","bigint"),
+                    ("Table_Code","tablecode","bigint"),
+                    ("Table_Status","tablestatus","bigint"),
+                    ("TempInvoiceNo","tempinvoiceno","bigint"),
+                    ("StaffId","staffid","numeric"),                   
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    {"capacity",0 }
+                },
+                condition = "where branchid =" + nFromBranchId.ToString()
+            },
+               new TableMap
+            {
+                SqlTable = "TableDetails",
+                PgTable  = "restotabledetails" ,
+                Columns = new[]
+                {
+                    ("TableDetails_Name","tabledetailsname","bigint"),
+                    ("TableDetails_Code","tabledetailscode","bigint"),
+                    ("Table_Id","tableid","bigint"),
+                    ("bActive","bactive","bigint"),
+                    ("Allocated","allocated","bigint"),
+                    ("BillNo","billno","bigint"),
+                    ("StaffId","staffid","numeric"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition = "where branchid =" + nFromBranchId.ToString()
+            },
         };
 
     }

@@ -484,6 +484,7 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n AND mainbranchid = {nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
+                stringBuilder.Add($"UPDATE restotabledetails isub SET tableid = pm.tableid FROM restotable pm WHERE pm.tempid = isub.tableid AND isub.branchid = {nBranchId} and isub.mainbranchid = {nMainBranchId}");
 
                 //              { id: 1, categorytype: 'Product' },
                 //{ id: 2, categorytype: 'Reason' },
