@@ -351,19 +351,26 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n vd.chequeno, vd.chequedate, 0 voucheramt, vd.bankname, 0 acid, vd.repid, vd.staffid, vd.vouchertime, vd.remarks,";
                 strQuery += $"\n vd.enterdate, vd.tdspers, ";
                 strQuery += $"\n vd.tdsamt,'' transtype,False bvouchercancel, vd.branchid, vd.mainbranchid, 0 revacid, vd.refno,'' headtype, vd.balanceamt";
-                strQuery += $"\n from voucherdetails{nMainBranchId} vd where vd.vprefixid in (1,2,3,4,7,8,10);";
+                strQuery += $"\n from voucherdetails{nMainBranchId} vd where vd.vprefixid in (1,2,3,4,7,8,10) and vd.branchid={nBranchId} and vd.mainbranchid={nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
                 strQuery = $" update vouchermain{nMainBranchId} vm set voucheramt = vd.voucheramt,acid = vd.acid,revacid = vd.revacid from voucherdetails{nMainBranchId} vd WHERE";
                 strQuery += $"\n vm.vprefixid = vd.vprefixid and vm.voucherno = vd.voucherno";
-                strQuery += $"\n and vm.uniquevoucherid = vd.uniquevoucherid";
-                strQuery += $"\n and vd.voucheramt > 0 and vd.vprefixid in (1, 3);";
+                strQuery += $"\n and vm.uniquevoucherid = vd.uniquevoucherid and vm.branchid=vd.branchid and vm.mainbranchid=vd.mainbranchid";
+                strQuery += $"\n and vd.voucheramt > 0 and vd.vprefixid in (1, 3) and vd.branchid={nBranchId} and vd.mainbranchid={nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
                 strQuery = $" update vouchermain{nMainBranchId} vm set voucheramt = vd.voucheramt,acid = vd.acid,revacid = vd.revacid from voucherdetails{nMainBranchId} vd WHERE";
                 strQuery += $"\n vm.vprefixid = vd.vprefixid and vm.voucherno = vd.voucherno";
-                strQuery += $"\n and vm.uniquevoucherid = vd.uniquevoucherid";
-                strQuery += $"\n and vd.voucheramt < 0 and vd.vprefixid in (2, 4);";
+                strQuery += $"\n and vm.uniquevoucherid = vd.uniquevoucherid and vm.branchid=vd.branchid and vm.mainbranchid=vd.mainbranchid";
+                strQuery += $"\n and vd.voucheramt < 0 and vd.vprefixid in (2, 4) and vd.branchid={nBranchId} and vd.mainbranchid={nMainBranchId};";
+                stringBuilder.Add(strQuery);
+
+
+                strQuery = $" update vouchermain{nMainBranchId} vm set voucheramt = vd.voucheramt,acid = vd.acid,revacid = vd.revacid from voucherdetails{nMainBranchId} vd WHERE";
+                strQuery += $"\n vm.vprefixid = vd.vprefixid and vm.voucherno = vd.voucherno";
+                strQuery += $"\n and vm.uniquevoucherid = vd.uniquevoucherid and vm.branchid=vd.branchid and vm.mainbranchid=vd.mainbranchid";
+                strQuery += $"\n and vd.vprefixid in (10) and vd.branchid={nBranchId} and vd.mainbranchid={nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
                 //returnadjustmentlog
@@ -379,12 +386,18 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE chequeentry{nMainBranchId} rm SET recid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.recid and rm.recid>55 AND rm.branchid = {nBranchId} And rm.mainbranchid = {nMainBranchId}");
 
                 //outstanding
-                stringBuilder.Add($"UPDATE outstanding{nMainBranchId} rm SET billserid = bs.billserid FROM billseries bs WHERE bs.tempid = rm.billserid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE outstanding{nMainBranchId} rm SET billserid = bs.billserid FROM billseries bs WHERE bs.tempid = rm.billserid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId} and rm.billserid<>0 ");
                 stringBuilder.Add($"UPDATE outstanding{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE outstanding{nMainBranchId} rm SET salesmanid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.salesmanid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"update outstanding{nMainBranchId}    set sourcetype = 'Sales'  where vprefixid=5 and branchid = {nBranchId} and mainbranchid = {nMainBranchId};");
                 stringBuilder.Add($"update outstanding{nMainBranchId}    set sourcetype = 'Purchase'  where vprefixid=6 and branchid = {nBranchId} and mainbranchid = {nMainBranchId};");
 
+                strQuery = $"update outstanding{nMainBranchId} os    set sourcetype = 'Sales'  where vprefixid=10 and branchid = {nBranchId} and mainbranchid = {nMainBranchId}";
+                strQuery += $" and os.acid in (select acid from accounthead{nMainBranchId} where customerflag=true and branchid={nBranchId});";
+                stringBuilder.Add(strQuery);
+                strQuery = $"update outstanding{nMainBranchId} os    set sourcetype = 'Purchase'  where vprefixid=10 and branchid = {nBranchId} and mainbranchid = {nMainBranchId}";
+                strQuery += $" and os.acid in (select acid from accounthead{nMainBranchId} where supplierflag=true  and branchid={nBranchId});";
+                stringBuilder.Add(strQuery);
                 //issuereturnmain
 
                 stringBuilder.Add($"UPDATE issuereturnmain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} AND im.mainbranchid = {nMainBranchId}");
@@ -819,7 +832,7 @@ namespace CodeAppsDataMigration.Migration
         {
             ReportProgress("Updating voucher prefix in SQL Server...", 0);
 
-            string strQuery = @"select * from branchsetting where branchid=" + nFromBranchId;
+            string strQuery = @"select * from VoucherPrefix where branchid=" + nFromBranchId;
 
             try
             {
@@ -851,34 +864,34 @@ namespace CodeAppsDataMigration.Migration
                     switch (Value)
                     {
                         case "1":
-                            strUpdateQuery += "\n Update VoucherPrefix set vocherNo = '" + vocherNo + "',uniquevoucherid = '" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix set voucherNo = '" + vocherNo + "',uniquevoucherid = '" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
                         case "2":
-                            strUpdateQuery += "\n Update VoucherPrefix set vocherNo = '" + vocherNo + "',uniquevoucherid = '" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix set voucherNo = '" + vocherNo + "',uniquevoucherid = '" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
                         case "3":
-                            strUpdateQuery += "\n Update VoucherPrefix set vocherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix set voucherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
                         case "4":
-                            strUpdateQuery += "\n Update VoucherPrefix set vocherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix set voucherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
                         case "5":
-                            strUpdateQuery += "\n Update VoucherPrefix set vocherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix set voucherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
                         case "6":
-                            strUpdateQuery += "\n Update VoucherPrefix set vocherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix set voucherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
                         case "7":
-                            strUpdateQuery += "\n Update VoucherPrefix  set vocherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix  set voucherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
                         case "8":
-                            strUpdateQuery += "\n Update VoucherPrefix set vocherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix set voucherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
                         case "9":
-                            strUpdateQuery += "\n Update VoucherPrefix set vocherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix set voucherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
                         case "10":
-                            strUpdateQuery += "\n Update VoucherPrefix set vocherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefix ='" + Prefix + "' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update VoucherPrefix set voucherNo = '" + vocherNo + "',uniquevoucherid ='" + UniqueVoucherId + "' where mainbranchid = '" + nMainBranchId + "' and vprefixid ='" + Value + "' and branchid='" + nBranchId + "' ;";
                             break;
 
 
