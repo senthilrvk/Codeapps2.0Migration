@@ -13,7 +13,7 @@
   <Postgres>
     <Host>localhost</Host>
     <Port>5432</Port>
-    <Database>SALAHDEEN11052026</Database>
+    <Database>NSTRADERS09062026</Database>
     <Username>postgres</Username>
     <Password>kash</Password>
     <Timeout>0</Timeout>
