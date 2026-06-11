@@ -500,7 +500,7 @@ namespace CodeAppsDataMigration.Migration
 
 
                 strQuery = $" UPDATE categoryhead";
-                strQuery += $"\n SET categorytypeid = CASE categorytypeid";
+                strQuery += $"\n SET headtypeid = CASE headtypeid";
                 strQuery += $"\n WHEN 15 THEN 6";
                // strQuery += $"\n WHEN 11  THEN 4";//unit
                 //strQuery += $"\n WHEN 9  THEN 7";
@@ -510,7 +510,7 @@ namespace CodeAppsDataMigration.Migration
                 //strQuery += $"\n WHEN 6  THEN 10";
                 //strQuery += $"\n WHEN 7  THEN 12";
                 //strQuery += $"\n WHEN 15 THEN 12";
-                strQuery += $"\n ELSE categorytypeid";
+                strQuery += $"\n ELSE headtypeid";
                 strQuery += $"\n END";
                 // strQuery += $"\n WHERE categorytypeid >0";
                 strQuery += $"\n where tempid<> 0";
@@ -518,7 +518,7 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n AND mainbranchid = {nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
-                stringBuilder.Add($"UPDATE category ct SET categoryhead_id = ch.categoryheadid FROM categoryhead ch WHERE ct.categoryhead_id = ch.tempid AND isub.branchid = {nBranchId} and isub.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE category ct SET categoryhead_id = ch.categoryheadid FROM categoryhead ch WHERE ct.categoryhead_id = ch.tempid AND ct.branchid = {nBranchId} and ct.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE restotabledetails isub SET tableid = pm.tableid FROM restotable pm WHERE pm.tempid = isub.tableid AND isub.branchid = {nBranchId} and isub.mainbranchid = {nMainBranchId}");
 
                 //              { id: 1, categorytype: 'Product' },
