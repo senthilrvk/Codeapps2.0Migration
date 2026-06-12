@@ -1,20 +1,8 @@
 ﻿using CodeAppsDataMigration.Data;
-using CodeAppsDataMigration.Migration;
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Primitives;
 using Npgsql;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Reflection;
-using System.Text;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace CodeAppsDataMigration.Migration
 {
@@ -323,9 +311,9 @@ namespace CodeAppsDataMigration.Migration
                 strQuery = $"update expirydebitnotemain{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
                 strQuery += $"\n  where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billtype = 'EXPIRY/DAMAGE DEBITNOTE'";
                 strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId};";
-                               
-                List <AccountIdMigration> accountIdMigrations = GetAccountIdMigrations();
-                foreach(AccountIdMigration acidmig in accountIdMigrations)
+
+                List<AccountIdMigration> accountIdMigrations = GetAccountIdMigrations();
+                foreach (AccountIdMigration acidmig in accountIdMigrations)
                 {
                     stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} vd SET acid     = {acidmig.PosgresAcId}  WHERE vd.acid    = {acidmig.AcId} and vd.acid    < 55 AND vd.branchid = {nBranchId} and vd.mainbranchid = {nMainBranchId}");
                     stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} vd SET revacid  = {acidmig.PosgresAcId}  WHERE vd.revacid = {acidmig.AcId} and vd.revacid < 55 AND vd.branchid = {nBranchId} and vd.mainbranchid = {nMainBranchId}");
@@ -338,8 +326,8 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET acid    = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET revacid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.revacid and rm.revacid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
 
-              //  stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET acid    = -46 FROM accounthead{nMainBranchId} ah WHERE rm.acid=26 AND rm.branchid = {nBranchId} And rm.mainbranchid = {nMainBranchId}");
-              //  stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET revacid = -46 FROM accounthead{nMainBranchId} ah WHERE rm.revacid =26  AND rm.branchid = {nBranchId} And rm.mainbranchid = {nMainBranchId}");
+                //  stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET acid    = -46 FROM accounthead{nMainBranchId} ah WHERE rm.acid=26 AND rm.branchid = {nBranchId} And rm.mainbranchid = {nMainBranchId}");
+                //  stringBuilder.Add($"UPDATE voucherdetails{nMainBranchId} rm SET revacid = -46 FROM accounthead{nMainBranchId} ah WHERE rm.revacid =26  AND rm.branchid = {nBranchId} And rm.mainbranchid = {nMainBranchId}");
 
 
                 strQuery = $"INSERT INTO vouchermain{nMainBranchId}(";
@@ -396,7 +384,7 @@ namespace CodeAppsDataMigration.Migration
                 //voucheraccoutnheadupdate
                 stringBuilder.Add($"UPDATE vouchermain{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE vouchermain{nMainBranchId} rm SET revacid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.revacid and rm.revacid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
-                
+
 
                 //returnadjustmentlog
                 stringBuilder.Add($"UPDATE returnadjustmentlog{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
@@ -527,7 +515,7 @@ namespace CodeAppsDataMigration.Migration
                 strQuery = $" UPDATE categoryhead";
                 strQuery += $"\n SET headtypeid = CASE headtypeid";
                 strQuery += $"\n WHEN 15 THEN 6";
-               // strQuery += $"\n WHEN 11  THEN 4";//unit
+                // strQuery += $"\n WHEN 11  THEN 4";//unit
                 //strQuery += $"\n WHEN 9  THEN 7";
                 //strQuery += $"\n WHEN 14 THEN 5";
                 //strQuery += $"\n WHEN 4  THEN 11";
@@ -558,6 +546,20 @@ namespace CodeAppsDataMigration.Migration
                 //{ id: 10, categorytype: 'Bank' },
                 //{ id: 11, categorytype: 'Agent' },
                 //{ id: 12, categorytype: 'Notes' }
+
+
+                strQuery = $"\n update store{nMainBranchId} st";
+                strQuery += $"\n set stkbilledqty = st.stkbilledqty + agg.totqty";
+                strQuery += $"\n from(";
+                strQuery += $"\n select isub.productid, isub.branchid, isub.mainbranchid,";
+                strQuery += $"\n sum(isub.qty + isub.freqty + isub.advfre) as totqty";
+                strQuery += $"\n from issuemain{nMainBranchId} im    inner    join issuesubdetails{nMainBranchId} isub  on im.billserid = isub.billserid";
+                strQuery += $"\n and im.issueno = isub.issueno       and im.uniquebillno = isub.uniquebillno       and im.branchid = isub.branchid";
+                strQuery += $"\n and im.mainbranchid = isub.mainbranchid    where im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId} and COALESCE(im.issuecancel,'No') <> 'Yes'";
+                strQuery += $"\n group by isub.productid, isub.branchid, isub.mainbranchid";
+                strQuery += $"\n ) agg";
+                strQuery += $"\n where st.productid = agg.productid  and st.branchid = agg.branchid  and st.mainbranchid = agg.mainbranchid ;";
+                stringBuilder.Add(strQuery);
 
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
@@ -627,7 +629,7 @@ namespace CodeAppsDataMigration.Migration
 
             try
             {
-                DataTable dtsql = new DataTable();
+                System.Data.DataTable dtsql = new System.Data.DataTable();
                 using var connection = SqlServerConnection.Create();
                 connection.Open();
                 var query = string.Format(strQuery);
@@ -761,7 +763,7 @@ namespace CodeAppsDataMigration.Migration
 
             try
             {
-                DataTable dtsql = new DataTable();
+                System.Data.DataTable dtsql = new System.Data.DataTable();
                 using var connection = SqlServerConnection.Create();
                 connection.Open();
                 var query = string.Format(strQuery);
@@ -882,7 +884,7 @@ namespace CodeAppsDataMigration.Migration
 
             try
             {
-                DataTable dtsql = new DataTable();
+                System.Data.DataTable dtsql = new System.Data.DataTable();
                 using var connection = SqlServerConnection.Create();
                 connection.Open();
                 var query = string.Format(strQuery);
@@ -958,7 +960,7 @@ namespace CodeAppsDataMigration.Migration
                 ReportProgress($"Updating voucher prefix failed: {ex.Message}", 2);
             }
         }
-      
+
         public void fnBillSeriesUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
         {
             ReportProgress("Updating BillSeries in SQL Server...", 0);
@@ -967,7 +969,7 @@ namespace CodeAppsDataMigration.Migration
 
             try
             {
-                DataTable dtsql = new DataTable();
+                System.Data.DataTable dtsql = new System.Data.DataTable();
                 using var connection = SqlServerConnection.Create();
                 connection.Open();
 
@@ -1015,7 +1017,7 @@ namespace CodeAppsDataMigration.Migration
             string strQuery = @"select * from branch where branchid=" + nFromBranchId;
             try
             {
-                DataTable dtsql = new DataTable();
+                System.Data.DataTable dtsql = new System.Data.DataTable();
                 using var connection = SqlServerConnection.Create();
                 connection.Open();
                 using var command = new SqlCommand(strQuery, connection);
@@ -1134,7 +1136,7 @@ namespace CodeAppsDataMigration.Migration
 
         public static List<AccountIdMigration> GetAccountIdMigrations()
         {
-              return new List<AccountIdMigration>
+            return new List<AccountIdMigration>
               {
             new AccountIdMigration { AccountId = 34, HeadName = "TCS OUT", AcId = -8, PosgresAcId = -50 },
         new AccountIdMigration { AccountId = 35, HeadName = "TCS IN", AcId = -7, PosgresAcId = -51 },
@@ -1175,8 +1177,8 @@ namespace CodeAppsDataMigration.Migration
         new AccountIdMigration { AccountId = 32, HeadName = "DEBIT NOTE TAX 18%", AcId = 49, PosgresAcId = -78 },
         new AccountIdMigration { AccountId = 33, HeadName = "DEBIT NOTE TAX 28%", AcId = 50, PosgresAcId = -79 },
     };
-  
-   }
+
+        }
 
 
         public void fnSqlMainBranchValueUpdate()

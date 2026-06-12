@@ -1182,6 +1182,7 @@ namespace CodeAppsDataMigration.Migration
                 {"actratewithoutfre","0"},
                  {"hsnrateperunit","0"},
                 { "pcsactpurrate","0" },
+                 { "stkbilledqty","0" },
             },
                  condition="where   branchid ="+nFromBranchId.ToString()
             },
