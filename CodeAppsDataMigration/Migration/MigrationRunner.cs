@@ -553,13 +553,13 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n set stkbilledqty = st.stkbilledqty + agg.totqty";
                 strQuery += $"\n from(";
                 strQuery += $"\n select isub.productid, isub.branchid, isub.mainbranchid,";
-                strQuery += $"\n sum(isub.qty + isub.freqty + isub.advfre) as totqty";
+                strQuery += $"\n sum(isub.qty + isub.freqty + isub.advfre) as totqty,isub.batchslno";
                 strQuery += $"\n from issuemain{nMainBranchId} im    inner    join issuesubdetails{nMainBranchId} isub  on im.billserid = isub.billserid";
                 strQuery += $"\n and im.issueno = isub.issueno       and im.uniquebillno = isub.uniquebillno       and im.branchid = isub.branchid";
                 strQuery += $"\n and im.mainbranchid = isub.mainbranchid    where im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId} and COALESCE(im.issuecancel,'No') <> 'Yes'";
-                strQuery += $"\n group by isub.productid, isub.branchid, isub.mainbranchid";
+                strQuery += $"\n group by isub.productid, isub.branchid, isub.mainbranchid,isub.batchslno";
                 strQuery += $"\n ) agg";
-                strQuery += $"\n where st.productid = agg.productid  and st.branchid = agg.branchid  and st.mainbranchid = agg.mainbranchid ;";
+                strQuery += $"\n where st.productid = agg.productid  and st.branchid = agg.branchid  and st.mainbranchid = agg.mainbranchid and st.batchslno = agg.batchslno;";
                 stringBuilder.Add(strQuery);
 
                 fnControOrderUpdate(nMainBranchId);
