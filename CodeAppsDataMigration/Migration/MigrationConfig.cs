@@ -2842,6 +2842,43 @@ namespace CodeAppsDataMigration.Migration
                 },
                 condition = "where branchid =" + nFromBranchId.ToString()
             },
+        new TableMap
+        {
+            SqlTable = "Doctor",
+            PgTable  = "doctor",
+            Columns = new[]
+            {
+                ("Doctor_Name",         "doctorname",         "text"),
+                ("Doctor_Speciality",   "speciality",         "text"),
+                ("Doctor_ConsultFrom",  "consultfrom",        "text"),
+                ("Doctor_ConsultTo",    "consultto",          "text"),
+                ("Doctor_OfficialAdd1", "add1",               "text"),
+                ("Doctor_OfficialAdd2", "add2",               "text"),
+                ("Doctor_OfficialAdd3", "add3",               "text"),
+                ("Doctor_OfficialPhone","phone",              "text"),
+                ("Doctor_Email",        "email",              "text"),
+                ("Doctor_ResAdd1",      "resadd1",            "text"),
+                ("Doctor_ResAdd2",      "resadd2",            "text"),
+                ("Doctor_ResAdd3",      "resadd3",            "text"),
+                ("Doctor_ResPhone",     "resphone",           "text"),
+                ("Doctor_ResMobile",    "resmobile",          "text"),
+                ("Doctor_ConsultFee",   "doctor_consultfee",  "numeric"),
+                ("Department_Id",       "department_id",      "integer"),
+                ("Doctor_UserName",     "username",           "text"),
+                ("Doctor_Password",     "password",           "text"),
+                ("Specialist_Id",       "specialistid",       "integer"),
+                ("NoOf_Revisit",        "noofrevisit",        "numeric"),
+                ("Revisit_Limit",       "revisitlimit",       "numeric"),
+                ("branchid",            "branchid",           "numeric"),
+                ("mainbranchid",        "mainbranchid",       "numeric"),
+                ("Doctor_Id","tempid",  "bigint")
+            },
+            Constants = new Dictionary<string, object>
+            {
+                {"mobile","" }
+            },
+            condition = "where branchid =" + nFromBranchId.ToString()
+        },
         };
 
     }
