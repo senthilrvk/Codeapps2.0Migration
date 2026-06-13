@@ -3,6 +3,7 @@ using DocumentFormat.OpenXml.Drawing.Charts;
 using Microsoft.Data.SqlClient;
 using Npgsql;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CodeAppsDataMigration.Migration
 {
@@ -561,6 +562,8 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n where st.productid = agg.productid  and st.branchid = agg.branchid  and st.mainbranchid = agg.mainbranchid ;";
                 stringBuilder.Add(strQuery);
 
+                fnControOrderUpdate(nMainBranchId);
+
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)
@@ -576,6 +579,9 @@ namespace CodeAppsDataMigration.Migration
                     connection.Close();
                     queryIndex++;
                 }
+
+
+
             }
             catch (Exception ex)
             {
@@ -688,7 +694,7 @@ namespace CodeAppsDataMigration.Migration
                             strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='ImageSavePath';";
                             break;
                         case "ItemSearch":
-                            strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='ItemSearch';";
+                            strUpdateQuery += "\n Update mainsetting set settingvalue = 'MultiDeepSearch' where mainbranchid = " + nMainBranchId + " and settingname='ItemSearch';";
                             break;
                         case "NegativeBilling":
                             strUpdateQuery += "\n Update mainsetting set settingvalue = '" + Value + "' where mainbranchid = " + nMainBranchId + " and settingname='NegativeBilling';";
@@ -1192,6 +1198,75 @@ namespace CodeAppsDataMigration.Migration
             using var cmd = new SqlCommand(strQuery, conn);
             cmd.ExecuteNonQuery();
         }
+
+
+        public void fnControOrderUpdate(long nMainBranchId)
+        {
+
+            ReportProgress("Updating mainsetting in SQL Server...", 0);
+
+            string strQuery = @"select * from ControlOrder";
+
+            try
+            {
+                System.Data.DataTable dtsql = new System.Data.DataTable();
+                using var connection = SqlServerConnection.Create();
+                connection.Open();
+                var query = string.Format(strQuery);
+                using var command = new SqlCommand(query, connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                adapter.Fill(dtsql);
+                connection.Close();
+
+                //strQuery = @"select * from mainsetting";
+                //DataTable  dtposgres = new DataTable();
+                //using var posconnection = PostgresConnection.Create();
+                //posconnection.Open();
+                //var posquery = string.Format(strQuery);
+                //using var poscommand = new SqlCommand(query, connection);
+                //adapter = new SqlDataAdapter(command);
+                //adapter.Fill(dtposgres);
+                //posconnection.Close();
+                string strUpdateQuery = "";
+                foreach (DataRow row in dtsql.Rows)
+                {
+                    string ControlName = row["ControlName"].ToString();
+                    string ControlType = row["ControlType"].ToString();
+                    Int32 ControlOrder =Convert.ToInt32(row["ControlOrder"].ToString());
+                    bool Active =Convert.ToString(row["Active"].ToString())=="0" ? false :true;
+               
+                    strUpdateQuery += $"\n update controlorder set controlorder ='{ControlOrder}' , active ={Active} where controlname = '{ControlName}' and controltype ='{ControlType}' ;";
+
+                }
+
+
+                foreach (DataRow row in dtsql.Rows)
+                {
+                    string ControlName = row["ControlName"].ToString();
+                    string ControlType = row["ControlType"].ToString();
+                    Int32 ControlOrder = Convert.ToInt32(row["ControlOrder"].ToString());
+                    bool Active = Convert.ToString(row["Active"].ToString()) == "0" ? false : true;
+                    strUpdateQuery += $"\n update controlordermainbranch set controlorder ='{ControlOrder}' , active ={Active} where controlname = '{ControlName}' and controltype ='{ControlType}' ;";
+
+                }
+
+
+
+                using var posconnection1 = PostgresConnection.Create();
+                posconnection1.Open();
+                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                poscommand1.ExecuteNonQuery();
+                posconnection1.Close();
+
+                ReportProgress("Updating controlorder successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating controlorder failed: {ex.Message}", 2);
+            }
+        }
+
+
 
     }
 

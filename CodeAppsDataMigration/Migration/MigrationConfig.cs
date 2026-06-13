@@ -1207,7 +1207,7 @@ namespace CodeAppsDataMigration.Migration
                },
                Constants = new Dictionary<string, object>
                {
-                      {"receipttime",TimeOnly.FromDateTime(DateTime.Now) },                      
+                      {"receipttime",TimeOnly.FromDateTime(DateTime.Now) },
                       {"invdiffamt","0"},
                       {"payterms",""},
                       {"billserid","0"},
@@ -2222,9 +2222,9 @@ namespace CodeAppsDataMigration.Migration
 
               Columns = new[]
               {
-       
+
                     ("EBill_ClientId", "clientid", "text"),
-                    ("EBill_ClientSecretId", "clientsecretid", "text"),                   
+                    ("EBill_ClientSecretId", "clientsecretid", "text"),
                     ("EBill_UserName", "ebill_username", "text"),
                     ("EBill_Pwd", "ebill_pwd", "text"),
                     ("EBill_UserClientId", "userclientid", "text"),
@@ -2250,7 +2250,7 @@ namespace CodeAppsDataMigration.Migration
 
               Columns = new[]
               {
-                                    
+
                    ("AckNo", "ackno", "text"),
                    ("Irn", "irn", "text"),
                    ("SignedInvoice", "signedinvoice", "text"),
@@ -2270,7 +2270,7 @@ namespace CodeAppsDataMigration.Migration
                    ("mainbranchid", "mainbranchid", "bigint")
               },
               Constants = new Dictionary<string, object>
-              {                 
+              {
               },
               condition="where   branchid ="+nFromBranchId.ToString()
            },
@@ -2424,7 +2424,7 @@ namespace CodeAppsDataMigration.Migration
 
 
 
-                    
+
               },
               Constants = new Dictionary<string, object>
               {
@@ -2472,7 +2472,7 @@ namespace CodeAppsDataMigration.Migration
                   { "currencyrate", 0 },
                   { "sourcefrom", "" },
 
-                  
+
               },
               condition="where   branchid ="+nFromBranchId.ToString()
            },
@@ -2484,13 +2484,13 @@ namespace CodeAppsDataMigration.Migration
               Columns = new[]
               {
 
-                   
+
                     ("GodownTransferNo","godowntransferno","bigint"),
                     ("TransDate","godowntransferdate","date"),
                     ("StaffId","staffid","bigint"),
                     ("TransTime","transtime","text"),
                     ("TransAmt","transamt","numeric(12,3)"),
-                    ("GodownId","godownid","integer"),                    
+                    ("GodownId","godownid","integer"),
                     ("TransferVoucherNo","voucherno","bigint"),
                     ("TransferUniqueVoucherId","uniquevoucherid","bigint"),
                     ("AcId","acid","bigint"),
@@ -2610,7 +2610,7 @@ namespace CodeAppsDataMigration.Migration
                   },
                   Constants = new Dictionary<string, object>
                   {
-                      
+
                   },
                   condition="where   branchid ="+nFromBranchId.ToString()
              },
@@ -2647,7 +2647,7 @@ namespace CodeAppsDataMigration.Migration
                 },
                 Constants = new Dictionary<string, object>
                 {
-     
+
                 },
                 condition = "where branchid =" + nFromBranchId.ToString()
             },
@@ -2681,7 +2681,7 @@ namespace CodeAppsDataMigration.Migration
                     ("SalesOrderSub_SpRate3","sprate3","numeric"),
                     ("SalesOrderSub_SpRate4","sprate4","numeric"),
                     ("SalesOrderSub_SpRate5","sprate5","numeric"),
-                    ("SalesOrderSub_InclusiveSales","inclusivesales","text"),        
+                    ("SalesOrderSub_InclusiveSales","inclusivesales","text"),
                     ("SalesOrderSub_ConvertBillFlag","bconvertflag","boolean"),
                     ("SalesOrderSub_Wgt","itemweight","text"),           // weak — see note
                     ("branchid","branchid","bigint"),
@@ -2691,8 +2691,8 @@ namespace CodeAppsDataMigration.Migration
                 {
                     { "repl","" },
                     { "prodfrom","" },
-                    { "specialorgrate", 0 }, 
-        
+                    { "specialorgrate", 0 },
+
                 },
                 //condition = "where branchid =" + nFromBranchId.ToString()
             },
@@ -2789,7 +2789,7 @@ namespace CodeAppsDataMigration.Migration
                     ("QuotationSub_SpRate2","sprate2","numeric"),
                     ("QuotationSub_SpRate3","sprate3","numeric"),
                     ("QuotationSub_SpRate4","sprate4","numeric"),
-                    ("QuotationSub_SpRate5","sprate5","numeric"),                    
+                    ("QuotationSub_SpRate5","sprate5","numeric"),
                     ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint"),
                 },
@@ -2810,7 +2810,7 @@ namespace CodeAppsDataMigration.Migration
                     ("Table_Code","tablecode","bigint"),
                     ("Table_Status","tablestatus","bigint"),
                     ("TempInvoiceNo","tempinvoiceno","bigint"),
-                    ("StaffId","staffid","numeric"),                   
+                    ("StaffId","staffid","numeric"),
                     ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint"),
                 },
@@ -2838,7 +2838,7 @@ namespace CodeAppsDataMigration.Migration
                 },
                 Constants = new Dictionary<string, object>
                 {
-                    
+
                 },
                 condition = "where branchid =" + nFromBranchId.ToString()
             },
