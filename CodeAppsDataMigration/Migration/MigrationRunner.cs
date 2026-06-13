@@ -4,6 +4,7 @@ using Microsoft.Data.SqlClient;
 using Npgsql;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
 namespace CodeAppsDataMigration.Migration
 {
@@ -561,6 +562,23 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n ) agg";
                 strQuery += $"\n where st.productid = agg.productid  and st.branchid = agg.branchid  and st.mainbranchid = agg.mainbranchid and st.batchslno = agg.batchslno;";
                 stringBuilder.Add(strQuery);
+
+                strQuery = $"\n update store{nMainBranchId} st";
+                strQuery = $"\n set stkbilledqty = st.stkbilledqty + agg.totqty";
+                strQuery = $"\n from(";
+                strQuery = $"\n select isub.productid, isub.branchid, isub.mainbranchid,";
+                strQuery = $"\n sum(stockreturn) as totqty, isub.batchslno";
+                strQuery = $"\n from receiptreturnmain{nMainBranchId} im    inner";
+                strQuery = $"\n join receiptreturndetails{nMainBranchId} isub  on im.receiptreturnmainid = isub.receiptreturnmainid";
+                strQuery = $"\n and im.receiptreturnno = isub.receiptreturnno   and im.branchid = isub.branchid";
+                strQuery = $"\n and im.mainbranchid = isub.mainbranchid    where im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId} and im.returncancel<> true";
+                strQuery = $"\n group by isub.productid, isub.branchid, isub.mainbranchid, isub.batchslno";
+                strQuery = $"\n ) agg";
+                strQuery = $"\n where st.productid = agg.productid  and st.branchid = agg.branchid  and st.mainbranchid = agg.mainbranchid and st.batchslno = agg.batchslno;";
+
+                stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET doctid = dc.doctorid FROM doctor dc WHERE im.doctid = dc.tempid AND dc.branchid = {nBranchId} and dc.mainbranchid = {nMainBranchId}");
+
+
 
                 fnControOrderUpdate(nMainBranchId);
 
@@ -1232,9 +1250,9 @@ namespace CodeAppsDataMigration.Migration
                 {
                     string ControlName = row["ControlName"].ToString();
                     string ControlType = row["ControlType"].ToString();
-                    Int32 ControlOrder =Convert.ToInt32(row["ControlOrder"].ToString());
-                    bool Active =Convert.ToString(row["Active"].ToString())=="0" ? false :true;
-               
+                    Int32 ControlOrder = Convert.ToInt32(row["ControlOrder"].ToString());
+                    bool Active = Convert.ToString(row["Active"].ToString()) == "0" ? false : true;
+
                     strUpdateQuery += $"\n update controlorder set controlorder ='{ControlOrder}' , active ={Active} where controlname = '{ControlName}' and controltype ='{ControlType}' ;";
 
                 }
