@@ -198,6 +198,7 @@ namespace CodeAppsDataMigration
                         runner.UpdatePrimaryKeyColumns(nMainBranchId, map.ToBranchId, map.FromBranchId);
                         runner.fnBranchSettingUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
                         runner.fnVouchePrefixUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                        runner.fnBranchUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
                     }
 
                     runner.fnMainSettingUpdate(nMainBranchId);

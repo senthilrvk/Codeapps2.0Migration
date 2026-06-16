@@ -1474,7 +1474,7 @@ namespace CodeAppsDataMigration.Migration
             },
             new TableMap
             {
-                SqlTable = "DebitNote",
+                SqlTable = "DebitNoteDetails",
                 PgTable  = "debitnotedetails"+nMainBranchId.ToString(),
                 Columns = new[]
                 {
@@ -2895,6 +2895,25 @@ namespace CodeAppsDataMigration.Migration
                 ("PrintImage_Position",     "imageposition",    "text"),        
                 ("branchid",                "branchid",         "bigint"),
                 ("mainbranchid",            "mainbranchid",     "bigint"),
+            },
+            condition = "where branchid =" + nFromBranchId.ToString()
+        },
+        new TableMap
+        {
+            SqlTable = "PrintDisplaySettings",
+            PgTable  = "printdisplaysettings",
+            Columns = new[]
+            {
+                ("ColumnName",      "columnname",         "text"),
+                ("ColumnValue",     "columnvalue",        "text"),
+                ("Width",           "width",              "text"),
+                ("bActive",         "bactive",            "text"),
+                ("OrderNo",         "orderno",            "bigint"),
+                ("PrintColumType",  "printcolumtype",     "bigint"),
+                ("PrintName",       "printname",          "bigint"),
+                ("RowNo",           "rowno",              "bigint"),
+                ("branchid",        "branchid",           "bigint"),
+                ("mainbranchid",    "mainbranchid",       "bigint"),
             },
             condition = "where branchid =" + nFromBranchId.ToString()
         },

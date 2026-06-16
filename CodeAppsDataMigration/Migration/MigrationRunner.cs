@@ -144,7 +144,8 @@ namespace CodeAppsDataMigration.Migration
                 ("area",       ""),
                 ("billseries", " AND billsersource IN ('SALES','PURCHASE','SERVICE BILL')"),
                 ("category",   ""),
-                ("notes",      "")
+                ("notes",      ""),
+                ("printdisplaysettings",      "")
             };
 
             ReportProgress("Pre-migration cleanup...", 0);
@@ -300,8 +301,9 @@ namespace CodeAppsDataMigration.Migration
 
 
                 strQuery = $"update debitnotemain{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
-                strQuery += $"\n  where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billtype = 'DEBIT NOTE'";
+                strQuery += $"\n  where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billsersource  = 'DEBIT NOTE'";
                 strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId};";
+                stringBuilder.Add(strQuery);
 
                 //expirydebitnotemain
 
@@ -587,8 +589,7 @@ namespace CodeAppsDataMigration.Migration
 
 
 
-                fnControOrderUpdate(nMainBranchId);
-                fnBillNosUpdate(nFromBranchId, nMainBranchId, nBranchId);
+             
 
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
@@ -618,6 +619,11 @@ namespace CodeAppsDataMigration.Migration
         {
             ReportProgress("Updating primary keys & foreign keys...", 85);
             ExecuteBulkUpdates(nMainBranchId, nBranchId, nFromBranchId);
+
+            fnControOrderUpdate(nMainBranchId);
+            fnBillNosUpdate(nFromBranchId, nMainBranchId, nBranchId);
+            fnPrintFileNameUpdate(nFromBranchId, nMainBranchId, nBranchId);
+          //  fnBillSeriesUpdate(nFromBranchId, nMainBranchId, nBranchId);
             ReportProgress("Primary key updates completed", 100);
         }
 
@@ -1030,7 +1036,6 @@ namespace CodeAppsDataMigration.Migration
 
                 using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
                 poscommand1.ExecuteNonQuery();
-
                 posconnection1.Close();
 
                 ReportProgress("Updating BillSeries successfully", 2);
@@ -1141,8 +1146,8 @@ namespace CodeAppsDataMigration.Migration
                         "branchorderusername = '" + Branch_OrderUserName + "', " +
                         "branchorderpwd = '" + Branch_OrderPwd + "', " +
                         "branchwhatsappno = '" + Branch_WhatsAppNo + "', " +
-                        "branchwhatsapptokenno = '" + Branch_WhatsAppTokenNo + "', " +
-                        "branchwhatsappurl = '" + Branch_WhatsAppUrl + "', " +
+                     //   "branchwhatsapptokenno = '" + Branch_WhatsAppTokenNo + "', " +
+                       // "branchwhatsappurl = '" + Branch_WhatsAppUrl + "', " +
                         "branchsecurepwd = '" + Branch_SecurePwd + "', " +
                         "branchbarcodedesign = '" + Branch_BarCodeDesign + "', " +
                         "acid = " + (string.IsNullOrEmpty(AcId) ? 0 : AcId) +
@@ -1394,6 +1399,130 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
+
+
+
+        private void fnPrintFileNameUpdate(long nFromBranchId, long nMainBranchId, long nBranchId)
+        {
+
+
+            string strQuery = @"select * from settings";
+            strQuery += @"select * from branchsetting where branchid=" + nFromBranchId;
+
+            try
+            {
+                System.Data.DataSet dsDataSet = new System.Data.DataSet();
+                using var connection = SqlServerConnection.Create();
+                connection.Open();
+                var query = string.Format(strQuery);
+                using var command = new SqlCommand(query, connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                adapter.Fill(dsDataSet);
+                connection.Close();
+
+                System.Data.DataTable dtbranch = new System.Data.DataTable();
+                if (dsDataSet.Tables.Count > 0)
+                {
+                    dtbranch = dsDataSet.Tables[0];
+                }
+
+
+                System.Data.DataTable dtBranchSetting = new System.Data.DataTable();
+                if (dsDataSet.Tables.Count > 1)
+                {
+                    dtBranchSetting = dsDataSet.Tables[1];
+                }
+
+                //strQuery = @"select * from branchsetting where branchid="+nBranchId+ " and mainbranchid=";
+                //DataTable dtposgres = new DataTable();
+                //using var posconnection = PostgresConnection.Create();
+                //posconnection.Open();
+                //var posquery = string.Format(strQuery);
+                //using var poscommand = new SqlCommand(query, connection);
+                //adapter = new SqlDataAdapter(command);
+                //adapter.Fill(dtposgres);
+                //posconnection.Close();
+
+                string strUpdateQuery = "";
+                string strPrintFileName = "",strPrintPreviewName="";
+
+
+                if (dsDataSet.Tables.Count > 1)
+                {
+                    strPrintFileName = ""; strPrintPreviewName = "";
+                    DataRow[] datarows = dsDataSet.Tables[1].Select("SettingName = 'DebitNotePrint' and branchid = " + nFromBranchId);
+                    foreach (DataRow rows in datarows)
+                    {
+                        strPrintFileName = Convert.ToString(rows["Value"].ToString());
+                    }
+
+                    datarows = dsDataSet.Tables[1].Select("SettingName = 'DebitNotePrintPreview' and branchid = " + nFromBranchId);
+                    foreach (DataRow rows in datarows)
+                    {
+                        strPrintPreviewName = Convert.ToString(rows["Value"].ToString());
+                    }
+
+                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printpreviewname='{strPrintPreviewName}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'DEBIT NOTE';";
+
+
+                    strPrintFileName = ""; strPrintPreviewName = "";
+                    datarows = dsDataSet.Tables[1].Select("SettingName = 'DeliveryChallanPrintFileName' and branchid = " + nFromBranchId);
+                    foreach (DataRow rows in datarows)
+                    {
+                        strPrintFileName = Convert.ToString(rows["Value"].ToString());
+                    }
+
+                   
+
+                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printpreviewname='{strPrintFileName}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'DELIVERYOUT';";
+
+
+                    strPrintFileName = ""; strPrintPreviewName = "";
+                    datarows = dsDataSet.Tables[1].Select("SettingName = 'ExpiryDebitNotePrint' and branchid = " + nFromBranchId);
+                    foreach (DataRow rows in datarows)
+                    {
+                        strPrintFileName = Convert.ToString(rows["Value"].ToString());
+                    }
+
+                    datarows = dsDataSet.Tables[1].Select("SettingName = 'ExpiryDebitNotePrintPreview' and branchid = " + nFromBranchId);
+                    foreach (DataRow rows in datarows)
+                    {
+                        strPrintPreviewName = Convert.ToString(rows["Value"].ToString());
+                    }
+
+                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printpreviewname='{strPrintPreviewName}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'EXPIRY/DAMAGE DEBITNOTE';";
+
+
+                    strPrintFileName = ""; strPrintPreviewName = "";
+                    datarows = dsDataSet.Tables[1].Select("SettingName = 'SalesReturnPrint' and branchid = " + nFromBranchId);
+                    foreach (DataRow rows in datarows)
+                    {
+                        strPrintFileName = Convert.ToString(rows["Value"].ToString());
+                    }
+                   
+
+                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printpreviewname='{strPrintFileName}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
+
+                }            
+                              
+
+                using var posconnection1 = PostgresConnection.Create();
+                posconnection1.Open();
+                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                poscommand1.ExecuteNonQuery();
+                posconnection1.Close();
+
+                ReportProgress("Updating BranchSetting  successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating BranchSetting  failed: {ex.Message}", 2);
+            }
+        }
 
     }
 
