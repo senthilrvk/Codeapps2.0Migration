@@ -173,7 +173,7 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
-        private void ExecuteBulkUpdates(Int64 nMainBranchId, Int64 nBranchId)
+        private void ExecuteBulkUpdates(Int64 nMainBranchId, Int64 nBranchId,Int64 nFromBranchId)
         {
             string testquerytemplate = "";
             try
@@ -181,6 +181,8 @@ namespace CodeAppsDataMigration.Migration
 
                 List<string> stringBuilder = new List<string>();
                 stringBuilder.Add($"UPDATE accounthead{nMainBranchId} ah SET areaid = a.area_id FROM area a WHERE a.tempid = ah.areaid AND ah.branchid = {nBranchId} and ah.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE accounthead{nMainBranchId} ah SET bankflag = true  WHERE ah.supplytype = 'Yes' AND ah.branchid = {nBranchId} and ah.mainbranchid = {nMainBranchId}");
+
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET categoryid = ca.categoryid FROM category ca WHERE ca.tempid = pm.categoryid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.prodlinkeshopid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture{nMainBranchId} mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
@@ -270,6 +272,11 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE receiptreturndetails{nMainBranchId} rm SET reasonid = ah.categoryid FROM category ah WHERE ah.tempid = rm.reasonid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
 
                 strQuery = $"update receiptreturndetails{nMainBranchId} rsub set receiptreturnmainid =  rm.receiptreturnmainid from receiptreturnmain{nMainBranchId} rm where rm.billserid = rsub.receiptreturnmainid";
+                strQuery += $"\n and rsub.branchid = rm.branchid and rsub.mainbranchid = rm.mainbranchid";
+                strQuery += $"\n and rm.branchid ={nBranchId}    and rm.mainbranchid ={nMainBranchId}";
+                stringBuilder.Add(strQuery);
+
+                strQuery = $"update receiptreturndetails{nMainBranchId} rsub set receiptreturnno =  rm.receiptreturnno from receiptreturnmain{nMainBranchId} rm where rm.receiptreturnmainid = rsub.receiptreturnmainid";
                 strQuery += $"\n and rsub.branchid = rm.branchid and rsub.mainbranchid = rm.mainbranchid";
                 strQuery += $"\n and rm.branchid ={nBranchId}    and rm.mainbranchid ={nMainBranchId}";
                 stringBuilder.Add(strQuery);
@@ -581,6 +588,7 @@ namespace CodeAppsDataMigration.Migration
 
 
                 fnControOrderUpdate(nMainBranchId);
+                fnBillNosUpdate(nFromBranchId, nMainBranchId, nBranchId);
 
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
@@ -598,8 +606,6 @@ namespace CodeAppsDataMigration.Migration
                     queryIndex++;
                 }
 
-
-
             }
             catch (Exception ex)
             {
@@ -608,10 +614,10 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
-        public void UpdatePrimaryKeyColumns(Int64 nMainBranchId, Int64 nBranchId)
+        public void UpdatePrimaryKeyColumns(Int64 nMainBranchId, Int64 nBranchId,Int64 nFromBranchId)
         {
             ReportProgress("Updating primary keys & foreign keys...", 85);
-            ExecuteBulkUpdates(nMainBranchId, nBranchId);
+            ExecuteBulkUpdates(nMainBranchId, nBranchId, nFromBranchId);
             ReportProgress("Primary key updates completed", 100);
         }
 
@@ -1284,6 +1290,109 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
+
+        private void fnBillNosUpdate(long nFromBranchId,long nMainBranchId,long nBranchId)
+        {
+
+
+            string strQuery = @"select * from branch where branchid=" + nFromBranchId;
+            strQuery += @"select * from branchsetting where branchid=" + nFromBranchId;
+
+            try
+            {
+                System.Data.DataSet dsDataSet = new System.Data.DataSet();
+                using var connection = SqlServerConnection.Create();
+                connection.Open();
+                var query = string.Format(strQuery);
+                using var command = new SqlCommand(query, connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                adapter.Fill(dsDataSet);
+                connection.Close();
+
+                System.Data.DataTable dtbranch = new System.Data.DataTable();
+                if (dsDataSet.Tables.Count > 0)
+                {
+                    dtbranch = dsDataSet.Tables[0];
+                }
+
+
+                System.Data.DataTable dtBranchSetting = new System.Data.DataTable();
+                if (dsDataSet.Tables.Count > 1)
+                {
+                    dtBranchSetting = dsDataSet.Tables[1];
+                }
+
+                //strQuery = @"select * from branchsetting where branchid="+nBranchId+ " and mainbranchid=";
+                //DataTable dtposgres = new DataTable();
+                //using var posconnection = PostgresConnection.Create();
+                //posconnection.Open();
+                //var posquery = string.Format(strQuery);
+                //using var poscommand = new SqlCommand(query, connection);
+                //adapter = new SqlDataAdapter(command);
+                //adapter.Fill(dtposgres);
+                //posconnection.Close();
+
+                string strUpdateQuery = "";
+                long nBillNo = 0;
+                foreach (DataRow row in dtbranch.Rows)
+                {
+                    nBillNo = Convert.ToInt64(row["DNSlNo"].ToString());
+
+                    strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'DEBIT NOTE';";
+
+                    nBillNo = Convert.ToInt64(row["EDSlNo"].ToString());
+
+                    strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'EXPIRY/DAMAGE DEBITNOTE';";
+
+                    nBillNo = Convert.ToInt64(row["PurReturnNo"].ToString());
+
+                    strUpdateQuery += $"\n UPDATE BranchSettings SET settingbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and settingname = 'PurchaseReturnNo';";
+
+                    nBillNo = Convert.ToInt64(row["QuoSlNo"].ToString());
+                    strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'QUOTATION';";
+
+                    nBillNo = Convert.ToInt64(row["OrderNo"].ToString());
+                    strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'SALES ORDER';";
+
+
+                    nBillNo = Convert.ToInt64(row["SRSlNo"].ToString());
+                    strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
+
+                    nBillNo = 1;
+
+                    if (dsDataSet.Tables.Count > 1)
+                    {
+                        DataRow[] datarows = dsDataSet.Tables[1].Select("SettingName = 'OpeningStockBillNo' and branchid = "+nFromBranchId);
+                        foreach(DataRow rows in datarows)
+                        {
+                            nBillNo = Convert.ToInt64(rows["Value"].ToString());
+                        }
+                    }
+
+                    strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'OPENING STOCK ENTRY';";
+
+                }
+
+                using var posconnection1 = PostgresConnection.Create();
+                posconnection1.Open();
+                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                poscommand1.ExecuteNonQuery();
+                posconnection1.Close();
+
+                ReportProgress("Updating BranchSetting  successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating BranchSetting  failed: {ex.Message}", 2);
+            }
+        }
 
 
     }

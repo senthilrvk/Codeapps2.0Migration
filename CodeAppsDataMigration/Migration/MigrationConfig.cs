@@ -84,7 +84,7 @@ namespace CodeAppsDataMigration.Migration
                     ("EntryMatch", "entrymatch", "text"),
 
                     // ---------- Banking ----------
-                    ("BankYesNo", "bankflag", "boolean"),
+                  //  ("BankYesNo", "bankflag", "boolean"),
 
                     // ---------- User ----------
                     ("UserID", "userid", "bigint"),
@@ -151,27 +151,30 @@ namespace CodeAppsDataMigration.Migration
 
                      //---------- remaining field --------
 
-                     ("", "district", "text"),
-                     ("", "statetype","text"),
-                     ("", "license1", "text"),
-                     ("", "license2", "text"),
-                     ("", "license3", "text"),
-                     ("", "license4", "text"),
-                     ("0", "schedule1", "integer"),
-                     ("0", "schedule2", "integer"),
-                     ("0", "schedule4", "integer"),
-                     ("", "introducedby", "text"),
-                     ("", "acmapheadid", "text"),
-                     ("", "supplytype", "text"),
+                     
+                  
+                     ("BankYesNo", "supplytype", "text"),
 
                     // ---------- Branch ----------
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint")
                 },
-               condition="where ac_id>55 and  branchid ="+nFromBranchId.ToString()
+               condition="where ac_id>55 and  branchid ="+nFromBranchId.ToString(),
+               Constants = new Dictionary<string, object>{
+                   {"bankflag",false},
+                   {"district", ""},
+                   {"statetype",""},
+                   {"license1", ""},
+                   {"license2", ""},
+                   {"license3", ""},
+                   {"license4", ""},
+                   {"schedule1", "0"},
+                   {"schedule2", "0"},
+                   {"schedule4", "0"},
+                   {"introducedby", ""},
+                   {"acmapheadid", "0"}
+               }
             },
-
-
             new TableMap
             {
                 SqlTable = "Area",
@@ -1371,7 +1374,7 @@ namespace CodeAppsDataMigration.Migration
                  {
 
                      ("ReceiptRet_Date", "billdate", "date"),
-                     ("ReceiptMain_SlNo", "receiptreturnno", "bigint"),
+                     ("ReceiptMain_SlNo", "receiptno", "bigint"),
                      ("ReceiptReturnMain_Id", "receiptreturnmainid", "bigint"),
                      ("ReceiptRet_BatchSlNo", "batchslno", "bigint"),
                      ("ReceiptRet_Batch", "batch", "text"),
@@ -1420,7 +1423,8 @@ namespace CodeAppsDataMigration.Migration
                  Constants = new Dictionary<string, object>
                  {
                      {"qtytype", "NOS" },
-                     { "totqty", "0"}
+                     { "totqty", "0"},
+                     { "receiptreturnno", "0"}
                  },
                  condition="where   branchid ="+nFromBranchId.ToString()
             },
@@ -2876,6 +2880,21 @@ namespace CodeAppsDataMigration.Migration
             Constants = new Dictionary<string, object>
             {
                 {"mobile","" }
+            },
+            condition = "where branchid =" + nFromBranchId.ToString()
+        },
+        new TableMap
+        {
+            SqlTable = "PrintImageSet",
+            PgTable  = "printimageset",
+            Columns = new[]
+            {
+                ("PrintImage_Name",         "printimagename",   "text"),
+                ("PrintImage_From",         "printimagefrom",   "text"),
+                ("PrintImage_PrintName",    "printfilename",    "text"),
+                ("PrintImage_Position",     "imageposition",    "text"),        
+                ("branchid",                "branchid",         "bigint"),
+                ("mainbranchid",            "mainbranchid",     "bigint"),
             },
             condition = "where branchid =" + nFromBranchId.ToString()
         },

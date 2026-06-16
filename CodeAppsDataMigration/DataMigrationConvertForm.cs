@@ -195,7 +195,7 @@ namespace CodeAppsDataMigration
                     {
                         ((IProgress<(string, int)>)progress).Report(($"Migrating {map.Display}...", 0));
                         runner.RunAll(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                        runner.UpdatePrimaryKeyColumns(nMainBranchId, map.ToBranchId);
+                        runner.UpdatePrimaryKeyColumns(nMainBranchId, map.ToBranchId, map.FromBranchId);
                         runner.fnBranchSettingUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
                         runner.fnVouchePrefixUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
                     }
