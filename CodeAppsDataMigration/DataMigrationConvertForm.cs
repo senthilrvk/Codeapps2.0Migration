@@ -196,11 +196,15 @@ namespace CodeAppsDataMigration
                         ((IProgress<(string, int)>)progress).Report(($"Migrating {map.Display}...", 0));
                         runner.RunAll(nMainBranchId, map.ToBranchId, map.FromBranchId);
                         runner.UpdatePrimaryKeyColumns(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                        runner.fnControOrderUpdate(nMainBranchId);
+                        runner.fnBillNosUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
+                        runner.fnPrintFileNameUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);                        
                         runner.fnBranchSettingUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
                         runner.fnVouchePrefixUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                        runner.fnBranchUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                    }
+                        runner.fnBranchUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);     
+                        runner.fnBillSeriesInclusiveUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
 
+                    }       
                     runner.fnMainSettingUpdate(nMainBranchId);
                 });
 

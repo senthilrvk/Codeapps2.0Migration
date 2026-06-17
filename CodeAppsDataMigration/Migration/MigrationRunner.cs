@@ -447,6 +447,10 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update issuereturndetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} AND mainbranchid ={nMainBranchId}");
                 stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId} AND isub.mainbranchid = {nMainBranchId}");
 
+                strQuery = $"update issuereturndetails{nMainBranchId} im set salesbillserid =  bs.billserid from billseries bs where bs.tempid = im.salesbillserid";
+                strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
+                stringBuilder.Add(strQuery);
 
                 //expiryreturnmain
 
@@ -459,7 +463,7 @@ namespace CodeAppsDataMigration.Migration
                 //stringBuilder.Add(strQuery);
 
 
-                //issuereturndetails
+                //expiryreturndetails
                 stringBuilder.Add($"UPDATE expiryreturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} AND pm.mainbranchid ={nMainBranchId}");
                 //strQuery = $"update issuesubdetails{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
                 //strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
@@ -620,10 +624,7 @@ namespace CodeAppsDataMigration.Migration
             ReportProgress("Updating primary keys & foreign keys...", 85);
             ExecuteBulkUpdates(nMainBranchId, nBranchId, nFromBranchId);
 
-            fnControOrderUpdate(nMainBranchId);
-            fnBillNosUpdate(nFromBranchId, nMainBranchId, nBranchId);
-            fnPrintFileNameUpdate(nFromBranchId, nMainBranchId, nBranchId);
-          //  fnBillSeriesUpdate(nFromBranchId, nMainBranchId, nBranchId);
+          
             ReportProgress("Primary key updates completed", 100);
         }
 
@@ -997,11 +998,11 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
-        public void fnBillSeriesUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
+        public void fnBillSeriesInclusiveUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
         {
             ReportProgress("Updating BillSeries in SQL Server...", 0);
 
-            string strQuery = @"select * from billseries where branchid=" + nFromBranchId;
+            string strQuery = @"select * from BillSeriesSalesInclusiveSet where branchid=" + nFromBranchId;
 
             try
             {
@@ -1296,7 +1297,7 @@ namespace CodeAppsDataMigration.Migration
         }
 
 
-        private void fnBillNosUpdate(long nFromBranchId,long nMainBranchId,long nBranchId)
+        public void fnBillNosUpdate(long nFromBranchId,long nMainBranchId,long nBranchId)
         {
 
 
@@ -1402,7 +1403,7 @@ namespace CodeAppsDataMigration.Migration
 
 
 
-        private void fnPrintFileNameUpdate(long nFromBranchId, long nMainBranchId, long nBranchId)
+        public void fnPrintFileNameUpdate(long nFromBranchId, long nMainBranchId, long nBranchId)
         {
 
 
@@ -1507,8 +1508,12 @@ namespace CodeAppsDataMigration.Migration
                     strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printpreviewname='{strPrintFileName}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
 
-                }            
-                              
+                }
+
+                strUpdateQuery += $"\n update printdisplaysettings set printname = 'CreditNotePrintModelOne' where printname = 'PrintModelCreditNote';";
+
+                strUpdateQuery += $"\n UPDATE billseries SET printfilename = 'CreditNotePrintModelOne',printpreviewname='CreditNotePrintModelOne'";
+                strUpdateQuery += $"\n WHERE printfilename = 'PrintModelCreditNote' and mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
 
                 using var posconnection1 = PostgresConnection.Create();
                 posconnection1.Open();
