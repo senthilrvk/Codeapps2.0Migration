@@ -450,6 +450,11 @@ namespace CodeAppsDataMigration.Migration
                 strQuery = $"update issuereturndetails{nMainBranchId} im set salesbillserid =  bs.billserid from billseries bs where bs.tempid = im.salesbillserid";
                 strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
                 strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
+
+                strQuery = $"update issuereturndetails{nMainBranchId} ird set issuereturnid =  irm.issuereturnid from issuereturnmain irm where ird.uniquereturnno = irm.uniquereturnno";
+                strQuery += $"\n and ird.branchid = irm.branchid and ird.mainbranchid = irm.mainbranchid";
+                strQuery += $"\n and ird.branchid ={nBranchId}    and ird.mainbranchid ={nMainBranchId} ";
+
                 stringBuilder.Add(strQuery);
 
                 //expiryreturnmain
@@ -796,7 +801,7 @@ namespace CodeAppsDataMigration.Migration
         {
             ReportProgress("Updating Branchsetting in SQL Server...", 0);
 
-            string strQuery = @"select * from branchsetting where branchid=" + nFromBranchId;
+            string strQuery = @"\n select * from branchsetting where branchid=" + nFromBranchId;
 
             try
             {
@@ -1407,8 +1412,8 @@ namespace CodeAppsDataMigration.Migration
         {
 
 
-            string strQuery = @"select * from settings";
-            strQuery += @"select * from branchsetting where branchid=" + nFromBranchId;
+            string strQuery = "\n select * from settings";
+            strQuery += "\n select * from branchsetting where branchid=" + nFromBranchId;
 
             try
             {
@@ -1463,7 +1468,7 @@ namespace CodeAppsDataMigration.Migration
                         strPrintPreviewName = Convert.ToString(rows["Value"].ToString());
                     }
 
-                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printpreviewname='{strPrintPreviewName}'";
+                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printfilepreview='{strPrintPreviewName}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'DEBIT NOTE';";
 
 
@@ -1476,7 +1481,7 @@ namespace CodeAppsDataMigration.Migration
 
                    
 
-                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printpreviewname='{strPrintFileName}'";
+                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printfilepreview='{strPrintFileName}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'DELIVERYOUT';";
 
 
@@ -1493,7 +1498,7 @@ namespace CodeAppsDataMigration.Migration
                         strPrintPreviewName = Convert.ToString(rows["Value"].ToString());
                     }
 
-                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printpreviewname='{strPrintPreviewName}'";
+                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printfilepreview='{strPrintPreviewName}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'EXPIRY/DAMAGE DEBITNOTE';";
 
 
@@ -1505,14 +1510,14 @@ namespace CodeAppsDataMigration.Migration
                     }
                    
 
-                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printpreviewname='{strPrintFileName}'";
+                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printfilepreview='{strPrintFileName}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
 
                 }
 
                 strUpdateQuery += $"\n update printdisplaysettings set printname = 'CreditNotePrintModelOne' where printname = 'PrintModelCreditNote';";
 
-                strUpdateQuery += $"\n UPDATE billseries SET printfilename = 'CreditNotePrintModelOne',printpreviewname='CreditNotePrintModelOne'";
+                strUpdateQuery += $"\n UPDATE billseries SET printfilename = 'CreditNotePrintModelOne',printfilepreview='CreditNotePrintModelOne'";
                 strUpdateQuery += $"\n WHERE printfilename = 'PrintModelCreditNote' and mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
 
                 using var posconnection1 = PostgresConnection.Create();
