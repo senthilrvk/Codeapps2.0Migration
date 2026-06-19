@@ -2916,6 +2916,74 @@ namespace CodeAppsDataMigration.Migration
             },
             condition = "where branchid =" + nFromBranchId.ToString()
         },
+        new TableMap
+        {
+            SqlTable = "ConversionMain",
+            PgTable  = "stockconversionmain",
+            Columns = new[]
+            {
+               
+                ("ConversionMain_BillNo","billno","bigint"),
+                ("ConversionMain_BillDate","billdate","Date"),
+                ("ConversionMain_ConvertType","converttype","text"),
+                ("StaffId","staffid","bigint"),
+                ("ConversionMain_CancelFlag","cancelflag","text"),                
+                ("branchid","branchid","bigint"),
+                ("mainbranchid","mainbranchid","bigint"),
+            },
+            condition = "where branchid =" + nFromBranchId.ToString()
+        },
+        new TableMap
+        {
+            SqlTable = "StockConversion",
+            PgTable  = "stockconversiondetails",
+            Columns = new[]
+            {
+                ("FromProductId",     "fromproductid",   "bigint"),
+                ("FromPurRate",       "frompurrate",     "numeric"),
+                ("FromSelRate",       "fromselrate",     "numeric"),
+                ("FromMrp",           "frommrp",         "numeric"),
+                ("FromWhRate",        "fromwhrate",      "numeric"),
+                ("FromSpRate1",       "fromsprate1",     "numeric"),
+                ("FromSpRate2",       "fromsprate2",     "numeric"),
+                ("FromSpRate3",       "fromsprate3",     "numeric"),
+                ("FromSpRate4",       "fromsprate4",     "numeric"),
+                ("FromSpRate5",       "fromsprate5",     "numeric"),
+                ("FromLandingCost",   "fromlandingcost", "numeric"),
+                ("FromBatchNo",       "frombatchno",     "bigint"),
+                ("FromStockQty",      "fromstockqty",    "numeric"),
+                ("FromEnterQty",      "fromenterqty",    "numeric"),
+                ("ToProductId",       "toproductid",     "bigint"),
+                ("ToPurRate",         "topurrate",       "numeric"),
+                ("ToSelRate",         "toselrate",       "numeric"),
+                ("ToMrp",             "tomrp",           "numeric"),
+                ("ToWhRate",          "towhrate",        "numeric"),
+                ("ToSpRate1",         "tosprate1",       "numeric"),
+                ("ToSpRate2",         "tosprate2",       "numeric"),
+                ("ToSpRate3",         "tosprate3",       "numeric"),
+                ("ToSpRate4",         "tosprate4",       "numeric"),
+                ("ToSpRate5",         "tosprate5",       "numeric"),
+                ("ToLandingCost",     "tolandingcost",   "numeric"),
+                ("ToBatchNo",         "tobatchno",       "bigint"),
+                ("ToEnterQty",        "toenterqty",      "numeric"),
+                ("EnterDate",         "enterdate",       "date"),
+                ("CancelFlag",        "cancelflag",      "text"),
+                ("StaffId",           "staffid",         "bigint"),
+                ("ToProdWeight",      "toprodweight",    "numeric"),
+                ("ToBatch",           "tobatch",         "text"),
+                ("ToExpDate",         "toexpdate",       "date"),
+                ("ToSchemePeriod",    "toschemeperiod",  "date"),
+                ("ToTaxPers",         "totaxpers",       "numeric"),
+                ("branchid","branchid","bigint"),
+                ("mainbranchid",      "mainbranchid",    "bigint")
+            },
+            Constants = new Dictionary<string, object>
+            {
+        
+            },
+            condition = "where FromBranchId =" + nFromBranchId.ToString()
+        },
+
         };
 
     }
