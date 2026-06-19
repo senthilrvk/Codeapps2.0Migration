@@ -1913,7 +1913,7 @@ namespace CodeAppsDataMigration.Migration
              Columns = new[]
              {
                     ("IssueRetSlNo", "issuereturnno", "bigint"),
-                    ("UniqueNo", "issuereturnid", "bigint"),
+                    ("UniqueNo", "uniquereturnno", "bigint"),
                     ("BillSerId", "salesbillserid", "bigint"),
                     ("Issue_SlNo", "issueno", "bigint"),
                     ("Issue_BillDate", "issuedate", "date"),
@@ -1955,8 +1955,7 @@ namespace CodeAppsDataMigration.Migration
              },
              Constants = new Dictionary<string, object>
              {
-
-                    { "uniquereturnno", "0"},
+                    { "issuereturnid", "0"},
                     { "qtytype", "NOS"},
                     { "advfre", "0"},
                     { "rqty", "0"},

@@ -451,7 +451,7 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
                 strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
 
-                strQuery = $"update issuereturndetails{nMainBranchId} ird set issuereturnid =  irm.issuereturnid from issuereturnmain irm where ird.uniquereturnno = irm.uniquereturnno";
+                strQuery = $"update issuereturndetails{nMainBranchId} ird set issuereturnid =  irm.issuereturnid from issuereturnmain{nMainBranchId} irm where ird.uniquereturnno = irm.uniquereturnno";
                 strQuery += $"\n and ird.branchid = irm.branchid and ird.mainbranchid = irm.mainbranchid";
                 strQuery += $"\n and ird.branchid ={nBranchId}    and ird.mainbranchid ={nMainBranchId} ";
 
@@ -1344,7 +1344,7 @@ namespace CodeAppsDataMigration.Migration
                 //posconnection.Close();
 
                 string strUpdateQuery = "";
-                long nBillNo = 0;
+                long nBillNo = 1;
                 foreach (DataRow row in dtbranch.Rows)
                 {
                     nBillNo = Convert.ToInt64(row["DNSlNo"].ToString());
@@ -1359,7 +1359,7 @@ namespace CodeAppsDataMigration.Migration
 
                     nBillNo = Convert.ToInt64(row["PurReturnNo"].ToString());
 
-                    strUpdateQuery += $"\n UPDATE BranchSettings SET settingbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n UPDATE branchsetting SET settingbillno = '{nBillNo}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and settingname = 'PurchaseReturnNo';";
 
                     nBillNo = Convert.ToInt64(row["QuoSlNo"].ToString());
