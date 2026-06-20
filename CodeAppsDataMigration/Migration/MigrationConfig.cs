@@ -2919,7 +2919,7 @@ namespace CodeAppsDataMigration.Migration
         new TableMap
         {
             SqlTable = "ConversionMain",
-            PgTable  = "stockconversionmain",
+            PgTable  = "stockconversionmain"+ nMainBranchId.ToString(),
             Columns = new[]
             {
                
@@ -2936,7 +2936,7 @@ namespace CodeAppsDataMigration.Migration
         new TableMap
         {
             SqlTable = "StockConversion",
-            PgTable  = "stockconversiondetails",
+            PgTable  = "stockconversiondetails"+ nMainBranchId.ToString(),
             Columns = new[]
             {
                 ("FromProductId",     "fromproductid",   "bigint"),
