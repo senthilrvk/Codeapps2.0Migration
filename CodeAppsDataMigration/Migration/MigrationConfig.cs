@@ -2919,7 +2919,7 @@ namespace CodeAppsDataMigration.Migration
         new TableMap
         {
             SqlTable = "ConversionMain",
-            PgTable  = "stockconversionmain",
+            PgTable  = "stockconversionmain"+ nMainBranchId.ToString(),
             Columns = new[]
             {
                
@@ -2936,7 +2936,7 @@ namespace CodeAppsDataMigration.Migration
         new TableMap
         {
             SqlTable = "StockConversion",
-            PgTable  = "stockconversiondetails",
+            PgTable  = "stockconversiondetails"+ nMainBranchId.ToString(),
             Columns = new[]
             {
                 ("FromProductId",     "fromproductid",   "bigint"),
@@ -2980,6 +2980,51 @@ namespace CodeAppsDataMigration.Migration
             Constants = new Dictionary<string, object>
             {
         
+            },
+            condition = "where FromBranchId =" + nFromBranchId.ToString()
+        },
+        new TableMap
+        {
+            SqlTable = "ExpenseEntryMain",
+            PgTable  = "expenseentrymain"+ nMainBranchId.ToString(),
+            Columns = new[]
+            {
+                ("ExpenseEntryMain_VoucherNo","voucherno","bigint"),
+                ("UniqueVoucherId","uniquevoucherid","bigint"),
+                ("VType_SlNo","vprefixid","bigint"),
+                ("ExpenseEntryMainDate","entrymaindate","date"),
+                ("ExpenseEntryMain_DisPers","dispers","numeric"),
+                ("ExpenseEntryMain_DisAmt","disamt","numeric"),
+                ("AcId","acid","bigint"),
+                ("ExpenseEntryMain_PayTerms","payterms","text"),
+                ("ExpenseEntryMain_OtherCharge","othercharge","numeric"),
+                ("ExpenseEntryMain_DTotal","dtotal","numeric"),
+                ("ExpenseEntryMain_ATotal","atotal","numeric"),
+                ("ExpenseEntryMain_ROF","rof","numeric"),
+                ("ExpenseEntryMain_Total","total","numeric"),
+                ("ExpenseEntryMain_Cancel","billcancel","text"),
+                ("ExpenseEntryMain_ClaimNo","claimno","text"),
+                ("StaffId","staffid","bigint"),
+                ("ExpenseEntryMain_CancelDate","canceldate","date"),
+                ("ExpenseEntryMain_CancelStaffId","cancelstaffid","bigint"),
+                ("Field1","purtype","text"),
+                ("SalesExeId","salesexeid","bigint"),
+                ("ExpenseEntryMain_Type","entrytype","text"),
+                ("ExpenseEnterMain_EnterDate","enterdate","date"),
+                ("ExpenseEnterMain_InvNo","invno","text"),
+                ("ExpenseEnterMain_InvDate","invdate","date"),
+                ("ExpenseEntryMain_PostAcId","postacid","bigint"),
+                ("ExpenseEntryMain_ChequeNo", "chequeno","text"),
+                ("ExpenseEntryMain_ChequeDate","chequedate","date"),
+                ("ExpenseEntryMain_TransType","transtype", "text"),
+                ("ExpenseEntryMain_GstNo","gstno","text"),
+                ("ExpenseEntryMain_CashId","cashid","bigint"),              
+                ("branchid","branchid","bigint"),
+                ("mainbranchid","mainbranchid","bigint")
+            },
+            Constants = new Dictionary<string, object>
+            {
+                {"inclusive","" }
             },
             condition = "where FromBranchId =" + nFromBranchId.ToString()
         },
