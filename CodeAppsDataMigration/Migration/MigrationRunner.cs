@@ -302,7 +302,7 @@ namespace CodeAppsDataMigration.Migration
 
                 strQuery = $"update debitnotemain{nMainBranchId} erm set billserid = bs.billserid from billseries bs";
                 strQuery += $"\n  where bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and billsersource  = 'DEBIT NOTE'";
-                strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId}; and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
+                strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId} and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
                 stringBuilder.Add(strQuery);
 
                 //expirydebitnotemain
@@ -1379,6 +1379,13 @@ namespace CodeAppsDataMigration.Migration
                     nBillNo = Convert.ToInt64(row["SRSlNo"].ToString());
                     strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
+
+
+
+                    nBillNo = Convert.ToInt64(row["ERSlNo"].ToString());
+                    strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'EXPIRY RETURN';";
+
 
                     nBillNo = 1;
 

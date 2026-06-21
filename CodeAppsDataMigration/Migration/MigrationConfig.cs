@@ -2579,7 +2579,7 @@ namespace CodeAppsDataMigration.Migration
                         ("ProductId","productid","bigint"),
                         ("TransQty","transqty","numeric(18,3)"),
                         ("TransRate","transrate","numeric(18,3)"),
-                        ("[TransAmt","transamt","numeric(18,3)"),
+                        ("TransAmt","transamt","numeric(18,3)"),
                         ("BatchSlno","batchslno","bigint"),
                         ("branchid","branchid","bigint"),
                         ("[Pack","pack","integer"),
@@ -2590,7 +2590,7 @@ namespace CodeAppsDataMigration.Migration
                         ("StockTransfer_SpRate1","sprate1","numeric(18,3)"),
                         ("StockTransfer_SpRate2","sprate2","numeric(18,3)"),
                         ("StockTransfer_SpRate3","sprate3","numeric(18,3)"),
-                        ("[StockTransfer_SpRate4","sprate4","numeric(18,3)"),
+                        ("StockTransfer_SpRate4","sprate4","numeric(18,3)"),
                         ("StockTransfer_SpRate5","sprate5","numeric(18,3)"),
                         ("StockTransfer_WhRate","whrate","numeric(18,3)"),
                         ("StockTransfer_LandingCost","landingcost","numeric(18,3)"),
@@ -3026,7 +3026,7 @@ namespace CodeAppsDataMigration.Migration
             {
                 {"inclusive","" }
             },
-            condition = "where FromBranchId =" + nFromBranchId.ToString()
+            condition = "where BranchId =" + nFromBranchId.ToString()
         },
 
         };
