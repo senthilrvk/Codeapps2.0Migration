@@ -3020,11 +3020,58 @@ namespace CodeAppsDataMigration.Migration
                 ("ExpenseEntryMain_GstNo","gstno","text"),
                 ("ExpenseEntryMain_CashId","cashid","bigint"),              
                 ("branchid","branchid","bigint"),
-                ("mainbranchid","mainbranchid","bigint")
+                ("mainbranchid","mainbranchid","bigint"),
+                ("ExpenseEntryMain_Id","tempid",  "bigint")
             },
             Constants = new Dictionary<string, object>
             {
                 {"inclusive","" }
+            },
+            condition = "where BranchId =" + nFromBranchId.ToString()
+        },
+
+        new TableMap
+        {
+            SqlTable = "ExpenseEntryDetails",
+            PgTable  = "expenseentrydetails"+ nMainBranchId.ToString(),
+            Columns = new[]
+            {
+                ("ExpenseEntryMain_Id","expensemainid","bigint"),
+                ("ExpiryRetSlNo","expiryretslno","bigint"),
+                ("ExpenseEntryDetails_Batch","batch","text"),
+                ("ExpenseEntryDetails_ExpDate","expdate","date"),
+                ("ExpenseEntryDetails_SelRate","selrate","numeric"),
+                ("ExpenseEntryDetails_Mrp","mrp","numeric"),
+                ("ExpenseEntryDetails_PurRate","purrate","numeric"),
+                ("ExpenseEntryDetails_Qty","qty","numeric"),
+                ("ExpenseEntryDetails_TaxPers","taxpers","numeric"),
+                ("ExpenseEntryDetails_TaxAmt","taxamt","numeric"),
+                ("ExpenseEntryDetails_PdodDis","itemdispers","numeric"),
+                ("ExpenseEntryDetails_AmtBeforeTax","amtbeforetax","numeric"),
+                ("ExpenseEntryDetails_Amount","amount","numeric"),
+                ("ProductId","productid","bigint"),
+                ("EntryHeadId","entryheadid","bigint"),
+                ("ExpenseEntryDetails_ActualRate","actualrate","numeric"),
+                ("TaxId","taxid","bigint"),
+                ("ExpenseEntryDetails_ProdDisAmt","itemdisamt","numeric"),
+                ("ExpenseEntryDetails_OriginalRate","originalrate","numeric"),
+                ("ExpenseEntryDetails_SGSTTaxPers","sgsttaxpers","numeric"),
+                ("ExpenseEntryDetails_SGSTTaxAmount","sgsttaxamount","numeric"),
+                ("ExpenseEntryDetails_SGSTAmount","sgstamount","numeric"),
+                ("ExpenseEntryDetails_CGSTTaxPers","cgsttaxpers","numeric"),
+                ("ExpenseEntryDetails_CGSTTaxAmount","cgsttaxamount","numeric"),
+                ("ExpenseEntryDetails_CGSTAmount","cgstamount","numeric"),
+                ("ExpenseEntryDetails_IGSTTaxPers", "igsttaxpers","numeric"),
+                ("ExpenseEntryDetails_IGSTTaxAmount","igsttaxamount","numeric"),
+                ("ExpenseEntryDetails_IGSTAmount","igstamount", "numeric"),
+                ("HsnId","hsnid","bigint"),
+                ("HsnCode","hsncode","text"),
+                ("branchid","branchid","bigint"),
+                ("mainbranchid","mainbranchid","bigint")
+            },
+            Constants = new Dictionary<string, object>
+            {
+                
             },
             condition = "where BranchId =" + nFromBranchId.ToString()
         },

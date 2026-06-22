@@ -515,7 +515,10 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
                 stringBuilder.Add($"UPDATE deliveryoutdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId} AND isub.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"update deliveryoutdetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} and mainbranchid = {nMainBranchId}");
-
+                
+                //ExpenseEntryDetails
+                strQuery = $"update expenseentrydetails{nMainBranchId} eed set expensemainid =  eem.entrymainid from expenseentrymain eem where eem.tempid = eed.expensemainid";
+                strQuery += $"\n and eed.branchid = eem.branchid and eed.mainbranchid = eem.mainbranchid";
 
                 strQuery = $" UPDATE category";
                 strQuery += $"\n SET categorytypeid = CASE categorytypeid";
