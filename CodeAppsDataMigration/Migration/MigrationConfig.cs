@@ -1256,7 +1256,7 @@ namespace CodeAppsDataMigration.Migration
               PgTable  = "openingstockdetails"+nMainBranchId.ToString(),
               Columns = new[]
               {
-                   ("OpeningStockNo","openingstockno","bigint"),
+                   ("OpeningStock_ReceiptSlNo","openingstockno","bigint"),
                    ("OpeningStock_ReceiptDate","openingstockdate","date"),
                    ("OpeningStock_BatchSlNo","batchslno","bigint"),
                    ("OpeningStock_Batch","batch","text"),
@@ -1298,6 +1298,7 @@ namespace CodeAppsDataMigration.Migration
                    ("OpeningStock_IGSTAmount","igstamount","numeric"),
                    ("OpeningStock_CessPers","cesspers","numeric"),
                    ("OpeningStock_CessAmt","cessamt","numeric(18,3)"),
+                   ("ProductId","productid","bigint"),
                    ("OpeningStockMain_Id","dcinno","bigint"),
                    ("branchid","branchid","bigint"),
                    ("mainbranchid","mainbranchid","bigint")
@@ -1320,7 +1321,6 @@ namespace CodeAppsDataMigration.Migration
                  {"wholsalmag","0"},
                  {"retlmargin","0"},
                  {"schmeperiod",DateTime.Now.ToString("yyyy-MM-dd")},
-                 {"productid","0"},
                  {"replaceqty","0"},
                  {"looseqty","0"},
                  {"totalqty","0"},
@@ -2539,7 +2539,6 @@ namespace CodeAppsDataMigration.Migration
             {
                  SqlTable = "StockTransfer",
                  PgTable  =  "stocktransfermain"+nMainBranchId.ToString(),
-
                   Columns = new[]
                   {
                         ("ToBranch","billserid","bigint"),
@@ -2547,7 +2546,6 @@ namespace CodeAppsDataMigration.Migration
                         ("StaffId","staffid","bigint"),
                         ("TransTime","transtime","text"),
                         ("TransAmt","transamt","numeric(18,3)"),
-                        ("branchid","frombranch","bigint"),
                         ("TransferVoucherNo","voucherno","bigint"),
                         ("TransferUniqueVoucherId","uniquevoucherid","bigint"),
                         ("AcId","acid","bigint"),
@@ -2564,14 +2562,14 @@ namespace CodeAppsDataMigration.Migration
                   },
                   Constants = new Dictionary<string, object>
                   {
-                      { "tobranch",0 },
+                      { "frombranch",nBranchId },
                   },
                 condition="where   frombranch ="+nFromBranchId.ToString()
             },
              new TableMap
              {
                  SqlTable = "StockTransferDetails",
-                 PgTable  =  "stocktransfermain"+nMainBranchId.ToString(),
+                 PgTable  =  "stocktransferdetails"+nMainBranchId.ToString(),
 
                   Columns = new[]
                   {
@@ -2582,7 +2580,7 @@ namespace CodeAppsDataMigration.Migration
                         ("TransAmt","transamt","numeric(18,3)"),
                         ("BatchSlno","batchslno","bigint"),
                         ("branchid","branchid","bigint"),
-                        ("[Pack","pack","integer"),
+                        ("Pack","pack","integer"),
                         ("TransTaxPers","taxpers","numeric(18,3)"),
                         ("tockTransfer_PurRate","purrate","numeric(18,3)"),
                         ("StockTransfer_SelRate","selrate","numeric(18,3)"),
@@ -2974,7 +2972,7 @@ namespace CodeAppsDataMigration.Migration
                 ("ToExpDate",         "toexpdate",       "date"),
                 ("ToSchemePeriod",    "toschemeperiod",  "date"),
                 ("ToTaxPers",         "totaxpers",       "numeric"),
-                ("branchid","branchid","bigint"),
+                ("branchid",          "branchid",        "bigint"),
                 ("mainbranchid",      "mainbranchid",    "bigint")
             },
             Constants = new Dictionary<string, object>

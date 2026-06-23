@@ -400,13 +400,13 @@ namespace CodeAppsDataMigration
                 using var conn = PostgresConnection.Create();
                 conn.Open();
                 using var cmd = new NpgsqlCommand(
-                    "SELECT branchid, branchname FROM branch ORDER BY branchname", conn);
+                    "SELECT mainbranchid, mainbranchname FROM mainbranch ORDER BY mainbranchname", conn);
                 using var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
                 {
-                    var id = reader["branchid"]?.ToString() ?? "";
-                    var name = reader["branchname"]?.ToString() ?? "";
+                    var id = reader["mainbranchid"]?.ToString() ?? "";
+                    var name = reader["mainbranchname"]?.ToString() ?? "";
                     cmbParentBranch.Items.Add(new ParentBranchItem(id, name));
                 }
 
@@ -456,6 +456,35 @@ namespace CodeAppsDataMigration
                 pnlContent.Controls.Add(txt);
 
                 yPos += 38;
+
+                if (colName.Equals("BranchId", StringComparison.OrdinalIgnoreCase))
+                {
+                    var lblTempId = new Label
+                    {
+                        Text = "TempId",
+                        Font = new Font("Segoe UI", 9F, FontStyle.Bold),
+                        ForeColor = Color.FromArgb(74, 85, 104),
+                        Location = new Point(5, yPos),
+                        AutoSize = true
+                    };
+                    yPos += 22;
+
+                    var txtTempId = new TextBox
+                    {
+                        Text = value,
+                        Font = new Font("Segoe UI", 10F),
+                        Location = new Point(5, yPos),
+                        Size = new Size(430, 30),
+                        BorderStyle = BorderStyle.FixedSingle,
+                        BackColor = Color.FromArgb(247, 250, 252)
+                    };
+
+                    _textBoxes["TempId"] = txtTempId;
+                    pnlContent.Controls.Add(lblTempId);
+                    pnlContent.Controls.Add(txtTempId);
+
+                    yPos += 38;
+                }
 
             }
 
@@ -698,7 +727,7 @@ namespace CodeAppsDataMigration
         {
             var jsonData = new Dictionary<string, object?>
             {
-                ["tempid"] = 0,
+                ["tempid"] = _textBoxes.TryGetValue("TempId", out var tmpMain) ? ParseLongOrDefault(tmpMain.Text) : 0,
                 ["businesstype"] = ""
             };
             var debug = BuildPayloadFromMap(_branchFieldMap, jsonData, "Main");
@@ -801,7 +830,7 @@ namespace CodeAppsDataMigration
             AddIfMissing("branchwhatsapptokenno", "");
             AddIfMissing("branchwhatsappurl",     "");
             AddIfMissing("branchappcode",       0);
-            AddIfMissing("tempid",              0);
+            AddIfMissing("tempid",              _textBoxes.TryGetValue("TempId", out var tmpSub) ? ParseLongOrDefault(tmpSub.Text) : 0);
 
             // 3) Runtime fields
             jsonData["mainbranchid"] = (int)mainBranchId;
