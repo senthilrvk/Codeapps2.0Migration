@@ -184,6 +184,8 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE accounthead{nMainBranchId} ah SET areaid = a.area_id FROM area a WHERE a.tempid = ah.areaid AND ah.branchid = {nBranchId} and ah.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE accounthead{nMainBranchId} ah SET bankflag = true  WHERE ah.supplytype = 'Yes' AND ah.branchid = {nBranchId} and ah.mainbranchid = {nMainBranchId}");
 
+                stringBuilder.Add($"UPDATE branch im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
+
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET categoryid = ca.categoryid FROM category ca WHERE ca.tempid = pm.categoryid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.prodlinkeshopid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture{nMainBranchId} mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
@@ -1321,7 +1323,6 @@ namespace CodeAppsDataMigration.Migration
         public void fnBillNosUpdate(long nFromBranchId,long nMainBranchId,long nBranchId)
         {
 
-
             string strQuery = @"select * from branch where branchid=" + nFromBranchId;
             strQuery += @"select * from branchsetting where branchid=" + nFromBranchId;
 
@@ -1349,18 +1350,25 @@ namespace CodeAppsDataMigration.Migration
                     dtBranchSetting = dsDataSet.Tables[1];
                 }
 
-                //strQuery = @"select * from branchsetting where branchid="+nBranchId+ " and mainbranchid=";
-                //DataTable dtposgres = new DataTable();
-                //using var posconnection = PostgresConnection.Create();
-                //posconnection.Open();
-                //var posquery = string.Format(strQuery);
-                //using var poscommand = new SqlCommand(query, connection);
-                //adapter = new SqlDataAdapter(command);
-                //adapter.Fill(dtposgres);
-                //posconnection.Close();
-
                 string strUpdateQuery = "";
                 long nBillNo = 1;
+                string strSettingName = "";
+
+                foreach (DataRow dr in dtBranchSetting.Rows)
+                {
+                    strSettingName = Convert.ToString(dr["SettingName"]);
+                    switch (strSettingName)
+                    {
+                        case "StockTransferNextNo":
+                            nBillNo=Convert.ToInt64(dr["Value"].ToString());
+                            strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
+                            strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'STOCK TRANSFER';";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+               
                 foreach (DataRow row in dtbranch.Rows)
                 {
                     nBillNo = Convert.ToInt64(row["DNSlNo"].ToString());
@@ -1427,8 +1435,6 @@ namespace CodeAppsDataMigration.Migration
                 ReportProgress($"Updating BranchSetting  failed: {ex.Message}", 2);
             }
         }
-
-
 
 
         public void fnPrintFileNameUpdate(long nFromBranchId, long nMainBranchId, long nBranchId)

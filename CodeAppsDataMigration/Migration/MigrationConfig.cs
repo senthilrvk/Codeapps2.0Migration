@@ -595,7 +595,70 @@ namespace CodeAppsDataMigration.Migration
                     {  "producttype", "product"},
                }
             },
+            new TableMap
+            {
+                SqlTable = "ServiceEntry",
+                PgTable  = "productmain"+nMainBranchId.ToString(),
+                Columns = new[]
+                {
 
+                    ("Service_Id", "tempid", "bigint"),
+                    ("ItemCode", "itemcode", "text"),
+                    ("SkuCode", "hsncode", "text"),
+                    ("ItemDesc", "itemdesc", "text"),
+                    ("CategoryId", "categoryid", "integer"),
+                    ("UnitId", "unitid", "text"),
+                    ("TaxGroupId", "taxid", "integer"),
+                    ("HsnId", "hsnid", "bigint"),
+                    ("branchid", "branchid", "bigint"),
+                    ("mainbranchid", "mainbranchid", "bigint")
+                },
+               condition="where   branchid ="+nFromBranchId.ToString(),
+               Constants = new Dictionary<string, object>
+               {
+                    {  "producttype", "serviceitem"},
+                    {  "vendorcode", ""},
+                    {  "brand", ""},
+                    {  "model", ""},
+                    {  "packqty", "0"},
+                    {  "imageloc", ""},
+                    {  "fullitemdesc", ""},
+                    {  "manufacture_id", "0"},
+                    {  "bactive", "True"},
+                    {  "bconsignment", "False"},
+                    {  "editdate", DateTime.Now.ToString("yyyy-MM-dd")},
+                    {  "editstaff", "tet"},
+                    {  "colorcode", ""},
+                    {  "productused", "0"},
+                    {  "colorname", ""},
+                    {  "coldestorage", ""},
+                    {  "enterdat",DateTime.Now.ToString("yyyy-MM-dd")},
+                    {  "times", ""},
+                    {  "chemicalid", "0"},
+                    {  "groupid", "0"},
+                    {  "prodtitle", ""},
+                    {  "prodlumen", ""},
+                    {  "prodmaterial", ""},
+                    {  "prodbeamangle", ""},
+                    {  "prodiprating", ""},
+                    {  "prodmapid", "0"},
+                    {  "productlinkid", "0"},
+                    {  "prodspecification", ""},
+                    {  "proddimension", ""},
+                    {  "prodmapitemname", ""},
+                    {  "prodweight", "0"},
+                    {  "productgrpid", "0"},
+                    {  "prodwgttypeid", "0"},
+                    {  "prodcomponents", ""},
+                    {  "prodlinkorderid", "0"},
+                    {  "prodlinkeshopid", "0"},
+                    {  "sizeid", "0"},
+                    {  "productsearch", ""},
+                    {  "stockchecking", ""},
+                    {  "barcode", ""},
+                    {  "qtytype", "NOS"},
+               }
+            },
            new TableMap
             {
                 SqlTable = "ProductSub",
@@ -657,7 +720,7 @@ namespace CodeAppsDataMigration.Migration
                  condition="where   branchid ="+nFromBranchId.ToString()
             },
 
-           new TableMap
+            new TableMap
             {
                 SqlTable = "Issue",
                 PgTable  = "issuemain"+nMainBranchId.ToString(),
@@ -2889,7 +2952,7 @@ namespace CodeAppsDataMigration.Migration
                 ("PrintImage_Name",         "printimagename",   "text"),
                 ("PrintImage_From",         "printimagefrom",   "text"),
                 ("PrintImage_PrintName",    "printfilename",    "text"),
-                ("PrintImage_Position",     "imageposition",    "text"),        
+                ("PrintImage_Position",     "imageposition",    "text"),
                 ("branchid",                "branchid",         "bigint"),
                 ("mainbranchid",            "mainbranchid",     "bigint"),
             },
@@ -2920,12 +2983,12 @@ namespace CodeAppsDataMigration.Migration
             PgTable  = "stockconversionmain"+ nMainBranchId.ToString(),
             Columns = new[]
             {
-               
+
                 ("ConversionMain_BillNo","billno","bigint"),
                 ("ConversionMain_BillDate","billdate","Date"),
                 ("ConversionMain_ConvertType","converttype","text"),
                 ("StaffId","staffid","bigint"),
-                ("ConversionMain_CancelFlag","cancelflag","text"),                
+                ("ConversionMain_CancelFlag","cancelflag","text"),
                 ("branchid","branchid","bigint"),
                 ("mainbranchid","mainbranchid","bigint"),
             },
@@ -2977,7 +3040,7 @@ namespace CodeAppsDataMigration.Migration
             },
             Constants = new Dictionary<string, object>
             {
-        
+
             },
             condition = "where FromBranchId =" + nFromBranchId.ToString()
         },
@@ -3016,7 +3079,7 @@ namespace CodeAppsDataMigration.Migration
                 ("ExpenseEntryMain_ChequeDate","chequedate","date"),
                 ("ExpenseEntryMain_TransType","transtype", "text"),
                 ("ExpenseEntryMain_GstNo","gstno","text"),
-                ("ExpenseEntryMain_CashId","cashid","bigint"),              
+                ("ExpenseEntryMain_CashId","cashid","bigint"),
                 ("branchid","branchid","bigint"),
                 ("mainbranchid","mainbranchid","bigint"),
                 ("ExpenseEntryMain_Id","tempid",  "bigint")
@@ -3069,7 +3132,7 @@ namespace CodeAppsDataMigration.Migration
             },
             Constants = new Dictionary<string, object>
             {
-                
+
             },
             condition = "where BranchId =" + nFromBranchId.ToString()
         },
