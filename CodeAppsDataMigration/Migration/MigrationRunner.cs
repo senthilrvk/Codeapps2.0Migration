@@ -213,6 +213,23 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
 
 
+                // servicesubdetails
+                stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
+                strQuery = $"update servicemain{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
+                strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SERVICE BILL' and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
+                stringBuilder.Add(strQuery);
+
+                stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+
+                strQuery = $"update servicesubdetails{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
+                strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SERVICE BILL' and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
+                stringBuilder.Add(strQuery);
+
 
                 // Purchase
                 stringBuilder.Add($"UPDATE receiptdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.mainbranchid = {nMainBranchId}");
