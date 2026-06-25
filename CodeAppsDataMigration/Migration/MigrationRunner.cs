@@ -200,9 +200,8 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
 
 
-                // servicesubdetails
-                stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='product' and isub.prodfrom='Product'");
-                stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='serviceitem' and isub.prodfrom != 'Product'");
+                // servicemain
+               
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
@@ -211,6 +210,9 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SERVICE BILL' and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
                 stringBuilder.Add(strQuery);
 
+                // servicesubdetails
+                stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='product' and isub.prodfrom='Product'");
+                stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='serviceitem' and isub.prodfrom != 'Product'");
                 stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
                 strQuery = $"update servicesubdetails{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
@@ -1428,6 +1430,24 @@ namespace CodeAppsDataMigration.Migration
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'OPENING STOCK ENTRY';";
 
                 }
+
+                // ServiceBillNextNo: continue service bill numbering from the highest migrated uniquebillno
+                long nServiceBillNo = 0;
+                using (var posconnection = PostgresConnection.Create())
+                {
+                    posconnection.Open();
+                    string strServiceQuery = $"select coalesce(max(uniquebillno), 0) from servicemain{nMainBranchId} where branchid = {nBranchId}";
+                    using var poscommand = new NpgsqlCommand(strServiceQuery, posconnection);
+                    var oResult = poscommand.ExecuteScalar();
+                    if (oResult != null && oResult != DBNull.Value)
+                    {
+                        nServiceBillNo = Convert.ToInt64(oResult);
+                    }
+                    posconnection.Close();
+                }
+
+                strUpdateQuery += $"\n UPDATE branchsetting SET settingbillno = '{nServiceBillNo+10}'";
+                strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and settingname = 'ServiceBillNextNo';";
 
                 using var posconnection1 = PostgresConnection.Create();
                 posconnection1.Open();
