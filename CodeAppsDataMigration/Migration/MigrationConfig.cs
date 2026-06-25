@@ -434,7 +434,7 @@ namespace CodeAppsDataMigration.Migration
           new TableMap
            {
             SqlTable = "PurBillSeries",
-            PgTable  = "billseries@@@@",
+            PgTable  = "billseries",
             Columns = new[]
             {
                 // ("billserid","","bigint"),
@@ -3368,6 +3368,52 @@ namespace CodeAppsDataMigration.Migration
             },
             condition = "where branchid =" + nFromBranchId.ToString()
         },
+        new TableMap
+           {
+            SqlTable = "ServiceBillSeries",
+            PgTable  = "billseries",
+            Columns = new[]
+            {
+                // ("billserid","","bigint"),
+                 ("ServiceBillSerDescription","billserdescription","text"),
+                 ("ServiceBillSerPrefix","billserprefix","text"),
+                 ("PurBillSerStartNo","billserstartno","bigint"),
+                 ("ServiceBillSerCurrentBillNo","billsercurrentbillno","bigint"),
+                 ("ServiceBillSeriesOrderNo","billseriesorderno","bigint"),
+                 ("ServiceBillSerCustomerType","billtype","text"),
+                 ("ServiceBillSeriesStartDate","billseriesstartdate", "date"),
+                 ("ServiceBillSeriesEndDate","billseriesenddate","date"),
+                 ("PrintFileName","printfilename","text"),
+                 ("PrintFilePreview","printfilepreview","text"),
+                 ("Active","active","boolean"),                 
+                 ("branchid","branchid", "integer"),
+                 ("mainbranchid","mainbranchid","integer"),
+                 ("ServiceBillSerId","tempid","bigint"),
+
+            },
+            Constants = new Dictionary<string, object>
+            {
+                 {"printfilemobile","" },
+                 {"printfilenameone","" },
+                 {"pricemenuid", "0" },
+                 {"printtype", "" },
+                 {"billsersource", "PURCHASE" },
+                 {"bdataclear","False"},
+                 {"bbilled","False"},
+                 {"bdownloadprint","False"},
+                 {"billseriesaddcess","Flase" },
+                 {"billseriescustomerlist",""},
+                 {"billserpayterms",""},
+                 {"billwithtin",""},
+                 {"billhide",""},
+                 {"billsersuffix", ""},
+                 {"billserminussymbol",""},
+                 {"billserbillnoformat",""},
+                 {"billserbillinclusive","No"},
+                 {"billsertaxadd",""},
+            },
+            condition="where   branchid ="+nFromBranchId.ToString()
+           },
 
         };
 
