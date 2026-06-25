@@ -201,7 +201,8 @@ namespace CodeAppsDataMigration.Migration
 
 
                 // servicesubdetails
-                stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='product'");
+                stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='product' and isub.prodfrom='Product'");
+                stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='serviceitem' and isub.prodfrom != 'Product'");
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
