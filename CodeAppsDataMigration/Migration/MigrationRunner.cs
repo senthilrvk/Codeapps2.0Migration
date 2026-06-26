@@ -14,6 +14,12 @@ namespace CodeAppsDataMigration.Migration
         private readonly string _pg;
         private Action<string, int>? _onProgress;
 
+        // Shared PostgreSQL connection + transaction for one branch's migration.
+        // When active, every Postgres write goes through these so a failure anywhere
+        // rolls the whole branch back. See BeginBranchTransaction/Commit/Rollback.
+        private NpgsqlConnection? _pgConn;
+        private NpgsqlTransaction? _pgTxn;
+
         public MigrationRunner(string sql, string pg)
         {
             _sql = sql;
@@ -23,6 +29,74 @@ namespace CodeAppsDataMigration.Migration
         public void SetProgressCallback(Action<string, int> onProgress)
         {
             _onProgress = onProgress;
+        }
+
+        // ==================================================================
+        // TRANSACTION SCOPE
+        // ------------------------------------------------------------------
+        // Wrap a branch's full pipeline:
+        //     runner.BeginBranchTransaction();
+        //     try   { ...all migration steps...; runner.CommitBranchTransaction(); }
+        //     catch { runner.RollbackBranchTransaction(); throw; }
+        // While a transaction is open, all Postgres work uses the shared
+        // connection so it commits or reverts as a single unit.
+        // ==================================================================
+
+        /// <summary>Opens the shared PostgreSQL connection and starts a transaction.</summary>
+        public void BeginBranchTransaction()
+        {
+            _pgConn = PostgresConnection.Create();
+            _pgConn.Open();
+            _pgTxn = _pgConn.BeginTransaction();
+        }
+
+        /// <summary>Commits the shared transaction and releases the connection.</summary>
+        public void CommitBranchTransaction()
+        {
+            try
+            {
+                _pgTxn?.Commit();
+            }
+            finally
+            {
+                _pgTxn?.Dispose();
+                _pgConn?.Dispose();
+                _pgTxn = null;
+                _pgConn = null;
+            }
+        }
+
+        /// <summary>Rolls back the shared transaction and releases the connection.</summary>
+        public void RollbackBranchTransaction()
+        {
+            try
+            {
+                _pgTxn?.Rollback();
+            }
+            catch
+            {
+                // Ignore rollback errors (e.g. connection already broken).
+            }
+            finally
+            {
+                _pgTxn?.Dispose();
+                _pgConn?.Dispose();
+                _pgTxn = null;
+                _pgConn = null;
+            }
+        }
+
+        /// <summary>
+        /// Builds an NpgsqlCommand bound to the active shared connection and transaction.
+        /// Requires BeginBranchTransaction() to have been called first.
+        /// </summary>
+        private NpgsqlCommand PgCmd(string sql)
+        {
+            if (_pgConn == null || _pgTxn == null)
+                throw new InvalidOperationException(
+                    "No active PostgreSQL transaction. Call BeginBranchTransaction() before running migration steps.");
+
+            return new NpgsqlCommand(sql, _pgConn, _pgTxn);
         }
 
         private void ReportProgress(string message, int percent)
@@ -63,7 +137,7 @@ namespace CodeAppsDataMigration.Migration
                 {
                     var start = DateTime.Now;
 
-                    int rows = migrator.Run(table);
+                    int rows = migrator.Run(table, _pgConn, _pgTxn);
 
                     var end = DateTime.Now;
 
@@ -140,13 +214,11 @@ namespace CodeAppsDataMigration.Migration
 
             try
             {
-                using var pg = new NpgsqlConnection(_pg);
-                pg.Open();
-
                 foreach (var (table, extra) in cleanups)
                 {
                     string sql = $"DELETE FROM {table} WHERE branchid = {nBranchId} AND mainbranchid = {nMainBranchId}{extra}";
-                    using var cmd = new NpgsqlCommand(sql, pg) { CommandTimeout = 120 };
+                    using var cmd = PgCmd(sql);
+                    cmd.CommandTimeout = 120;
                     int affected = cmd.ExecuteNonQuery();
                     ReportProgress($"Cleaned {table}: {affected} row(s) removed", 0);
                     Console.WriteLine($" {table} → {affected} row(s) deleted");
@@ -632,12 +704,9 @@ namespace CodeAppsDataMigration.Migration
                     int pct = 85 + (int)((double)queryIndex / totalQueries * 15); // 85-100%
                     ReportProgress($"FK Update [{queryIndex}/{totalQueries}]", pct);
                     testquerytemplate = queryTemplate;
-                    using var connection = PostgresConnection.Create();
-                    connection.Open();
                     var query = string.Format(queryTemplate, nMainBranchId, nBranchId);
-                    using var command = new NpgsqlCommand(query, connection);
+                    using var command = PgCmd(query);
                     command.ExecuteNonQuery();
-                    connection.Close();
                     queryIndex++;
                 }
 
@@ -646,6 +715,8 @@ namespace CodeAppsDataMigration.Migration
             {
                 Console.WriteLine(testquerytemplate);
                 MessageBox.Show("Error " + ex.Message.ToString() + " , " + testquerytemplate);
+                // Re-throw so the branch transaction is rolled back by the caller.
+                throw;
             }
         }
 
@@ -808,17 +879,15 @@ namespace CodeAppsDataMigration.Migration
 
 
 
-                using var posconnection1 = PostgresConnection.Create();
-                posconnection1.Open();
-                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                using var poscommand1 = PgCmd(strUpdateQuery);
                 poscommand1.ExecuteNonQuery();
-                posconnection1.Close();
 
                 ReportProgress("Updating mainsetting successfully", 2);
             }
             catch (Exception ex)
             {
                 ReportProgress($"Updating mainsetting failed: {ex.Message}", 2);
+                throw; // abort so the branch transaction is rolled back
             }
         }
 
@@ -930,11 +999,8 @@ namespace CodeAppsDataMigration.Migration
 
                 }
 
-                using var posconnection1 = PostgresConnection.Create();
-                posconnection1.Open();
-                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                using var poscommand1 = PgCmd(strUpdateQuery);
                 poscommand1.ExecuteNonQuery();
-                posconnection1.Close();
 
                 ReportProgress("Updating BranchSetting  successfully", 2);
             }
@@ -942,6 +1008,7 @@ namespace CodeAppsDataMigration.Migration
             {
                 ReportProgress($"Updating BranchSetting  failed: {ex.Message}", 2);
                 MessageBox.Show(ex.Message.ToString());
+                throw; // abort so the branch transaction is rolled back
             }
         }
 
@@ -1016,17 +1083,15 @@ namespace CodeAppsDataMigration.Migration
 
                 }
 
-                using var posconnection1 = PostgresConnection.Create();
-                posconnection1.Open();
-                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                using var poscommand1 = PgCmd(strUpdateQuery);
                 poscommand1.ExecuteNonQuery();
-                posconnection1.Close();
 
                 ReportProgress("Updating voucher prefix successfully", 2);
             }
             catch (Exception ex)
             {
                 ReportProgress($"Updating voucher prefix failed: {ex.Message}", 2);
+                throw; // abort so the branch transaction is rolled back
             }
         }
 
@@ -1064,18 +1129,15 @@ namespace CodeAppsDataMigration.Migration
                                       "' AND billsersource = 'SALES';";
                 }
 
-                using var posconnection1 = PostgresConnection.Create();
-                posconnection1.Open();
-
-                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                using var poscommand1 = PgCmd(strUpdateQuery);
                 poscommand1.ExecuteNonQuery();
-                posconnection1.Close();
 
                 ReportProgress("Updating BillSeries successfully", 2);
             }
             catch (Exception ex)
             {
                 ReportProgress($"Updating failed: {ex.Message}", 2);
+                throw; // abort so the branch transaction is rolled back
             }
         }
 
@@ -1188,16 +1250,14 @@ namespace CodeAppsDataMigration.Migration
                         " AND branchid = " + nBranchId + ";";
                 }
 
-                using var posconnection1 = PostgresConnection.Create();
-                posconnection1.Open();
-                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                using var poscommand1 = PgCmd(strUpdateQuery);
                 poscommand1.ExecuteNonQuery();
-                posconnection1.Close();
                 ReportProgress("Updating Branch successfully", 2);
             }
             catch (Exception ex)
             {
                 ReportProgress($"Updating failed: {ex.Message}", 2);
+                throw; // abort so the branch transaction is rolled back
             }
         }
 
@@ -1314,17 +1374,15 @@ namespace CodeAppsDataMigration.Migration
 
 
 
-                using var posconnection1 = PostgresConnection.Create();
-                posconnection1.Open();
-                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                using var poscommand1 = PgCmd(strUpdateQuery);
                 poscommand1.ExecuteNonQuery();
-                posconnection1.Close();
 
                 ReportProgress("Updating controlorder successfully", 2);
             }
             catch (Exception ex)
             {
                 ReportProgress($"Updating controlorder failed: {ex.Message}", 2);
+                throw; // abort so the branch transaction is rolled back
             }
         }
 
@@ -1431,35 +1489,31 @@ namespace CodeAppsDataMigration.Migration
 
                 }
 
-                // ServiceBillNextNo: continue service bill numbering from the highest migrated uniquebillno
+                // ServiceBillNextNo: continue service bill numbering from the highest migrated uniquebillno.
+                // Reads through the shared transaction so it sees rows migrated earlier in the same transaction.
                 long nServiceBillNo = 0;
-                using (var posconnection = PostgresConnection.Create())
                 {
-                    posconnection.Open();
                     string strServiceQuery = $"select coalesce(max(uniquebillno), 0) from servicemain{nMainBranchId} where branchid = {nBranchId}";
-                    using var poscommand = new NpgsqlCommand(strServiceQuery, posconnection);
+                    using var poscommand = PgCmd(strServiceQuery);
                     var oResult = poscommand.ExecuteScalar();
                     if (oResult != null && oResult != DBNull.Value)
                     {
                         nServiceBillNo = Convert.ToInt64(oResult);
                     }
-                    posconnection.Close();
                 }
 
                 strUpdateQuery += $"\n UPDATE branchsetting SET settingbillno = '{nServiceBillNo+10}'";
                 strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and settingname = 'ServiceBillNextNo';";
 
-                using var posconnection1 = PostgresConnection.Create();
-                posconnection1.Open();
-                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                using var poscommand1 = PgCmd(strUpdateQuery);
                 poscommand1.ExecuteNonQuery();
-                posconnection1.Close();
 
                 ReportProgress("Updating BranchSetting  successfully", 2);
             }
             catch (Exception ex)
             {
                 ReportProgress($"Updating BranchSetting  failed: {ex.Message}", 2);
+                throw; // abort so the branch transaction is rolled back
             }
         }
 
@@ -1576,17 +1630,15 @@ namespace CodeAppsDataMigration.Migration
                 strUpdateQuery += $"\n UPDATE billseries SET printfilename = 'CreditNotePrintModelOne',printfilepreview='CreditNotePrintModelOne'";
                 strUpdateQuery += $"\n WHERE printfilename = 'PrintModelCreditNote' and mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
 
-                using var posconnection1 = PostgresConnection.Create();
-                posconnection1.Open();
-                using var poscommand1 = new NpgsqlCommand(strUpdateQuery, posconnection1);
+                using var poscommand1 = PgCmd(strUpdateQuery);
                 poscommand1.ExecuteNonQuery();
-                posconnection1.Close();
 
                 ReportProgress("Updating BranchSetting  successfully", 2);
             }
             catch (Exception ex)
             {
                 ReportProgress($"Updating BranchSetting  failed: {ex.Message}", 2);
+                throw; // abort so the branch transaction is rolled back
             }
         }
 

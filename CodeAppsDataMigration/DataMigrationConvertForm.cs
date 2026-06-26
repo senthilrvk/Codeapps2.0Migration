@@ -194,18 +194,44 @@ namespace CodeAppsDataMigration
                     foreach (var map in mappings)
                     {
                         ((IProgress<(string, int)>)progress).Report(($"Migrating {map.Display}...", 0));
-                        runner.RunAll(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                        runner.UpdatePrimaryKeyColumns(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                        runner.fnControOrderUpdate(nMainBranchId);                      
-                        runner.fnPrintFileNameUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);                        
-                        runner.fnBranchSettingUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                        runner.fnVouchePrefixUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                        runner.fnBranchUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);     
-                        runner.fnBillSeriesInclusiveUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
-                        runner.fnBillNosUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
 
-                    }       
-                    runner.fnMainSettingUpdate(nMainBranchId);
+                        // Run the whole branch pipeline inside a single PostgreSQL transaction.
+                        // If any step (any table, FK update, or setting update) fails, the entire
+                        // branch is rolled back so no partial data is left behind.
+                        runner.BeginBranchTransaction();
+                        try
+                        {
+                            runner.RunAll(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                            runner.UpdatePrimaryKeyColumns(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                            runner.fnControOrderUpdate(nMainBranchId);
+                            runner.fnPrintFileNameUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
+                            runner.fnBranchSettingUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                            runner.fnVouchePrefixUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                            runner.fnBranchUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                            runner.fnBillSeriesInclusiveUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
+                            runner.fnBillNosUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
+
+                            runner.CommitBranchTransaction();
+                        }
+                        catch
+                        {
+                            runner.RollbackBranchTransaction();
+                            throw; // surface the failure to the outer handler
+                        }
+                    }
+
+                    // Main-branch setting update (not branch-specific) in its own transaction.
+                    runner.BeginBranchTransaction();
+                    try
+                    {
+                        runner.fnMainSettingUpdate(nMainBranchId);
+                        runner.CommitBranchTransaction();
+                    }
+                    catch
+                    {
+                        runner.RollbackBranchTransaction();
+                        throw;
+                    }
                 });
 
                 progressBar.Value = 100;

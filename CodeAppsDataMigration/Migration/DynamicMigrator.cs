@@ -22,6 +22,18 @@ namespace CodeAppsDataMigration.Migration
 
         public int Run(TableMap map)
         {
+            using var pg = new NpgsqlConnection(_pgConn);
+            pg.Open();
+            return Run(map, pg, null);
+        }
+
+        /// <summary>
+        /// Migrates a single table using a caller-supplied PostgreSQL connection and
+        /// (optional) transaction. When a transaction is supplied, the COPY import and all
+        /// commands participate in it, so the work can be rolled back as a unit.
+        /// </summary>
+        public int Run(TableMap map, NpgsqlConnection pg, NpgsqlTransaction tx)
+        {
             string strTableName = "";
             string strPosTableName = "";
             int currentRow = 0;
@@ -29,10 +41,7 @@ namespace CodeAppsDataMigration.Migration
             try
             {
                 using var sql = new SqlConnection(_sqlConn);
-                using var pg = new NpgsqlConnection(_pgConn);
-
                 sql.Open();
-                pg.Open();
 
                 // =====================================================
                 // 1 READ SQL TABLE
@@ -58,7 +67,7 @@ namespace CodeAppsDataMigration.Migration
                     is_identity
                 FROM information_schema.columns
                 WHERE table_name = @t
-                ORDER BY ordinal_position", pg))
+                ORDER BY ordinal_position", pg, tx))
                 {
                     cmd.Parameters.AddWithValue("t", map.PgTable);
 
