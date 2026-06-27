@@ -220,7 +220,7 @@ namespace CodeAppsDataMigration.Migration
             Console.WriteLine("   MIGRATION COMPLETED SUCCESSFULLY");
             Console.WriteLine("=======================================");
         }
-              
+
 
 
 
@@ -268,7 +268,7 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
-        private void ExecuteBulkUpdates(Int64 nMainBranchId, Int64 nBranchId,Int64 nFromBranchId)
+        private void ExecuteBulkUpdates(Int64 nMainBranchId, Int64 nBranchId, Int64 nFromBranchId)
         {
             string testquerytemplate = "";
             try
@@ -308,7 +308,7 @@ namespace CodeAppsDataMigration.Migration
 
 
                 // servicemain
-               
+
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
@@ -641,7 +641,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
                 stringBuilder.Add($"UPDATE deliveryoutdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId}  AND isub.mainbranchid = {nMainBranchId}  and pm.producttype='product'");
                 stringBuilder.Add($"update deliveryoutdetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} and mainbranchid = {nMainBranchId}");
-                
+
                 //ExpenseEntryDetails
                 strQuery = $"update expenseentrydetails{nMainBranchId} eed set expensemainid =  eem.entrymainid from expenseentrymain eem where eem.tempid = eed.expensemainid";
                 strQuery += $"\n and eed.branchid = eem.branchid and eed.mainbranchid = eem.mainbranchid";
@@ -764,12 +764,12 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
-        public void UpdatePrimaryKeyColumns(Int64 nMainBranchId, Int64 nBranchId,Int64 nFromBranchId)
+        public void UpdatePrimaryKeyColumns(Int64 nMainBranchId, Int64 nBranchId, Int64 nFromBranchId)
         {
             ReportProgress("Updating primary keys & foreign keys...", 85);
             ExecuteBulkUpdates(nMainBranchId, nBranchId, nFromBranchId);
 
-          
+
             ReportProgress("Primary key updates completed", 100);
         }
 
@@ -1153,7 +1153,7 @@ namespace CodeAppsDataMigration.Migration
                 adapter.Fill(dtsql);
                 connection.Close();
 
-                
+
 
                 foreach (DataRow row in dtsql.Rows)
                 {
@@ -1281,8 +1281,8 @@ namespace CodeAppsDataMigration.Migration
                         "branchorderusername = '" + Branch_OrderUserName + "', " +
                         "branchorderpwd = '" + Branch_OrderPwd + "', " +
                         "branchwhatsappno = '" + Branch_WhatsAppNo + "', " +
-                     //   "branchwhatsapptokenno = '" + Branch_WhatsAppTokenNo + "', " +
-                       // "branchwhatsappurl = '" + Branch_WhatsAppUrl + "', " +
+                        //   "branchwhatsapptokenno = '" + Branch_WhatsAppTokenNo + "', " +
+                        // "branchwhatsappurl = '" + Branch_WhatsAppUrl + "', " +
                         "branchsecurepwd = '" + Branch_SecurePwd + "', " +
                         "branchbarcodedesign = '" + Branch_BarCodeDesign + "', " +
                         "acid = " + (string.IsNullOrEmpty(AcId) ? 0 : AcId) +
@@ -1376,12 +1376,15 @@ namespace CodeAppsDataMigration.Migration
             // Scalar subquery picks the latest manufacturer; COALESCE keeps the existing
             // value when manufacture{nMainBranchId} has no rows (avoids writing NULL).
             string strQuery =
-                $"UPDATE productmain{nMainBranchId} pm " +
-                $"SET manufacture_id = COALESCE(" +
-                $"(SELECT mn.manufacture_id FROM manufacture{nMainBranchId} mn " +
-                $"ORDER BY mn.manufacture_id DESC LIMIT 1), pm.manufacture_id) " +
-                $"WHERE pm.manufacture_id = 0 and pm.branchid = {nBranchId} AND pm.mainbranchid = {nMainBranchId};";
+                $"\n UPDATE productmain{nMainBranchId} pm " +
+                $"\n SET manufacture_id = COALESCE(" +
+                $"\n (SELECT mn.manufacture_id FROM manufacture{nMainBranchId} mn " +
+                $"\n ORDER BY mn.manufacture_id DESC LIMIT 1), pm.manufacture_id) " +
+                $"\n WHERE pm.manufacture_id = 0 and pm.branchid = {nBranchId} AND pm.mainbranchid = {nMainBranchId};";
 
+            strQuery += $"\n UPDATE productmain{nMainBranchId}  pm" +
+                        $"\n SET productsearch = regexp_replace(itemdesc, '[^a-zA-Z0-9]', '', 'g')" +
+                        $"\n where COALESCE(NULLIF(pm.producttype, ''), 'product') = 'serviceitem';";
             ExecPgNonQuery(strQuery);
 
             ReportProgress("Product default manufacturer updated successfully", 2);
@@ -1452,7 +1455,7 @@ namespace CodeAppsDataMigration.Migration
         }
 
 
-        public void fnBillNosUpdate(long nFromBranchId,long nMainBranchId,long nBranchId)
+        public void fnBillNosUpdate(long nFromBranchId, long nMainBranchId, long nBranchId)
         {
 
             string strQuery = @"select * from branch where branchid=" + nFromBranchId;
@@ -1492,7 +1495,7 @@ namespace CodeAppsDataMigration.Migration
                     switch (strSettingName)
                     {
                         case "StockTransferNextNo":
-                            nBillNo=Convert.ToInt64(dr["Value"].ToString());
+                            nBillNo = Convert.ToInt64(dr["Value"].ToString());
                             strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
                             strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'STOCK TRANSFER';";
                             break;
@@ -1500,7 +1503,7 @@ namespace CodeAppsDataMigration.Migration
                             break;
                     }
                 }
-               
+
                 foreach (DataRow row in dtbranch.Rows)
                 {
                     nBillNo = Convert.ToInt64(row["DNSlNo"].ToString());
@@ -1542,8 +1545,8 @@ namespace CodeAppsDataMigration.Migration
 
                     if (dsDataSet.Tables.Count > 1)
                     {
-                        DataRow[] datarows = dsDataSet.Tables[1].Select("SettingName = 'OpeningStockBillNo' and branchid = "+nFromBranchId);
-                        foreach(DataRow rows in datarows)
+                        DataRow[] datarows = dsDataSet.Tables[1].Select("SettingName = 'OpeningStockBillNo' and branchid = " + nFromBranchId);
+                        foreach (DataRow rows in datarows)
                         {
                             nBillNo = Convert.ToInt64(rows["Value"].ToString());
                         }
@@ -1567,7 +1570,7 @@ namespace CodeAppsDataMigration.Migration
                     }
                 }
 
-                strUpdateQuery += $"\n UPDATE branchsetting SET settingbillno = '{nServiceBillNo+10}'";
+                strUpdateQuery += $"\n UPDATE branchsetting SET settingbillno = '{nServiceBillNo + 10}'";
                 strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and settingname = 'ServiceBillNextNo';";
 
                 ExecPgNonQuery(strUpdateQuery);
@@ -1624,7 +1627,7 @@ namespace CodeAppsDataMigration.Migration
                 //posconnection.Close();
 
                 string strUpdateQuery = "";
-                string strPrintFileName = "",strPrintPreviewName="";
+                string strPrintFileName = "", strPrintPreviewName = "";
 
 
                 if (dsDataSet.Tables.Count > 1)
@@ -1653,7 +1656,7 @@ namespace CodeAppsDataMigration.Migration
                         strPrintFileName = Convert.ToString(rows["Value"].ToString());
                     }
 
-                   
+
 
                     strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printfilepreview='{strPrintFileName}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'DELIVERYOUT';";
@@ -1682,7 +1685,7 @@ namespace CodeAppsDataMigration.Migration
                     {
                         strPrintFileName = Convert.ToString(rows["Value"].ToString());
                     }
-                   
+
 
                     strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printfilepreview='{strPrintFileName}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
