@@ -1,5 +1,6 @@
 ﻿using CodeAppsDataMigration.Data;
 using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Data.SqlClient;
 using Npgsql;
 using System.Data;
@@ -97,6 +98,31 @@ namespace CodeAppsDataMigration.Migration
                     "No active PostgreSQL transaction. Call BeginBranchTransaction() before running migration steps.");
 
             return new NpgsqlCommand(sql, _pgConn, _pgTxn);
+        }
+
+        /// <summary>
+        /// Executes a PostgreSQL non-query on the shared transaction. On failure it throws
+        /// a MigrationException carrying the failing SQL script, the target table, and the
+        /// calling function name (captured automatically) so the UI can show all three.
+        /// </summary>
+        private int ExecPgNonQuery(string sql, [System.Runtime.CompilerServices.CallerMemberName] string caller = "")
+        {
+            try
+            {
+                using var cmd = PgCmd(sql);
+                return cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex) when (!(ex is MigrationException))
+            {
+                Console.WriteLine($"ERROR in {caller}: {ExceptionFormatter.Describe(ex)}");
+                throw new MigrationException(
+                    $"'{caller}' failed on table '{ExceptionFormatter.ExtractTableName(sql)}'." + Environment.NewLine +
+                    "Failing query: " + sql + Environment.NewLine + ex.Message,
+                    tableName: ExceptionFormatter.ExtractTableName(sql),
+                    inner: ex,
+                    failingQuery: sql,
+                    functionName: "MigrationRunner." + caller);
+            }
         }
 
         private void ReportProgress(string message, int percent)
@@ -212,24 +238,33 @@ namespace CodeAppsDataMigration.Migration
             ReportProgress("Pre-migration cleanup...", 0);
             Console.WriteLine("Pre-migration cleanup (area, billseries [SALES/PURCHASE/SERVICE BILL only], category, notes)...");
 
+            string currentSql = "";
+            string currentTable = "";
             try
             {
                 foreach (var (table, extra) in cleanups)
                 {
-                    string sql = $"DELETE FROM {table} WHERE branchid = {nBranchId} AND mainbranchid = {nMainBranchId}{extra}";
-                    using var cmd = PgCmd(sql);
+                    currentTable = table;
+                    currentSql = $"DELETE FROM {table} WHERE branchid = {nBranchId} AND mainbranchid = {nMainBranchId}{extra}";
+                    using var cmd = PgCmd(currentSql);
                     cmd.CommandTimeout = 120;
                     int affected = cmd.ExecuteNonQuery();
                     ReportProgress($"Cleaned {table}: {affected} row(s) removed", 0);
                     Console.WriteLine($" {table} → {affected} row(s) deleted");
                 }
             }
-            catch (Exception ex)
+            catch (Exception ex) when (!(ex is MigrationException))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine(" Pre-migration cleanup failed: " + ex.Message);
                 Console.ResetColor();
-                throw;
+                throw new MigrationException(
+                    $"Pre-migration cleanup failed on table '{currentTable}'." + Environment.NewLine +
+                    "Failing query: " + currentSql + Environment.NewLine + ex.Message,
+                    tableName: currentTable,
+                    inner: ex,
+                    failingQuery: currentSql,
+                    functionName: "MigrationRunner." + nameof(PreMigrationCleanup));
             }
         }
 
@@ -287,9 +322,9 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='serviceitem' and isub.prodfrom != 'Product'");
                 stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
-                strQuery = $"update servicesubdetails{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
-                strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
-                strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SERVICE BILL' and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
+                strQuery = $"update servicesubdetails{nMainBranchId} isub set billserid =  sm.billserid from servicemain{nMainBranchId} sm where isub.servicemainno = sm.servicemainno";
+                strQuery += $"\n and isub.servicemainno = sm.servicemainno and isub.branchid = sm.branchid and isub.mainbranchid = sm.mainbranchid";
+                strQuery += $"\n and sm.branchid ={nBranchId} and sm.mainbranchid ={nMainBranchId}";
                 stringBuilder.Add(strQuery);
 
 
@@ -713,10 +748,19 @@ namespace CodeAppsDataMigration.Migration
             }
             catch (Exception ex)
             {
+                string failedTable = ExceptionFormatter.ExtractTableName(testquerytemplate);
                 Console.WriteLine(testquerytemplate);
-                MessageBox.Show("Error " + ex.Message.ToString() + " , " + testquerytemplate);
-                // Re-throw so the branch transaction is rolled back by the caller.
-                throw;
+                Console.WriteLine(ExceptionFormatter.Describe(ex));
+                // Attach the target table + the failing query as structured fields and
+                // re-throw so the branch transaction is rolled back and the UI shows it.
+                throw new MigrationException(
+                    $"Foreign-key / bulk update failed on table '{failedTable}'." + Environment.NewLine +
+                    "Failing query: " + testquerytemplate + Environment.NewLine +
+                    ex.Message,
+                    tableName: failedTable,
+                    inner: ex,
+                    failingQuery: testquerytemplate,
+                    functionName: "MigrationRunner." + nameof(ExecuteBulkUpdates));
             }
         }
 
@@ -879,8 +923,7 @@ namespace CodeAppsDataMigration.Migration
 
 
 
-                using var poscommand1 = PgCmd(strUpdateQuery);
-                poscommand1.ExecuteNonQuery();
+                ExecPgNonQuery(strUpdateQuery);
 
                 ReportProgress("Updating mainsetting successfully", 2);
             }
@@ -999,8 +1042,7 @@ namespace CodeAppsDataMigration.Migration
 
                 }
 
-                using var poscommand1 = PgCmd(strUpdateQuery);
-                poscommand1.ExecuteNonQuery();
+                ExecPgNonQuery(strUpdateQuery);
 
                 ReportProgress("Updating BranchSetting  successfully", 2);
             }
@@ -1083,8 +1125,7 @@ namespace CodeAppsDataMigration.Migration
 
                 }
 
-                using var poscommand1 = PgCmd(strUpdateQuery);
-                poscommand1.ExecuteNonQuery();
+                ExecPgNonQuery(strUpdateQuery);
 
                 ReportProgress("Updating voucher prefix successfully", 2);
             }
@@ -1095,11 +1136,11 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
-        public void fnBillSeriesInclusiveUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
+        public void fnBillSeriesInclusiveUpdate(long nFromBranchId, long nMainBranchId, long nToBranchId)
         {
             ReportProgress("Updating BillSeries in SQL Server...", 0);
-
-            string strQuery = @"select * from BillSeriesSalesInclusiveSet where branchid=" + nFromBranchId;
+            string strUpdateQuery = "";
+            string strQuery = $"select * from BillSeriesSalesInclusiveSet where billserid in ( select  billserid from BillSeries where  branchid = {nFromBranchId})";
 
             try
             {
@@ -1112,7 +1153,7 @@ namespace CodeAppsDataMigration.Migration
                 adapter.Fill(dtsql);
                 connection.Close();
 
-                string strUpdateQuery = "";
+                
 
                 foreach (DataRow row in dtsql.Rows)
                 {
@@ -1125,18 +1166,17 @@ namespace CodeAppsDataMigration.Migration
                                       "', billsertaxadd = '" + TaxCondition +
                                       "' WHERE tempid = '" + BillSerId +
                                       "' AND mainbranchid = '" + nMainBranchId +
-                                      "' AND branchid = '" + nBranchId +
+                                      "' AND branchid = '" + nToBranchId +
                                       "' AND billsersource = 'SALES';";
                 }
 
-                using var poscommand1 = PgCmd(strUpdateQuery);
-                poscommand1.ExecuteNonQuery();
+                ExecPgNonQuery(strUpdateQuery);
 
                 ReportProgress("Updating BillSeries successfully", 2);
             }
             catch (Exception ex)
             {
-                ReportProgress($"Updating failed: {ex.Message}", 2);
+                ReportProgress($"Updating failed: {ex.Message} Update Query {strUpdateQuery}", 2);
                 throw; // abort so the branch transaction is rolled back
             }
         }
@@ -1250,8 +1290,7 @@ namespace CodeAppsDataMigration.Migration
                         " AND branchid = " + nBranchId + ";";
                 }
 
-                using var poscommand1 = PgCmd(strUpdateQuery);
-                poscommand1.ExecuteNonQuery();
+                ExecPgNonQuery(strUpdateQuery);
                 ReportProgress("Updating Branch successfully", 2);
             }
             catch (Exception ex)
@@ -1321,6 +1360,33 @@ namespace CodeAppsDataMigration.Migration
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Sets the default manufacturer on the branch's UNMAPPED products only
+        /// (manufacture_id = 0): they are assigned the most-recently-added manufacturer
+        /// (highest manufacture_id) of their main branch. Products that already have a
+        /// mapped manufacturer are left untouched. If no manufacturer exists, the value
+        /// is left unchanged (COALESCE guard) so a NULL is never written.
+        /// Runs on the shared branch transaction via ExecPgNonQuery, so any failure
+        /// reports the table, column, function and the exact query.
+        /// </summary>
+        public void fnDefaultValueUpdate(long nFromBranchId, long nMainBranchId, long nBranchId)
+        {
+            ReportProgress("Updating product default manufacturer...", 0);
+
+            // Scalar subquery picks the latest manufacturer; COALESCE keeps the existing
+            // value when manufacture{nMainBranchId} has no rows (avoids writing NULL).
+            string strQuery =
+                $"UPDATE productmain{nMainBranchId} pm " +
+                $"SET manufacture_id = COALESCE(" +
+                $"(SELECT mn.manufacture_id FROM manufacture{nMainBranchId} mn " +
+                $"ORDER BY mn.manufacture_id DESC LIMIT 1), pm.manufacture_id) " +
+                $"WHERE pm.manufacture_id = 0 and pm.branchid = {nBranchId} AND pm.mainbranchid = {nMainBranchId};";
+
+            ExecPgNonQuery(strQuery);
+
+            ReportProgress("Product default manufacturer updated successfully", 2);
+        }
+
 
         public void fnControOrderUpdate(long nMainBranchId)
         {
@@ -1374,8 +1440,7 @@ namespace CodeAppsDataMigration.Migration
 
 
 
-                using var poscommand1 = PgCmd(strUpdateQuery);
-                poscommand1.ExecuteNonQuery();
+                ExecPgNonQuery(strUpdateQuery);
 
                 ReportProgress("Updating controlorder successfully", 2);
             }
@@ -1505,8 +1570,7 @@ namespace CodeAppsDataMigration.Migration
                 strUpdateQuery += $"\n UPDATE branchsetting SET settingbillno = '{nServiceBillNo+10}'";
                 strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and settingname = 'ServiceBillNextNo';";
 
-                using var poscommand1 = PgCmd(strUpdateQuery);
-                poscommand1.ExecuteNonQuery();
+                ExecPgNonQuery(strUpdateQuery);
 
                 ReportProgress("Updating BranchSetting  successfully", 2);
             }
@@ -1630,8 +1694,7 @@ namespace CodeAppsDataMigration.Migration
                 strUpdateQuery += $"\n UPDATE billseries SET printfilename = 'CreditNotePrintModelOne',printfilepreview='CreditNotePrintModelOne'";
                 strUpdateQuery += $"\n WHERE printfilename = 'PrintModelCreditNote' and mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
 
-                using var poscommand1 = PgCmd(strUpdateQuery);
-                poscommand1.ExecuteNonQuery();
+                ExecPgNonQuery(strUpdateQuery);
 
                 ReportProgress("Updating BranchSetting  successfully", 2);
             }

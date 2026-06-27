@@ -38,6 +38,8 @@ namespace CodeAppsDataMigration.Migration
             string strPosTableName = "";
             int currentRow = 0;
             string currentCol = "";
+            string sqlQuery = "";
+            string copyCmd = "";
             try
             {
                 using var sql = new SqlConnection(_sqlConn);
@@ -49,7 +51,7 @@ namespace CodeAppsDataMigration.Migration
                 var sqlTable = new DataTable();
                 map.PgTable = map.PgTable.Replace("@", "");
 
-                string sqlQuery = $"SELECT tbl.*, {MigrationConfig.nMainBranchId} mainbranchid FROM dbo.{map.SqlTable} tbl " + map.condition;
+                sqlQuery = $"SELECT tbl.*, {MigrationConfig.nMainBranchId} mainbranchid FROM dbo.{map.SqlTable} tbl " + map.condition;
                 new SqlDataAdapter(sqlQuery, sql).Fill(sqlTable);
                 strTableName = map.SqlTable;
                 strPosTableName = map.PgTable;
@@ -100,7 +102,7 @@ namespace CodeAppsDataMigration.Migration
                 // =====================================================
                 // 5 TEXT COPY (PostgreSQL handles type conversion)
                 // =====================================================
-                var copyCmd = $"COPY public.{map.PgTable} ({string.Join(",", insertColumns.Select(c => c.Name))}) FROM STDIN (FORMAT TEXT, NULL '\\N')";
+                copyCmd = $"COPY public.{map.PgTable} ({string.Join(",", insertColumns.Select(c => c.Name))}) FROM STDIN (FORMAT TEXT, NULL '\\N')";
 
                 using var writer = pg.BeginTextImport(copyCmd);
 
@@ -147,9 +149,29 @@ namespace CodeAppsDataMigration.Migration
             }
             catch (Exception Ex)
             {
-                Console.WriteLine($"ERROR Table: {strTableName} | Row: {currentRow} | Column: {currentCol}  PgTableName {strPosTableName}");
-                Console.WriteLine($"Message: {Ex.Message}");
-                throw;
+                string context =
+                    $"Migration failed on table '{strTableName}' (PostgreSQL table '{strPosTableName}'), " +
+                    $"approx. row #{currentRow}, column '{currentCol}'.";
+
+                Console.WriteLine("ERROR " + context);
+                Console.WriteLine(ExceptionFormatter.Describe(Ex));
+
+                // Re-throw with the table/row/column context as structured fields so the UI
+                // can show exactly where it failed. The original exception (incl.
+                // PostgresException detail) is preserved as InnerException.
+                string script =
+                    "SQL Server read query:" + Environment.NewLine + sqlQuery + Environment.NewLine +
+                    (string.IsNullOrEmpty(copyCmd) ? "" : "PostgreSQL COPY command:" + Environment.NewLine + copyCmd);
+
+                throw new MigrationException(
+                    context + " " + Ex.Message,
+                    tableName: strTableName,
+                    inner: Ex,
+                    pgTableName: strPosTableName,
+                    columnName: currentCol,
+                    rowNumber: currentRow,
+                    failingQuery: script,
+                    functionName: "DynamicMigrator." + nameof(Run));
             }
         }
 

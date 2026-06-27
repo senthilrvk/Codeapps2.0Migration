@@ -210,13 +210,15 @@ namespace CodeAppsDataMigration
                             runner.fnBranchUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
                             runner.fnBillSeriesInclusiveUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
                             runner.fnBillNosUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
-
+                            runner.fnDefaultValueUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
                             runner.CommitBranchTransaction();
                         }
-                        catch
+                        catch (Exception Exme)
                         {
                             runner.RollbackBranchTransaction();
-                            throw; // surface the failure to the outer handler
+                            // Attach which branch mapping was being processed, then surface
+                            // to the outer (UI-thread) handler which shows the full detail.
+                            throw new Exception($"Failed while migrating branch '{map.Display}'. " + Exme.Message, Exme);
                         }
                     }
 
@@ -241,7 +243,58 @@ namespace CodeAppsDataMigration
             catch (Exception ex)
             {
                 lblStatus.Text = "Migration failed!";
-                MessageBox.Show("Migration failed: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // Pull out WHICH table / column / function (structured) if available.
+                var me = Migration.MigrationException.Find(ex);
+                string tableName = me?.TableName ?? "(unknown)";
+                string columnName = me?.ColumnName ?? "(unknown)";
+                // Prefer the explicitly-tagged function; otherwise recover it from the
+                // stack trace (works for the fnXxx steps that don't wrap their errors).
+                string functionName = me?.FunctionName
+                    ?? Migration.ExceptionFormatter.ExtractFailingFunction(ex);
+
+                // Short MessageBox first: clearly names the failing function & table.
+                string summary =
+                    "Function: " + functionName + Environment.NewLine +
+                    "Table   : " + tableName + Environment.NewLine +
+                    "Column  : " + columnName;
+                if (me?.RowNumber != null)
+                    summary += Environment.NewLine + "Row     : " + me.RowNumber;
+                if (!string.IsNullOrEmpty(me?.FailingQuery))
+                    summary += Environment.NewLine + Environment.NewLine + "Query / Script:" + Environment.NewLine + me.FailingQuery;
+                summary += Environment.NewLine + Environment.NewLine + "Error: " + GetRootMessage(ex);
+
+                MessageBox.Show(summary,
+                    "Migration failed - " + functionName + " / Table: " + tableName,
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                // Full detail: which function, which table, which column, constraint,
+                // PG/SQL provider info, inner exceptions and stack trace.
+                string details =
+                    "Failed Function: " + functionName + Environment.NewLine +
+                    "Failed Table   : " + tableName + Environment.NewLine +
+                    "Failed Column  : " + columnName + Environment.NewLine +
+                    (me?.RowNumber != null ? "Approx. Row    : " + me.RowNumber + Environment.NewLine : "") +
+                    (me?.FailingQuery != null ? "Failing Query  : " + me.FailingQuery + Environment.NewLine : "") +
+                    Environment.NewLine +
+                    Migration.ExceptionFormatter.Describe(ex);
+
+                // Persist to a log file so the operator can copy/share the full error.
+                string logPath = "";
+                try
+                {
+                    logPath = System.IO.Path.Combine(
+                        AppDomain.CurrentDomain.BaseDirectory,
+                        $"migration-error-{DateTime.Now:yyyyMMdd-HHmmss}.log");
+                    System.IO.File.WriteAllText(logPath, details);
+                }
+                catch { /* logging is best-effort */ }
+
+                string message = details;
+                if (!string.IsNullOrEmpty(logPath))
+                    message += Environment.NewLine + "Saved to: " + logPath;
+
+                ShowErrorDetails("Migration failed - " + functionName + " / Table: " + tableName, message);
             }
             finally
             {
@@ -249,6 +302,76 @@ namespace CodeAppsDataMigration
                 cmbPgMainBranch.Enabled = true;
                 grdBranchMap.Enabled = true;
             }
+        }
+
+        /// <summary>
+        /// Returns the message of the innermost exception (the real database error),
+        /// avoiding the longer re-wrapped messages that also embed the query.
+        /// </summary>
+        private static string GetRootMessage(Exception ex)
+        {
+            Exception cur = ex;
+            while (cur.InnerException != null)
+                cur = cur.InnerException;
+            return cur.Message;
+        }
+
+        /// <summary>
+        /// Shows a resizable, scrollable, copyable dialog with the full error text.
+        /// A normal MessageBox truncates long messages and the text can't be selected.
+        /// </summary>
+        private void ShowErrorDetails(string title, string details)
+        {
+            using var dlg = new Form
+            {
+                Text = title,
+                StartPosition = FormStartPosition.CenterParent,
+                Size = new System.Drawing.Size(800, 500),
+                MinimizeBox = false,
+                MaximizeBox = true
+            };
+
+            var txt = new TextBox
+            {
+                Multiline = true,
+                ReadOnly = true,
+                ScrollBars = ScrollBars.Both,
+                WordWrap = false,
+                Dock = DockStyle.Fill,
+                Font = new System.Drawing.Font("Consolas", 9F),
+                Text = details
+            };
+
+            var pnl = new Panel { Dock = DockStyle.Bottom, Height = 44 };
+
+            var btnCopy = new Button
+            {
+                Text = "Copy",
+                Width = 90,
+                Anchor = AnchorStyles.Right,
+                Location = new System.Drawing.Point(dlg.ClientSize.Width - 200, 8)
+            };
+            btnCopy.Click += (s, e) =>
+            {
+                try { Clipboard.SetText(details); } catch { }
+            };
+
+            var btnClose = new Button
+            {
+                Text = "Close",
+                Width = 90,
+                Anchor = AnchorStyles.Right,
+                DialogResult = DialogResult.OK,
+                Location = new System.Drawing.Point(dlg.ClientSize.Width - 100, 8)
+            };
+
+            pnl.Controls.Add(btnCopy);
+            pnl.Controls.Add(btnClose);
+            dlg.Controls.Add(txt);
+            dlg.Controls.Add(pnl);
+            dlg.AcceptButton = btnClose;
+
+            dlg.ShowDialog(this);
         }
 
 

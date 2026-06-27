@@ -3308,7 +3308,7 @@ namespace CodeAppsDataMigration.Migration
             {
                 // PG-only columns with no SQL Server source.
                 // All have DDL defaults (0 / '' / CURRENT_DATE), so optional.
-                {"servicemainno",0},
+               // {"servicemainno",0},
                 {"expdate",DateTime.Now.ToString("yyyy-MM-dd")},        // CURRENT_DATE default
                 {"whrate",0},
                 {"mrp",0},
@@ -3319,7 +3319,6 @@ namespace CodeAppsDataMigration.Migration
                 {"lqty",0},
                 {"loosefree",0},
                 {"totqty",0},
-                {"productid",0},
                 {"batchslno1",0},
                 {"repl",""},
                 {"flgspecialrate",""},
