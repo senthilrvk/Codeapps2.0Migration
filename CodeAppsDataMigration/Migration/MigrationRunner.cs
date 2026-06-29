@@ -766,11 +766,108 @@ namespace CodeAppsDataMigration.Migration
 
         public void UpdatePrimaryKeyColumns(Int64 nMainBranchId, Int64 nBranchId, Int64 nFromBranchId)
         {
+            // Create the indexes the FK-update phase relies on BEFORE running it. Without
+            // these, every UPDATE ... FROM ... JOIN below sequentially scans the
+            // (multi-branch) target tables, which is the main reason the phase is slow.
+            EnsureMigrationIndexes(nMainBranchId);
+
             ReportProgress("Updating primary keys & foreign keys...", 85);
             ExecuteBulkUpdates(nMainBranchId, nBranchId, nFromBranchId);
 
 
             ReportProgress("Primary key updates completed", 100);
+        }
+
+        /// <summary>
+        /// Creates (IF NOT EXISTS) the indexes the bulk FK-update phase joins/filters on,
+        /// then refreshes planner statistics with ANALYZE so the new indexes are actually
+        /// used. These run on the shared branch transaction/connection because the tables
+        /// were just COPY-loaded in the same uncommitted transaction — creating the indexes
+        /// from any other connection would block on those row locks.
+        ///
+        /// Each statement is wrapped in a SAVEPOINT: a single failure (e.g. a table that
+        /// does not exist for this branch) is rolled back to the savepoint and skipped,
+        /// instead of aborting the entire migration transaction.
+        /// </summary>
+        private void EnsureMigrationIndexes(Int64 nMainBranchId)
+        {
+            ReportProgress("Creating indexes for foreign-key update phase...", 83);
+            Console.WriteLine("Creating indexes for foreign-key update phase...");
+
+            // Per-main-branch lookup tables joined by tempid on the FROM side of the updates.
+            var tempidTables = new List<string>
+            {
+                $"accounthead{nMainBranchId}",
+                $"productmain{nMainBranchId}",
+                $"manufacture{nMainBranchId}",
+                $"hsn{nMainBranchId}",
+            };
+
+            // Shared lookup tables joined by tempid.
+            var sharedTempidTables = new[]
+            {
+                "billseries", "category", "categoryhead", "doctor", "branch", "restotable", "area"
+            };
+
+            // Large per-main-branch target tables scanned by (branchid, mainbranchid)
+            // repeatedly throughout the update phase.
+            var branchFilteredTables = new List<string>
+            {
+                $"voucherdetails{nMainBranchId}", $"vouchermain{nMainBranchId}",
+                $"store{nMainBranchId}",
+                $"issuemain{nMainBranchId}", $"issuesubdetails{nMainBranchId}",
+                $"receiptmain{nMainBranchId}", $"receiptdetails{nMainBranchId}",
+                $"servicemain{nMainBranchId}", $"servicesubdetails{nMainBranchId}",
+                $"productsub{nMainBranchId}",
+                $"outstanding{nMainBranchId}",
+                $"openingstockmain{nMainBranchId}", $"openingstockdetails{nMainBranchId}",
+            };
+
+            var statements = new List<string>();
+
+            foreach (var t in tempidTables.Concat(sharedTempidTables))
+                statements.Add($"CREATE INDEX IF NOT EXISTS ix_{t}_tempid ON {t} (tempid)");
+
+            // tax is joined on taxpercent, not tempid.
+            statements.Add("CREATE INDEX IF NOT EXISTS ix_tax_taxpercent ON tax (taxpercent)");
+
+            foreach (var t in branchFilteredTables)
+                statements.Add($"CREATE INDEX IF NOT EXISTS ix_{t}_branch ON {t} (branchid, mainbranchid)");
+
+            foreach (var stmt in statements)
+                TryExecInSavepoint(stmt);
+
+            // Refresh statistics on the freshly-loaded tables so the planner uses the indexes.
+            foreach (var t in tempidTables.Concat(branchFilteredTables))
+                TryExecInSavepoint($"ANALYZE {t}");
+        }
+
+        /// <summary>
+        /// Runs a single statement on the shared branch transaction inside a SAVEPOINT.
+        /// On success the savepoint is released; on failure it is rolled back and the error
+        /// is logged and swallowed, leaving the surrounding transaction usable.
+        /// </summary>
+        private void TryExecInSavepoint(string sql)
+        {
+            const string sp = "mig_idx_sp";
+            using (var begin = PgCmd($"SAVEPOINT {sp}"))
+                begin.ExecuteNonQuery();
+
+            try
+            {
+                using var cmd = PgCmd(sql);
+                cmd.ExecuteNonQuery();
+                using var release = PgCmd($"RELEASE SAVEPOINT {sp}");
+                release.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                using (var rollback = PgCmd($"ROLLBACK TO SAVEPOINT {sp}"))
+                    rollback.ExecuteNonQuery();
+                using (var release = PgCmd($"RELEASE SAVEPOINT {sp}"))
+                    release.ExecuteNonQuery();
+                Console.WriteLine($"  (skipped) {sql} -> {ex.Message}");
+            }
         }
 
 
