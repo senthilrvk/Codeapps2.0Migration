@@ -1281,8 +1281,8 @@ namespace CodeAppsDataMigration.Migration
                         "branchorderusername = '" + Branch_OrderUserName + "', " +
                         "branchorderpwd = '" + Branch_OrderPwd + "', " +
                         "branchwhatsappno = '" + Branch_WhatsAppNo + "', " +
-                        //   "branchwhatsapptokenno = '" + Branch_WhatsAppTokenNo + "', " +
-                        // "branchwhatsappurl = '" + Branch_WhatsAppUrl + "', " +
+                        "branchwhatsapptokenno = '', " +
+                        "branchwhatsappurl = '', " +
                         "branchsecurepwd = '" + Branch_SecurePwd + "', " +
                         "branchbarcodedesign = '" + Branch_BarCodeDesign + "', " +
                         "acid = " + (string.IsNullOrEmpty(AcId) ? 0 : AcId) +
