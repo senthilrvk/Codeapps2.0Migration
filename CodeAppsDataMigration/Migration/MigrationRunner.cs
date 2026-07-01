@@ -107,6 +107,13 @@ namespace CodeAppsDataMigration.Migration
         /// </summary>
         private int ExecPgNonQuery(string sql, [System.Runtime.CompilerServices.CallerMemberName] string caller = "")
         {
+            // Nothing to run: callers build their SQL by looping over source rows, so an
+            // empty script just means the branch had no rows for that table. Executing it
+            // would make Npgsql throw "CommandText property has not been initialized" and
+            // needlessly abort the branch transaction, so treat it as a no-op.
+            if (string.IsNullOrWhiteSpace(sql))
+                return 0;
+
             try
             {
                 using var cmd = PgCmd(sql);
