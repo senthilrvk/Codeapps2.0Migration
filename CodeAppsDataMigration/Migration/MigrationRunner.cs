@@ -1530,6 +1530,14 @@ namespace CodeAppsDataMigration.Migration
                     Int32 ControlOrder = Convert.ToInt32(row["ControlOrder"].ToString());
                     bool Active = Convert.ToString(row["Active"].ToString()) == "0" ? false : true;
 
+                    if (ControlName == "Return")
+                    {
+                        ControlName = "SalesReturn";
+                    }
+                    else if (ControlName == "Expiry")
+                    {
+                        ControlName = "ExpiryReturn";
+                    }
                     strUpdateQuery += $"\n update controlorder set controlorder ='{ControlOrder}' , active ={Active} where controlname = '{ControlName}' and controltype ='{ControlType}' ;";
 
                 }
@@ -1541,7 +1549,17 @@ namespace CodeAppsDataMigration.Migration
                     string ControlType = row["ControlType"].ToString();
                     Int32 ControlOrder = Convert.ToInt32(row["ControlOrder"].ToString());
                     bool Active = Convert.ToString(row["Active"].ToString()) == "0" ? false : true;
-                    strUpdateQuery += $"\n update controlordermainbranch set controlorder ='{ControlOrder}' , active ={Active} where controlname = '{ControlName}' and controltype ='{ControlType}' ;";
+
+                    if (ControlName == "Return")
+                    {
+                        ControlName = "SalesReturn";
+                    }
+                    else if (ControlName == "Expiry")
+                    {
+                        ControlName = "ExpiryReturn";
+                    }
+
+                    strUpdateQuery += $"\n update controlordermainbranch set controlorder ='{ControlOrder}' , active ={Active} where controlname = '{ControlName}' and controltype ='{ControlType}' and mainbranchid={nMainBranchId} ;";
 
                 }
 

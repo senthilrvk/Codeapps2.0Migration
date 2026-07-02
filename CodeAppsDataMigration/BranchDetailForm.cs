@@ -1,4 +1,5 @@
 using CodeAppsDataMigration.Data;
+using Microsoft.Data.SqlClient;
 using Npgsql;
 using System.Data;
 using System.Net.Http;
@@ -728,13 +729,29 @@ namespace CodeAppsDataMigration
             var jsonData = new Dictionary<string, object?>
             {
                 ["tempid"] = _textBoxes.TryGetValue("TempId", out var tmpMain) ? ParseLongOrDefault(tmpMain.Text) : 0,
-                ["businesstype"] = ""
+                ["businesstype"] = ResolveBusinessType()
             };
             var debug = BuildPayloadFromMap(_branchFieldMap, jsonData, "Main");
             jsonData["mainusername"] = txtUsername.Text.Trim();
             jsonData["mainpwd"] = txtPassword.Text;   // do NOT trim password
             var json = JsonSerializer.Serialize(jsonData, new JsonSerializerOptions { WriteIndented = true });
             return (json, debug);
+        }
+
+        // Maps the SQL Server Settings ProductName to the API business type.
+        private static string ResolveBusinessType()
+        {
+            using var conn = SqlServerConnection.Create();
+            conn.Open();
+            using var cmd = new SqlCommand("SELECT Value FROM Settings WHERE KeyValue = 'ProductName'", conn);
+            var productName = cmd.ExecuteScalar() as string;
+
+            return productName switch
+            {
+                "WholeSalePharma" => "PHARMACEUTICALS",
+                "RetailPharma" => "PHARMACY",
+                _ => "DISTRIBUTION"
+            };
         }
 
         private (string json, StringBuilder debug) BuildSubPayload(long mainBranchId)
