@@ -3432,7 +3432,8 @@ namespace CodeAppsDataMigration.Migration
                     ("SalesExeId","salesexeid","bigint"),
                     ("ExpiryReceive_Type","issuepurtype","text"),
                     ("ExpiryReceive_Field2","inclusivesales","text"),
-                    ("BranchId","branchid","integer"),
+                    ("branchId","branchid","integer"),
+                    ("mainranchId","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
                 {
@@ -3569,6 +3570,8 @@ namespace CodeAppsDataMigration.Migration
                     ("UniqueBillNo","uniquebillno","bigint"),
                     ("ExpiryReceiveSub_DebitNoteConvertFlag","expiryconvflag","text"),
                     ("ExpiryReceiveSub_DebitNoteConvertQty","expiryconvqty","numeric"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchId","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
                 {
@@ -3614,7 +3617,7 @@ namespace CodeAppsDataMigration.Migration
                     {"addrateperunit","0"},
                     {"addrateunitamt","0"},
                     {"receiptid","0"},
-                    {"mainbranchid", nMainBranchId.ToString()},
+                    
 
                     // text -> ''
                     {"repl",""},
@@ -3626,7 +3629,89 @@ namespace CodeAppsDataMigration.Migration
                 },
                 condition="where branchid ="+nFromBranchId.ToString()
             },
-
+            new TableMap
+            {
+                SqlTable = "AccountHeadSub",
+                PgTable  = "accountheadsub",
+                Columns = new[]
+                {
+                    
+                    ("OP_No","opno","bigint"),
+                    ("Doctor_Id","doctorid","bigint"),
+                    ("AccountHeadSub_fee","subfee","numeric"),
+                    ("AccountHeadSub_Consulfee","consulfee","numeric"),
+                    ("AccountHeadSub_otherfee","otherfee","numeric"),
+                    ("AccountHeadSub_Time","time","text"),
+                    ("AccountHeadSub_RegNo","regno","bigint"),
+                    ("AccountHeadSub_Total","total","numeric"),
+                    ("AccountHeadSub_PR","pr","text"),
+                    ("AccountHeadSub_BP","bp","text"),
+                    ("AccountHeadSub_Wt","wt","text"),
+                    ("AccountHeadSub_Ht","ht","text"),
+                    ("AccountHeadSub_sex","sex","text"),
+                    ("AccoutHead_Id","acid","bigint"),
+                    ("AccountHeadSub_Age","age","bigint"),
+                    ("AccountHeadSub_VisitNo","visitno","bigint"),
+                    ("AccountHeadSub_RegDate","regdate","date"),
+                    ("AccountHeadSub_PayTermsId","paytermsid","bigint"),
+                    ("AccountHeadSub_BloodGroupId","bloodgroupid","bigint"),
+                    ("AccountHeadSub_CareOfRelationship","careofrelationship","text"),
+                    ("AccountHeadSub_CareOfName","careofname","text"),
+                    ("AccountHeadSub_CareOfPhone","careofphone","text"),
+                    ("AccountHeadSub_Month","month","bigint"),
+                    ("AccountHeadSub_GpayAmt","gpayamt","numeric"),
+                    ("AccountHeadSub_CashAmt","cashamt","numeric"),
+                    ("AccountHeadSub_BankCardNo","bankcardno","text"),
+                    ("AccountHeadSub_BankCardName","bankcardname","text"),
+                    ("AccountHeadSub_BankId","bankid","bigint"),
+                    ("AccountHeadSub_RefDoctor","refdoctor","text"),
+                    ("AccountHeadSub_RefHospital","refhospital","text"),
+                    ("AccountHeadSub_Title","title","text"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+                SqlTable = "Bloodgroup",
+                PgTable  = "bloodgroup",
+                Columns = new[]
+                {
+                    ("BloodgroupId","tempid","bigint"),
+                    ("BloodgroupName","bloodgroupname","text"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+                SqlTable = "Department",
+                PgTable  = "department",
+                Columns = new[]
+                {
+                    ("Department_Id","tempid","bigint"),
+                    ("Department_Name","dptname","text"),
+                    ("Description_Name","descname","text"),
+                    ("Department_Head","dpthead","text"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+                   
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
         };
 
     }
