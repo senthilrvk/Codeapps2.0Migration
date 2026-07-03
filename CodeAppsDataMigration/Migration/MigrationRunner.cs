@@ -287,7 +287,7 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"UPDATE branch im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
 
-                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET categoryid = ca.categoryid FROM category ca WHERE ca.tempid = pm.categoryid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET categoryid = ca.categoryid FROM category ca WHERE ca.branchid={nBranchId} and  ca.tempid = pm.categoryid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.prodlinkeshopid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture{nMainBranchId} mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET hsnid = hs.hsn_id FROM hsn{nMainBranchId} hs WHERE hs.tempid = pm.hsnid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
@@ -693,7 +693,7 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n AND mainbranchid = {nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
-                stringBuilder.Add($"UPDATE category ct SET categoryhead_id = ch.categoryheadid FROM categoryhead ch WHERE ct.categoryhead_id = ch.tempid AND ct.branchid = {nBranchId} and ct.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE category ct SET categoryhead_id = ch.categoryheadid FROM categoryhead ch WHERE ct.categoryhead_id = ch.tempid and ch.branchid={nBranchId} AND ct.branchid = {nBranchId} and ct.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE restotabledetails isub SET tableid = pm.tableid FROM restotable pm WHERE pm.tempid = isub.tableid AND isub.branchid = {nBranchId} and isub.mainbranchid = {nMainBranchId}");
 
                 //              { id: 1, categorytype: 'Product' },
