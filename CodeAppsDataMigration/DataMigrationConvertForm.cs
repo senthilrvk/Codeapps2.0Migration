@@ -218,7 +218,18 @@ namespace CodeAppsDataMigration
                             runner.RollbackBranchTransaction();
                             // Attach which branch mapping was being processed, then surface
                             // to the outer (UI-thread) handler which shows the full detail.
-                            throw new Exception($"Failed while migrating branch '{map.Display}'. " + Exme.Message, Exme);
+                            // Also embed the failing query script (when available) directly in
+                            // Message so it is visible in the debugger tooltip, not just the
+                            // MessageBox / log file.
+                            var innerMe = Migration.MigrationException.Find(Exme);
+                            string scriptTail = string.IsNullOrEmpty(innerMe?.FailingQuery)
+                                ? ""
+                                : Environment.NewLine + Environment.NewLine +
+                                  "---- Failing script ----" + Environment.NewLine +
+                                  innerMe.FailingQuery;
+                            throw new Exception(
+                                $"Failed while migrating branch '{map.Display}'. " + Exme.Message + scriptTail,
+                                Exme);
                         }
                     }
 

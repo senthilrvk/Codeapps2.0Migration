@@ -3037,11 +3037,7 @@ namespace CodeAppsDataMigration.Migration
                 ("ToTaxPers",         "totaxpers",       "numeric"),
                 ("branchid",          "branchid",        "bigint"),
                 ("mainbranchid",      "mainbranchid",    "bigint")
-            },
-            Constants = new Dictionary<string, object>
-            {
-
-            },
+            },            
             condition = "where FromBranchId =" + nFromBranchId.ToString()
         },
         new TableMap
@@ -3559,7 +3555,6 @@ namespace CodeAppsDataMigration.Migration
                     ("ExpiryReceiveSub_CessAmt","cessamt","numeric"),
                     ("ExpiryReceiveSub_ExtraCessPers","extracesspers","numeric"),
                     ("ExpiryReceiveSub_ExtraCessAmt","extracessamt","numeric"),
-                    ("BranchId","branchid","bigint"),
                     ("BillSerId","billserid","bigint"),
                     ("Issue_SlNo","issueno","bigint"),
                     ("Issue_BillDate","issuedate","date"),
@@ -3674,7 +3669,7 @@ namespace CodeAppsDataMigration.Migration
                 {
                     
                 },
-                condition="where branchid ="+nFromBranchId.ToString()
+                condition="where AccoutHead_Id in (select ac_id from  accounthead where  branchid ="+nFromBranchId.ToString()+")"
             },
             new TableMap
             {

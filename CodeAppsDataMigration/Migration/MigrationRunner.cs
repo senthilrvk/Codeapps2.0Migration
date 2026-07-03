@@ -740,10 +740,10 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"update stocktransfermain{nMainBranchId} st set tobranch = br.branchid from branch br where st.billserid = br.tempid and frombranch={nBranchId};");
 
-                stringBuilder.Add($"update accountheadsub ahs set doctorid = d.doctorid from doctor d  where ahs.doctorid = d.tempid and branchid={nBranchId};");
-                stringBuilder.Add($"update accountheadsub ahs set bloodgroupid = b.bloodgroupid from bloodgroup b  where ahs.bloodgroupid = b.tempid and branchid={nBranchId};");
+                stringBuilder.Add($"update accountheadsub ahs set doctorid = d.doctorid from doctor d  where ahs.doctorid = d.tempid and ahs.branchid={nBranchId} and d.branchid={nBranchId};");
+                stringBuilder.Add($"update accountheadsub ahs set bloodgroupid = b.bloodgroupid from bloodgroup b  where ahs.bloodgroupid = b.tempid and ahs.branchid={nBranchId} and b.branchid={nBranchId};");
 
-                stringBuilder.Add($"update doctor d set department_id = dt.dptid from department dt  where d.department_id = dt.tempid and branchid={nBranchId};");
+                stringBuilder.Add($"update doctor d set department_id = dt.dptid from department dt  where d.department_id = dt.tempid and dt.branchid={nBranchId} and d.branchid={nBranchId};");
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)
