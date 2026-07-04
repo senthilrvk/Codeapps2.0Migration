@@ -3707,6 +3707,171 @@ namespace CodeAppsDataMigration.Migration
                 },
                 condition="where branchid ="+nFromBranchId.ToString()
             },
+            new TableMap
+            {
+                SqlTable = "Diagnosis",
+                PgTable  = "diagnosis",
+                Columns = new[]
+                {
+                    
+                    ("DiagnosisName","diagnosisname","text"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid", "mainbranchid","bigint"),
+                    ("DiagnosisId","tempid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+                SqlTable = "Diseases",
+                PgTable  = "symptoms"+nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("DiseasesId","tempid","bigint"),
+                    ("DiseasesName","symptomsname","text"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid", "mainbranchid","bigint"),
+
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+                SqlTable = "DiseaseSub",
+                PgTable  = "diseasesub"+nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    
+                    ("DiseasesId","diseasesid","bigint"),
+                    ("DiagnosisId","diagnosisid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                },
+                condition="where DiseasesId in (select DiseasesId from  Diseases where  branchid ="+nFromBranchId.ToString()+")"
+            },
+            new TableMap
+            {
+                SqlTable = "Dosages",
+                PgTable  = "dosage",
+                Columns = new[]
+                {
+                    
+                    ("DosageName","dosagename","text"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+                SqlTable = "Hospital",
+                PgTable  = "hospital",
+                Columns = new[]
+                {
+                    
+                    ("Hos_Name","hosname","text"),
+                    ("Hos_Addr1","hosaddr1","text"),
+                    ("Hos_Addr2","hosaddr2","text"),
+                    ("Hos_Addr3","hosaddr3","text"),
+                    ("Hos_Phone","hosphone","text"),
+                    ("Hos_Mobile","hosmobile","text"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                    ("Hos_Id","tempid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+                SqlTable = "HosProcedure",
+                PgTable  = "hosprocedure",
+                Columns = new[]
+                {
+                
+                    ("HosProcedureName","hosprocedurename","text"),
+                    ("HosProcedureCharge","hosprocedurecharge","numeric"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+               
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+                SqlTable = "LabBill",
+                PgTable  = "labbill"+nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("LabBill_Id","tempid","bigint"),
+                    ("Reg_Id","regid","bigint"),
+                    ("OPno","opno","bigint"),
+                    ("LabBill_BillNo","billno","bigint"),
+                    ("LabBill_Type","billtype","text"),
+                    ("LabBill_PayTerms","payterms","text"),
+                    ("LabBill_RateType","ratetype","text"),
+                    ("LabBill_DisPers","billdispers","numeric"),
+                    ("LabBill_DisAmt","billdisamt","numeric"),
+                    ("LabBill_Total","billtotal","numeric"),
+                    ("LabBill_date","billdate","date"),
+                    ("RevisitId","revisitid","bigint"),
+                    ("LabBill_Flag","billflag","text"),
+                    ("Hospital_Id","hospitalid","text"),
+                    ("Doctor_Id","doctorid","bigint"),
+                    ("LabBill_Cancel","billcancel","text"),
+                    ("StaffId","staffid","bigint"),
+                    ("branchId","branchid","bigint"),
+                    ("LabBill_NetAmt","billnetamt","numeric"),
+                    ("IPno","ipno","bigint"),
+                    ("LabBill_Status","billstatus","text"),
+                    ("AcId","acid","bigint"),
+                    ("LabBill_PayTermsId","paytermsid","bigint"),
+                    ("LabillTime","billtime","text"),
+                    ("LabBill_CustomerName","customername","text"),
+                    ("LabBill_Addr","addr","text"),
+                    ("LabBill_PhoneNumber","phonenumber","text"),
+                    ("InPatient","inpatient","boolean"),
+                    ("IP_UniqueId","ipuniqueid","bigint"),
+                    ("LabBill_Age","age","bigint"),
+                    ("LabBill_Sex","sex","text"),
+                    ("LabBill_GpayAmt","gpayamt","numeric"),
+                    ("LabBill_CashAmt","cashamt","numeric"),
+                    ("LabBIll_CardNo","cardno","text"),
+                    ("LabBill_CardName","cardname","text"),
+                    ("LabBill_AdvAmt","advamt","numeric"),
+                    ("LabBill_BankId","bankid","bigint"),
+                    ("LabBill_CashRetrnTot","cashretrntot","numeric"),
+                    ("CashRtnPayterms_Id","cashrtnpaytermsid","bigint"),
+                    ("LabBill_Remarks","billremarks","text"),
+                    ("LabBill_RefName","refname","text"),
+                    ("LabBill_RefHospital","refhospital","text"),
+                    ("mainbranchId","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
         };
 
     }

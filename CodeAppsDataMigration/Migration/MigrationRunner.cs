@@ -744,6 +744,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update accountheadsub ahs set bloodgroupid = b.bloodgroupid from bloodgroup b  where ahs.bloodgroupid = b.tempid and ahs.branchid={nBranchId} and b.branchid={nBranchId};");
 
                 stringBuilder.Add($"update doctor d set department_id = dt.dptid from department dt  where d.department_id = dt.tempid and dt.branchid={nBranchId} and d.branchid={nBranchId};");
+                stringBuilder.Add($"update diseasesub d set diagnosisid = dg.diagnosisid from diagnosis dg  where d.diagnosisid = dg.tempid ;");
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)
