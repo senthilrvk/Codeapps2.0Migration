@@ -3872,6 +3872,76 @@ namespace CodeAppsDataMigration.Migration
                 },
                 condition="where branchid ="+nFromBranchId.ToString()
             },
+            new TableMap
+            {
+                SqlTable = "Specialist",
+                PgTable  = "specialist",
+                Columns = new[]
+                {
+                    ("Specialist_Id","tempid","bigint"),
+                    ("Specialist_Name","splname","text"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+                SqlTable = "ReVisiting",
+                PgTable  = "revisiting",
+                Columns = new[]
+                {
+                    ("Visit_id","tempid","bigint"),
+                    ("Visit_Name","visitname","text"),
+                    ("Visit_sex","visitsex","text"),
+                    ("Visit_DOB","visitdob","date"),
+                    ("Visit_Age","visitage","text"),
+                    ("Visit_Phone","visitphone","text"),
+                    ("Visit_Addr1","visitaddr1","text"),
+                    ("Visit_OPNo","visitopno","bigint"),
+                    ("Reg_Id","regid","bigint"),
+                    ("Visit_DoctorId","visitdoctorid","bigint"),
+                    ("visiting_Fee","visitingfee","numeric"),
+                    ("Visit_ConsultFee","visitconsultfee","numeric"),
+                    ("Visit_OtherFee","visitotherfee","numeric"),
+                    ("Visit_Date","visitdate","date"),
+                    ("flag","flag","boolean"),
+                    ("Visit_TokenNo","visittokenno","text"),
+                    ("Visit_StaffId","visitstaffid","bigint"),
+                    ("Visit_SplFeeFlag","visitsplfeeflag","text"),
+                    ("Visit_SplFee","visitsplfee","numeric"),
+                    ("Visit_EnterDate","visitenterdate","date"),
+                    ("Visit_Total","visittotal","numeric"),
+                    ("Visit_PR","visitpr","text"),
+                    ("Visit_BP","visitbp","text"),
+                    ("Visit_Wt","visitwt","text"),
+                    ("Visit_Ht","visitht","text"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchId","mainbranchid","bigint"),
+                    ("AcId","acid","bigint"),
+                    ("Visit_No","visitno","bigint"),
+                    ("Visit_Flag","visitflag","text"),
+                    ("PayTerms_Id","paytermsid","bigint"),
+                    ("Visit_Cancel","visitcancel","boolean"),
+                    ("Visit_Time","visittime","text"),
+                    ("Specialist_Id","specialistid","bigint"),
+                    ("Visit_AgeMonth","visitagemonth","text"),
+                    ("Visit_CashAmt","visitcashamt","numeric"),
+                    ("Visit_GpayAmt","visitgpayamt","numeric"),
+                    ("Visit_BankCardNo","visitbankcardno","text"),
+                    ("Visit_CardName","visitcardname","text"),
+                    ("Visit_BankId","visitbankid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
         };
 
     }

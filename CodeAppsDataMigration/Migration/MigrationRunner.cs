@@ -744,7 +744,20 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update accountheadsub ahs set bloodgroupid = b.bloodgroupid from bloodgroup b  where ahs.bloodgroupid = b.tempid and ahs.branchid={nBranchId} and b.branchid={nBranchId};");
 
                 stringBuilder.Add($"update doctor d set department_id = dt.dptid from department dt  where d.department_id = dt.tempid and dt.branchid={nBranchId} and d.branchid={nBranchId};");
+                stringBuilder.Add($"update doctor d set specialistid = s.splid from specialist s  where d.specialistid = s.tempid and s.branchid={nBranchId} and d.branchid={nBranchId};");
+
                 stringBuilder.Add($"update diseasesub d set diagnosisid = dg.diagnosisid from diagnosis dg  where d.diagnosisid = dg.tempid ;");
+
+                stringBuilder.Add($"update revisiting r set visitdoctorid = d.doctorid from doctor d  where r.visitdoctorid = d.tempid and r.branchid={nBranchId} and d.branchid={nBranchId} ;");
+                stringBuilder.Add($"update revisiting r set specialistid = s.splid from specialist s  where r.specialistid = s.tempid and r.branchid={nBranchId} and s.branchid={nBranchId} ;");
+                stringBuilder.Add($"update revisiting r set acid = ah.acid from accounthead{nMainBranchId} ah  where r.acid = ah.tempid and r.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+                stringBuilder.Add($"UPDATE revisiting r SET visitstaffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = r.visitstaffid AND r.branchid = {nBranchId} and r.mainbranchid = {nMainBranchId}");
+
+                stringBuilder.Add($"update labbill l set revisitid = r.visitid from revisiting r  where l.revisitid = r.tempid and l.branchid={nBranchId} and r.branchid={nBranchId} ;");
+                stringBuilder.Add($"update labbill l set hospitalid = h.hosid::text from hospital h  where l.hospitalid = h.tempid::text and l.branchid={nBranchId} and h.branchid={nBranchId} ;");
+                stringBuilder.Add($"update labbill l set doctorid = d.doctorid from doctor d  where l.doctorid = d.tempid and l.branchid={nBranchId} and d.branchid={nBranchId} ;");
+                stringBuilder.Add($"UPDATE labbill l SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = l.staffid AND l.branchid = {nBranchId} and l.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE labbill l SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = l.acid AND l.branchid = {nBranchId} and l.mainbranchid = {nMainBranchId}");
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)
