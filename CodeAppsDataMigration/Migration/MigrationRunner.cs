@@ -1818,9 +1818,26 @@ namespace CodeAppsDataMigration.Migration
                     strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printfilepreview='{strPrintFileName}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
 
+
+                    strPrintFileName = ""; strPrintPreviewName = "";
+                    datarows = dsDataSet.Tables[1].Select("SettingName = 'ExpiryReturnPrintName' and branchid = " + nFromBranchId);
+                    foreach (DataRow rows in datarows)
+                    {
+                        strPrintFileName = Convert.ToString(rows["Value"].ToString());
+                    }
+
+                    datarows = dsDataSet.Tables[1].Select("SettingName = 'ExpiryReturnPreview' and branchid = " + nFromBranchId);
+                    foreach (DataRow rows in datarows)
+                    {
+                        strPrintPreviewName = Convert.ToString(rows["Value"].ToString());
+                    }
+
+                    strUpdateQuery += $"\n UPDATE billseries SET printfilename = '{strPrintFileName}',printfilepreview='{strPrintFileName}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'EXPIRY RETURN';";
+
                 }
 
-                strUpdateQuery += $"\n update printdisplaysettings set printname = 'CreditNotePrintModelOne' where printname = 'PrintModelCreditNote';";
+              //  strUpdateQuery += $"\n update printdisplaysettings set printname = 'CreditNotePrintModelOne' where printname = 'PrintModelCreditNote';";
 
                 strUpdateQuery += $"\n UPDATE billseries SET printfilename = 'CreditNotePrintModelOne',printfilepreview='CreditNotePrintModelOne'";
                 strUpdateQuery += $"\n WHERE printfilename = 'PrintModelCreditNote' and mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";

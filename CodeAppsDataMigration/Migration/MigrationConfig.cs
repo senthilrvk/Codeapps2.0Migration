@@ -3728,7 +3728,7 @@ namespace CodeAppsDataMigration.Migration
             new TableMap
             {
                 SqlTable = "Diseases",
-                PgTable  = "symptoms"+nMainBranchId.ToString(),
+                PgTable  = "symptoms",
                 Columns = new[]
                 {
                     ("DiseasesId","tempid","bigint"),
@@ -3746,7 +3746,7 @@ namespace CodeAppsDataMigration.Migration
             new TableMap
             {
                 SqlTable = "DiseaseSub",
-                PgTable  = "diseasesub"+nMainBranchId.ToString(),
+                PgTable  = "diseasesub",
                 Columns = new[]
                 {
                     
@@ -3819,7 +3819,7 @@ namespace CodeAppsDataMigration.Migration
             new TableMap
             {
                 SqlTable = "LabBill",
-                PgTable  = "labbill"+nMainBranchId.ToString(),
+                PgTable  = "labbill",
                 Columns = new[]
                 {
                     ("LabBill_Id","tempid","bigint"),
