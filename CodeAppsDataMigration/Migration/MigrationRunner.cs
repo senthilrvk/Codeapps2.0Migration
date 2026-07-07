@@ -758,6 +758,43 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update labbill l set doctorid = d.doctorid from doctor d  where l.doctorid = d.tempid and l.branchid={nBranchId} and d.branchid={nBranchId} ;");
                 stringBuilder.Add($"UPDATE labbill l SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = l.staffid AND l.branchid = {nBranchId} and l.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE labbill l SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = l.acid AND l.branchid = {nBranchId} and l.mainbranchid = {nMainBranchId}");
+
+                stringBuilder.Add($"update labbillsub  lbs set labbillid = l.labbillid from labbill l  where lbs.labbillid = l.tempid and lbs.branchid={nBranchId} and l.branchid={nBranchId} ;");
+                stringBuilder.Add($"update labbillsub lbs set departmentid = d.dptid::text from department d  where lbs.departmentid = d.tempid::text and lbs.branchid={nBranchId} and d.branchid={nBranchId} ;");
+                stringBuilder.Add($"update labbillsub lbs set testid = t.testid from test t  where lbs.testid = t.tempid and lbs.branchid={nBranchId} and t.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"update test t set departmentid = d.dptid from department d  where t.departmentid = d.tempid and t.branchid={nBranchId} and d.branchid={nBranchId} ;");
+                stringBuilder.Add($"update testsub ts set testid = t.testid from test t  where ts.testid = t.tempid and ts.branchid={nBranchId} and t.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"UPDATE testresult tr SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = tr.staffid AND tr.branchid = {nBranchId} and tr.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"update testresult  tr set labbillid = l.labbillid from labbill l  where tr.labbillid = l.tempid and tr.branchid={nBranchId} and l.branchid={nBranchId} ;");
+                stringBuilder.Add($"UPDATE testresult tr SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = tr.acid AND tr.branchid = {nBranchId} and tr.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"update testresult tr set doctorid = d.doctorid from doctor d  where tr.doctorid = d.tempid and tr.branchid={nBranchId} and d.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"update testresultsub trs set testresultid = tr.testresultid from testresult tr  where trs.testresultid = tr.tempid and trs.branchid={nBranchId} and tr.branchid={nBranchId} ;");
+                stringBuilder.Add($"update testresultsub trs set testid = t.testid from test t  where trs.testid = t.tempid and trs.branchid={nBranchId} and t.branchid={nBranchId} ;");
+                stringBuilder.Add($"update testresultsub trs set testsubid = ts.testsubid from testsub ts  where trs.testid = ts.tempid and trs.branchid={nBranchId} and ts.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"UPDATE appointmentdetails ad SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = ad.acid AND ad.branchid = {nBranchId} and ad.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"update appointmentdetails ad set doctorid = d.doctorid from doctor d  where ad.doctorid = d.tempid and ad.branchid={nBranchId} and d.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"UPDATE pmrappointment pa SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = pa.acid AND pa.branchid = {nBranchId} and pa.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"update pmrappointment pa set doctorid = d.doctorid from doctor d  where pa.doctorid = d.tempid and pa.branchid={nBranchId} and d.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"update pmrsheet ps set revisitid = r.visitid from revisiting r  where ps.revisitid = r.tempid and ps.branchid={nBranchId} and r.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrsheet ps set doctorid = d.doctorid from doctor d  where ps.doctorid = d.tempid and ps.branchid={nBranchId} and d.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrsheet ps set doctorid = d.doctorid from doctor d  where ps.doctorid = d.tempid and ps.branchid={nBranchId} and d.branchid={nBranchId} ;");
+                stringBuilder.Add($"UPDATE pmrsheet ps SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = ps.staffid AND ps.branchid = {nBranchId} and ps.mainbranchid = {nMainBranchId}");
+
+                stringBuilder.Add($"update pmrdiagnosis pd set pmruniquekey = ps.pmruniquekey from pmrsheet ps  where pd.pmruniquekey = ps.tempid and pd.branchid={nBranchId} and ps.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrdiagnosis pd set diagnosisid = d.diagnosisid from diagnosis d  where pd.diagnosisid = d.tempid and pd.branchid={nBranchId} and d.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"update pmrdiseases pd set pmruniquekey = ps.pmruniquekey from pmrsheet ps  where pd.pmruniquekey = ps.tempid and pd.branchid={nBranchId} and ps.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrdiseases pd set diseasesid = s.symptomsid from symptoms s  where pd.diseasesid = s.tempid and pd.branchid={nBranchId} and s.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"update pmrmedicine pm set pmruniquekey = ps.pmruniquekey from pmrsheet ps  where pm.pmruniquekey = ps.tempid and pm.branchid={nBranchId} and ps.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrmedicine pm set productid = ps.productid from productmain{nMainBranchId} ps  where pm.productid = ps.tempid and pm.branchid={nBranchId} and ps.branchid={nBranchId} ;");
+
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)
@@ -1300,6 +1337,86 @@ namespace CodeAppsDataMigration.Migration
             catch (Exception ex)
             {
                 ReportProgress($"Updating failed: {ex.Message} Update Query {strUpdateQuery}", 2);
+                throw; // abort so the branch transaction is rolled back
+            }
+        }
+        public void fnHospitalSettingUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
+        {
+            ReportProgress("Updating Hospitalsetting in SQL Server...", 0);
+
+            string strQuery = " select * from HospitalSetting where branchid=" + nFromBranchId;
+
+            try
+            {
+                System.Data.DataTable dtsql = new System.Data.DataTable();
+                using var connection = SqlServerConnection.Create();
+                connection.Open();
+                var query = string.Format(strQuery);
+                using var command = new SqlCommand(query, connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                adapter.Fill(dtsql);
+                connection.Close();
+
+                //strQuery = @"select * from branchsetting where branchid="+nBranchId+ " and mainbranchid=";
+                //DataTable dtposgres = new DataTable();
+                //using var posconnection = PostgresConnection.Create();
+                //posconnection.Open();
+                //var posquery = string.Format(strQuery);
+                //using var poscommand = new SqlCommand(query, connection);
+                //adapter = new SqlDataAdapter(command);
+                //adapter.Fill(dtposgres);
+                //posconnection.Close();
+                string strUpdateQuery = "";
+                foreach (DataRow row in dtsql.Rows)
+                {
+                    string KeyValue = row["HosSetting_Name"].ToString();
+                    string Value = row["HosSettings_Value"].ToString();
+                    switch (KeyValue)
+                    {
+                        case "RegNo":
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='RegNo' and branchid='" + nBranchId + "' ;";
+                            break;
+                        case "OpNo":
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='OpNo' and branchid='" + nBranchId + "';";
+                            break;
+                        //case "Shift":
+                        //    strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='LabBillNo' and branchid='" + nBranchId + "';";
+                        //    break;
+                        //case "IPNO":
+                        //    strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='AgeRange3' and branchid='" + nBranchId + "';";
+                        //    break;
+                        case "RevisitNo":
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='RevisitNo' and branchid='" + nBranchId + "' ;";
+                            break;
+                        case "LabBillNo":
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='LabBillNo' and branchid='" + nBranchId + "';";
+                            break;
+                        case "TestResultBillNo":
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='TestResultBillNo' and branchid='" + nBranchId + "' ;";
+                            break;
+                        case "PMRBillNo":
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='PMRBillNo' and branchid='" + nBranchId + "' ;";
+                            break;
+                        case "AppointmentBillNo":
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='AppointmentBillNo' and branchid='" + nBranchId + "';";
+                            break;
+                        //case "DischargeId":
+                        //    strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='BillPrintSaveOrder' and branchid='" + nBranchId + "';";
+                        //    break;
+                       
+
+                    }
+
+                }
+
+                ExecPgNonQuery(strUpdateQuery);
+
+                ReportProgress("Updating BranchSetting  successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating BranchSetting  failed: {ex.Message}", 2);
+                MessageBox.Show(ex.Message.ToString());
                 throw; // abort so the branch transaction is rolled back
             }
         }
