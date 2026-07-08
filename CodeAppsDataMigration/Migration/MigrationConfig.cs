@@ -3428,7 +3428,7 @@ namespace CodeAppsDataMigration.Migration
                     ("SalesExeId","salesexeid","bigint"),
                     ("ExpiryReceive_Type","issuepurtype","text"),
                     ("ExpiryReceive_Field2","inclusivesales","text"),
-                    ("branchId","branchid","integer"),
+                    ("branchid","branchid","integer"),
                     ("mainranchId","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
@@ -3565,7 +3565,7 @@ namespace CodeAppsDataMigration.Migration
                     ("UniqueBillNo","uniquebillno","bigint"),
                     ("ExpiryReceiveSub_DebitNoteConvertFlag","expiryconvflag","text"),
                     ("ExpiryReceiveSub_DebitNoteConvertQty","expiryconvqty","numeric"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchId","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
@@ -3662,7 +3662,7 @@ namespace CodeAppsDataMigration.Migration
                     ("AccountHeadSub_RefDoctor","refdoctor","text"),
                     ("AccountHeadSub_RefHospital","refhospital","text"),
                     ("AccountHeadSub_Title","title","text"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
@@ -3679,7 +3679,7 @@ namespace CodeAppsDataMigration.Migration
                 {
                     ("BloodgroupId","tempid","bigint"),
                     ("BloodgroupName","bloodgroupname","text"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint")
                 },
                 Constants = new Dictionary<string, object>
@@ -3698,7 +3698,7 @@ namespace CodeAppsDataMigration.Migration
                     ("Department_Name","dptname","text"),
                     ("Description_Name","descname","text"),
                     ("Department_Head","dpthead","text"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint")
                 },
                 Constants = new Dictionary<string, object>
@@ -3715,7 +3715,7 @@ namespace CodeAppsDataMigration.Migration
                 {
                     
                     ("DiagnosisName","diagnosisname","text"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid", "mainbranchid","bigint"),
                     ("DiagnosisId","tempid","bigint")
                 },
@@ -3733,7 +3733,7 @@ namespace CodeAppsDataMigration.Migration
                 {
                     ("DiseasesId","tempid","bigint"),
                     ("DiseasesName","symptomsname","text"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid", "mainbranchid","bigint"),
 
                 },
@@ -3766,7 +3766,7 @@ namespace CodeAppsDataMigration.Migration
                 {
                     
                     ("DosageName","dosagename","text"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint")
                 },
                 Constants = new Dictionary<string, object>
@@ -3788,7 +3788,7 @@ namespace CodeAppsDataMigration.Migration
                     ("Hos_Addr3","hosaddr3","text"),
                     ("Hos_Phone","hosphone","text"),
                     ("Hos_Mobile","hosmobile","text"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint"),
                     ("Hos_Id","tempid","bigint"),
                 },
@@ -3807,7 +3807,7 @@ namespace CodeAppsDataMigration.Migration
                 
                     ("HosProcedureName","hosprocedurename","text"),
                     ("HosProcedureCharge","hosprocedurecharge","numeric"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
@@ -3839,7 +3839,7 @@ namespace CodeAppsDataMigration.Migration
                     ("Doctor_Id","doctorid","bigint"),
                     ("LabBill_Cancel","billcancel","text"),
                     ("StaffId","staffid","bigint"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("LabBill_NetAmt","billnetamt","numeric"),
                     ("IPno","ipno","bigint"),
                     ("LabBill_Status","billstatus","text"),
@@ -3864,7 +3864,7 @@ namespace CodeAppsDataMigration.Migration
                     ("LabBill_Remarks","billremarks","text"),
                     ("LabBill_RefName","refname","text"),
                     ("LabBill_RefHospital","refhospital","text"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
                 {
