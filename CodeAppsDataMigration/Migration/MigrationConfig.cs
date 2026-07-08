@@ -3645,7 +3645,7 @@ namespace CodeAppsDataMigration.Migration
                     ("AccountHeadSub_Ht","ht","text"),
                     ("AccountHeadSub_sex","sex","text"),
                     ("AccoutHead_Id","acid","bigint"),
-                    ("ROUND(AccountHeadSub_Age)::bigint","age","bigint"),
+                    ("AccountHeadSub_Age","age","bigint"),
                     ("AccountHeadSub_VisitNo","visitno","bigint"),
                     ("AccountHeadSub_RegDate","regdate","date"),
                     ("AccountHeadSub_PayTermsId","paytermsid","bigint"),
