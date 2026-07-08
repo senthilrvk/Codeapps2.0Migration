@@ -4,6 +4,7 @@ using DocumentFormat.OpenXml.Spreadsheet;
 using Microsoft.Data.SqlClient;
 using Npgsql;
 using System.Data;
+using System.Text;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TreeView;
 
@@ -577,17 +578,14 @@ namespace CodeAppsDataMigration.Migration
 
                 //issuereturndetails
                 stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} AND pm.mainbranchid = {nMainBranchId}");
-                //strQuery = $"update issuesubdetails{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
-                //strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
-                //strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'";
-                //stringBuilder.Add(strQuery);
+              
                 stringBuilder.Add($"update issuereturndetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} AND mainbranchid ={nMainBranchId}");
                 stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND isub.mainbranchid = {nMainBranchId}  and pm.producttype='product'");
 
                 strQuery = $"update issuereturndetails{nMainBranchId} im set salesbillserid =  bs.billserid from billseries bs where bs.tempid = im.salesbillserid";
                 strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
-                strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='CREDIT NOTE' and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
-
+                strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'  and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
+                stringBuilder.Add(strQuery);
                 strQuery = $"update issuereturndetails{nMainBranchId} ird set issuereturnid =  irm.issuereturnid from issuereturnmain{nMainBranchId} irm where ird.uniquereturnno = irm.uniquereturnno";
                 strQuery += $"\n and ird.branchid = irm.branchid and ird.mainbranchid = irm.mainbranchid";
                 strQuery += $"\n and ird.branchid ={nBranchId}    and ird.mainbranchid ={nMainBranchId} ";
@@ -2049,8 +2047,113 @@ namespace CodeAppsDataMigration.Migration
                 throw; // abort so the branch transaction is rolled back
             }
         }
-    
-    
-    }
+
+
+        public void fnSalesRetLogInsert(long nFromBranchId, long nMainBranchId, long nBranchId)
+        {
+
+            ReportProgress("Updating SalesReturnLog in SQL Server...", 0);
+            string strUpdateQuery = "";
+
+            string strQuery = $@"select CrditNoteNos,ExpCrNoteDates,Trans_VoucherNo SalesVoucherNo,SalesVoucherUniqueId SalesVoucherId,BillSerId,Issue_SlNo issueno,UniqueBillNo,AcId
+                                from Issue where isnull(CrditNoteNos,'') <> '' or isnull(ExpCrNoteDates,'') <> '' and BranchId={nFromBranchId};";
+
+            try
+            {
+                System.Data.DataTable dtIssue = new System.Data.DataTable();
+                using var connection = SqlServerConnection.Create();
+                connection.Open();
+
+                using (var command = new SqlCommand(strQuery, connection))
+                {
+                    SqlDataAdapter adapter = new SqlDataAdapter(command);
+                    adapter.Fill(dtIssue);
+                }
+
+                foreach (DataRow row in dtIssue.Rows)
+                {
+                    string CrditNoteNos = row["CrditNoteNos"].ToString();
+                    string ExpCrNoteDates = row["ExpCrNoteDates"].ToString();
+                    string SalesVoucherNo = row["SalesVoucherNo"].ToString();
+                    string SalesVoucherId = row["SalesVoucherId"].ToString();
+                    string BillSerId = row["BillSerId"].ToString();
+                    string issueno = row["issueno"].ToString();
+                    string UniqueBillNo = row["UniqueBillNo"].ToString();
+                    string AcId = row["AcId"].ToString();
+
+                    // Credit-note list drives a SalesReturn lookup; otherwise the expiry list drives an ExpiryReturn lookup.
+                    bool bIsCreditNote = CrditNoteNos.Trim() != "";
+                    string strNoteList = bIsCreditNote ? CrditNoteNos : ExpCrNoteDates;
+
+                    // Format is 'a@b','c@d' ... : split into pairs, then split each pair on '@'.
+                    foreach (string strPair in strNoteList.Split(','))
+                    {
+                        string strClean = strPair.Trim().Trim('\'').Trim();
+                        if (strClean == "")
+                            continue;
+
+                        string[] parts = strClean.Split('@');
+                        if (parts.Length < 2)
+                            continue;
+
+                        string strRetSlNo = parts[0].Trim();
+                        string strRetUniqueNo = parts[1].Trim();
+                        if (strRetSlNo == "" || strRetUniqueNo == "")
+                            continue;
+
+                        string strRetQuery = bIsCreditNote
+                            ? $"select Trans_VoucherNo,SalesVoucherUniqueId,Issue_CrAmt returnamt,'SalesReturn' returntype from IssueReturn where IssueRetSlNo={strRetSlNo} and UniqueNo={strRetUniqueNo} and branchid={nFromBranchId}"
+                            : $"select Trans_VoucherNo,SalesVoucherUniqueId,Expiry_Total returnamt,'ExpiryReturn' returntype from ExpiryReturn where ExpiryRetSlNo={strRetSlNo} and Expiry_Id={strRetUniqueNo} and BranchId={nFromBranchId}";
+
+                        System.Data.DataTable dtRet = new System.Data.DataTable();
+                        using (var retcommand = new SqlCommand(strRetQuery, connection))
+                        {
+                            SqlDataAdapter retadapter = new SqlDataAdapter(retcommand);
+                            retadapter.Fill(dtRet);
+                        }
+
+                        foreach (DataRow retrow in dtRet.Rows)
+                        {
+                            string RetVoucherNo = retrow["Trans_VoucherNo"].ToString();
+                            string RetUniqueVoucherId = retrow["SalesVoucherUniqueId"].ToString();
+                            string returnamt = retrow["returnamt"].ToString();
+                            string returntype = retrow["returntype"].ToString();
+
+                            strUpdateQuery += "\n INSERT INTO saleretlog" + nMainBranchId + "("
+                                + "salvprefixid, salvoucherno, saluniquevoucherid, retvprefixid, retvoucherno, retuniquevoucherid, "
+                                + "amount, adjamount, branchid, mainbranchid, acid, returntype, billserid, issueno, uniquebillno) VALUES ("
+                                + "5,'" + SalesVoucherNo + "','" + SalesVoucherId + "',5,'" + RetVoucherNo + "','" + RetUniqueVoucherId + "',"
+                                + "'" + returnamt + "','" + returnamt + "','" + nBranchId + "','" + nMainBranchId + "','" + AcId + "','" + returntype + "','"
+                                + BillSerId + "','" + issueno + "','" + UniqueBillNo + "');";
+                        }
+                    }
+                }
+
+
+
+                strUpdateQuery += $"\n UPDATE saleretlog{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} AND im.mainbranchid = {nMainBranchId};";
+
+
+                strUpdateQuery += $"\n update saleretlog{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
+                strUpdateQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                strUpdateQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES' and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
+            
+
+                connection.Close();
+
+                if (strUpdateQuery != "")
+                    ExecPgNonQuery(strUpdateQuery);
+
+                ReportProgress("Updating SalesReturnLog successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating SalesReturnLog failed: {ex.Message} Update Query {strUpdateQuery}", 2);
+                throw; // abort so the branch transaction is rolled back
+            }
+        }
+
+
+     }
 
 }
