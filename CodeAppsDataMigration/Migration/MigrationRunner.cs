@@ -535,7 +535,11 @@ namespace CodeAppsDataMigration.Migration
 
 
                 //returnadjustmentlog
-                stringBuilder.Add($"UPDATE returnadjustmentlog{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($" UPDATE returnadjustmentlog{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($" update returnadjustmentlog{nMainBranchId} rm set postflag = 'SalesReturn'  where rm.postflag = 'Return' AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($" update returnadjustmentlog{nMainBranchId} rm set postflag = 'ExpiryReturn' where rm.postflag = 'Expiry' AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+
+                stringBuilder.Add($" update returnadjustmentlog{nMainBranchId} rm set fromsource = 'Sales' where (rm.postflag = 'SalesReturn' or rm.postflag = 'ExpiryReturn' ) AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
 
                 //accountlogfile
                 stringBuilder.Add($"UPDATE accountlogfile{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>55 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");

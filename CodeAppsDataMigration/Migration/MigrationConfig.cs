@@ -1764,7 +1764,8 @@ namespace CodeAppsDataMigration.Migration
                     ("AdjustedDate","adjusteddate","date"),
                     ("AdjustedFlag","adjustedflag","text"),
                     ("branchid","branchid","bigint"),
-                    ("mainbranchid","mainbranchid","bigint")
+                    ("Field1","adjustmenttype","text") ,
+                    ("mainbranchid","mainbranchid","bigint"),                    
                 },
                 Constants = new Dictionary<string, object>
                 {
