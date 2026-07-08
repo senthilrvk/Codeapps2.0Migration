@@ -211,6 +211,8 @@ namespace CodeAppsDataMigration
                             runner.fnBillSeriesInclusiveUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
                             runner.fnBillNosUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
                             runner.fnDefaultValueUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
+                            runner.fnHsnUpdate( nMainBranchId, map.ToBranchId);
+                            runner.fnServiceItemInsertProductSub(nMainBranchId, map.ToBranchId);
                             runner.CommitBranchTransaction();
                         }
                         catch (Exception Exme)

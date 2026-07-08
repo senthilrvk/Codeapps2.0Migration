@@ -601,7 +601,6 @@ namespace CodeAppsDataMigration.Migration
                 PgTable  = "productmain"+nMainBranchId.ToString(),
                 Columns = new[]
                 {
-
                     ("Service_Id", "tempid", "bigint"),
                     ("ItemCode", "itemcode", "text"),
                     ("SkuCode", "hsncode", "text"),
@@ -610,6 +609,7 @@ namespace CodeAppsDataMigration.Migration
                     ("UnitId", "unitid", "text"),
                     ("TaxGroupId", "taxid", "integer"),
                     ("HsnId", "hsnid", "bigint"),
+                    ("UnitPrice", "prodweight", "numeric"),
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint")
                 },
@@ -646,7 +646,6 @@ namespace CodeAppsDataMigration.Migration
                     {  "prodspecification", ""},
                     {  "proddimension", ""},
                     {  "prodmapitemname", ""},
-                    {  "prodweight", "0"},
                     {  "productgrpid", "0"},
                     {  "prodwgttypeid", "0"},
                     {  "prodcomponents", ""},

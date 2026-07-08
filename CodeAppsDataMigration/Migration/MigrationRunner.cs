@@ -292,6 +292,9 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture{nMainBranchId} mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET hsnid = hs.hsn_id FROM hsn{nMainBranchId} hs WHERE hs.tempid = pm.hsnid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
+                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET productsearch = itemdesc  WHERE pm.producttype = 'serviceitem' AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+
+
                 stringBuilder.Add($"UPDATE productsub{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='product'");
 
                 stringBuilder.Add($"UPDATE hsn{nMainBranchId} hs SET taxid = pm.taxid FROM productmain{nMainBranchId} pm WHERE hs.hsn_id = pm.hsnid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
@@ -1983,6 +1986,65 @@ namespace CodeAppsDataMigration.Migration
             }
         }
 
+        public void fnHsnUpdate(long nMainBranchId, long nBranchId)
+        {
+            try
+            {
+                string strUpdateQuery = "";
+
+                strUpdateQuery += $@"
+                    INSERT INTO public.hsn1(
+                        hsn_code,hsn_gstpers,hsn_description1,hsn_description2,unitid,hsn_cess,hsn_additionalcess,hsn_othercharge,
+                        hsn_addrateperunit,hsn_thousandrateperunit,branchid, mainbranchid, taxid,tempid
+                    )
+                    select distinct
+                    hsncode,0 hsn_gstpers,'' hsn_description1,'' hsn_description2,0 unitid,0 hsn_cess,0 hsn_additionalcess,0 hsn_othercharge,
+                    0 hsn_addrateperunit,0 hsn_thousandrateperunit, branchid, mainbranchid, taxid,0 tempid
+                    from productmain{nMainBranchId} pm where pm.hsnid=0 and pm.branchid={nBranchId} and pm.mainbranchid={nMainBranchId};";
+
+                strUpdateQuery += $@"
+                    update productmain{nMainBranchId} pm set hsnid = hs.hsn_id from hsn{nMainBranchId} hs where pm.hsncode=hs.hsn_code and pm.taxid=hs.taxid and pm.hsnid=0
+                    and pm.branchid={nBranchId} and pm.mainbranchid={nMainBranchId};";
+
+                ExecPgNonQuery(strUpdateQuery);
+
+                ReportProgress("Updating HSN successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating HSN failed: {ex.Message}", 2);
+                throw; // abort so the branch transaction is rolled back
+            }
+        }
+    
+        public void fnServiceItemInsertProductSub(long nMainBranchId, long nBranchId)
+        {
+            try
+            {
+                string strUpdateQuery = "";
+
+                strUpdateQuery += $@"
+                    INSERT INTO productsub{nMainBranchId}(
+                	productid, location, purrate, selrate, whrate, mrp, sprate1, sprate2, sprate3, sprate4, sprate5, 
+	                pcsselrate, pcswhrate, pcsmrp, pcssprate1, pcssprate2, pcssprate3, pcssprate4, pcssprate5, bonline, neethidis, binventoryitem, 
+	                salesdiscount, rolqty, branchid, mainbranchid, tempid)
+	                select 	productid,'' location,0 purrate,prodweight selrate,0 whrate,0 mrp,0 sprate1,0 sprate2,0 sprate3,0 sprate4,0 sprate5, 
+	                0 pcsselrate,0  pcswhrate,0  pcsmrp,0  pcssprate1,0  pcssprate2,0  pcssprate3,0  pcssprate4,0  pcssprate5,False bonline,0  neethidis,True binventoryitem, 
+	                0 salesdiscount,0  rolqty, branchid, mainbranchid,0  tempid
+	               from productmain{nMainBranchId} pm where pm.producttype='serviceitem' and pm.branchid={nBranchId} and pm.mainbranchid={nMainBranchId};";                
+
+                ExecPgNonQuery(strUpdateQuery);
+
+                ReportProgress("Updating HSN successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating HSN failed: {ex.Message}", 2);
+                throw; // abort so the branch transaction is rolled back
+            }
+        }
+    
+    
     }
 
 }
