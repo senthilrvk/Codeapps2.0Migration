@@ -240,6 +240,9 @@ namespace CodeAppsDataMigration.Migration
             {
                 if (long.TryParse(s, out long l))
                     return l.ToString();
+                // Source may be numeric/decimal (e.g. "45.00" or "45.5"); round to nearest integer.
+                if (decimal.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal dec))
+                    return Math.Round(dec, MidpointRounding.AwayFromZero).ToString("0", CultureInfo.InvariantCulture);
                 return "0";
             }
 
