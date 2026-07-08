@@ -3880,7 +3880,7 @@ namespace CodeAppsDataMigration.Migration
                 {
                     ("Specialist_Id","tempid","bigint"),
                     ("Specialist_Name","splname","text"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint")
                 },
                 Constants = new Dictionary<string, object>
@@ -3920,8 +3920,8 @@ namespace CodeAppsDataMigration.Migration
                     ("Visit_BP","visitbp","text"),
                     ("Visit_Wt","visitwt","text"),
                     ("Visit_Ht","visitht","text"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                     ("AcId","acid","bigint"),
                     ("Visit_No","visitno","bigint"),
                     ("Visit_Flag","visitflag","text"),
@@ -3954,9 +3954,9 @@ namespace CodeAppsDataMigration.Migration
                     ("Amount","amount","numeric"),
                     ("RefNO","refno","bigint"),
                     ("Flag","flag","text"),
-                    ("branchId","branchid","bigint"),
+                    ("branchid","branchid","bigint"),
                     ("LabBillSub_ReturnFlag","billsubreturnflag","boolean"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
                 {
@@ -3977,8 +3977,8 @@ namespace CodeAppsDataMigration.Migration
                     ("Test_Drate","testdrate","bigint"),
                     ("Department_Id","departmentid","bigint"),
                     ("TestImageLoc","imageloc","text"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                     ("Test_Id","tempid","bigint")
                 },
                 Constants = new Dictionary<string, object>
@@ -3998,8 +3998,8 @@ namespace CodeAppsDataMigration.Migration
                     ("Test_subdivision","subdivision","text"),
                     ("Test_stdunit","stdunit","text"),
                     ("Test_Unit","unit","text"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                     ("Test_normal","testnormal","text"),
                 },
                 Constants = new Dictionary<string, object>
@@ -4011,13 +4011,13 @@ namespace CodeAppsDataMigration.Migration
             new TableMap
             {
                 SqlTable = "MedicineSchedule",
-                PgTable  = "medschedule",
+                PgTable  = "medicineschedule",
                 Columns = new[]
                 {
                     ("ScheduleName","schedulename","text"),
                     ("Schedule_NoOfQty","schedulenoofqty","text"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
                 {
@@ -4035,8 +4035,8 @@ namespace CodeAppsDataMigration.Migration
                     ("OpNo","opno","bigint"),
                     ("Test_Date","testdate","date"),
                     ("Doctor_Id","doctorid","bigint"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                     ("StaffId","staffid","bigint"),
                     ("LabBill_Id","labbillid","bigint"),
                     ("AcId","acid","bigint"),
@@ -4071,8 +4071,8 @@ namespace CodeAppsDataMigration.Migration
                     ("TestDivisionName","testdivisionname","text"),
                     ("Result","result","text"),
                     ("NormalValue","normalvalue","text"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                     ("TestSubId","testsubid","bigint"),
                     ("Remarks","remarks","text"),
                     ("Test_Unit","testunit","text"),
@@ -4094,8 +4094,8 @@ namespace CodeAppsDataMigration.Migration
                     ("AppointmentDtl_Date","appointmentdtldate","date"),
                     ("OP_TokenNo","optokenno","bigint"),
                     ("WL_TokenNo","wltokenno","bigint"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                     ("AcId","acid","bigint"),
                     ("FlagType","flagtype","text"),
                 },
@@ -4114,8 +4114,8 @@ namespace CodeAppsDataMigration.Migration
                     ("AC_Id","acid","bigint"),
                     ("Reg_Id","regid","bigint"),
                     ("StaffId","staffid","bigint"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                     ("AppointMentDate","appointmentdate","date"),
                     ("AppointMentTime","appointmenttime","time"),
                     ("Doctor_Id","doctorid","bigint"),
@@ -4142,8 +4142,8 @@ namespace CodeAppsDataMigration.Migration
                     ("Re_VisitId","revisitid","bigint"),
                     ("OPNo","opno","bigint"),
                     ("IPNo","ipno","bigint"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                     ("PMR_DoctorAdvice","pmrdoctoradvice","text"),
                     ("PMR_Allergies","pmrallergies","text"),
                     ("PMR_Notes","pmrnotes","text"),
@@ -4185,8 +4185,8 @@ namespace CodeAppsDataMigration.Migration
                 {
                     ("PMR_UniqueKey","pmruniquekey","bigint"),
                     ("DiagnosisId","diagnosisid","bigint"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
                 {
@@ -4202,8 +4202,8 @@ namespace CodeAppsDataMigration.Migration
                 {
                     ("PMR_UniqueKey","pmruniquekey","bigint"),
                     ("DiseasesId","diseasesid","bigint"),
-                    ("branchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
                 {
@@ -4224,8 +4224,8 @@ namespace CodeAppsDataMigration.Migration
                     ("Days","days","text"),
                     ("Medicine_Content","medicinecontent","text"),
                     ("MedicineName","medicinename","text"),
-                    ("BranchId","branchid","bigint"),
-                    ("mainbranchId","mainbranchid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
                     ("Medicine_Remarks","medicineremarks","text"),
                     ("ScheduleName","schedulename","text"),
                     ("Schedule_NoOfQty","schedulenoofqty","bigint"),
