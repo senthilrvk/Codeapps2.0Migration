@@ -3660,13 +3660,13 @@ namespace CodeAppsDataMigration.Migration
                     ("AccountHeadSub_BankId","bankid","bigint"),
                     ("AccountHeadSub_RefDoctor","refdoctor","text"),
                     ("AccountHeadSub_RefHospital","refhospital","text"),
-                    ("AccountHeadSub_Title","title","text"),
-                    ("branchid","branchid","bigint"),
+                    ("AccountHeadSub_Title","title","text"),                   
                     ("mainbranchid","mainbranchid","bigint"),
+                    ("AccountHeadSub_Id","tempid","bigint")
                 },
                 Constants = new Dictionary<string, object>
                 {
-                    
+                    { "branchid",nBranchId },
                 },
                 condition="where AccoutHead_Id in (select ac_id from  accounthead where  branchid ="+nFromBranchId.ToString()+")"
             },

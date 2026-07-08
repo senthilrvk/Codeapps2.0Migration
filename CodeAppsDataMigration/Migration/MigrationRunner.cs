@@ -743,8 +743,14 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"update stocktransfermain{nMainBranchId} st set tobranch = br.branchid from branch br where st.billserid = br.tempid and frombranch={nBranchId};");
 
+                stringBuilder.Add($"update accountheadsub ahs set acid = ah.acid from accounthead{nMainBranchId} ah  where ahs.acid = ah.tempid and ahs.branchid={nBranchId} and ah.branchid={nBranchId};");
                 stringBuilder.Add($"update accountheadsub ahs set doctorid = d.doctorid from doctor d  where ahs.doctorid = d.tempid and ahs.branchid={nBranchId} and d.branchid={nBranchId};");
                 stringBuilder.Add($"update accountheadsub ahs set bloodgroupid = b.bloodgroupid from bloodgroup b  where ahs.bloodgroupid = b.tempid and ahs.branchid={nBranchId} and b.branchid={nBranchId};");
+                stringBuilder.Add($"update accountheadsub ahs set paytermsid = ah.acid from accounthead{nMainBranchId} ah  where ahs.paytermsid = ah.tempid and ah.bankflag = true and ah.upiflag =true and ahs.branchid={nBranchId} and ah.branchid={nBranchId};");
+                stringBuilder.Add($"update accountheadsub ahs set paytermsid = -1 where ahs.paytermsid = 1 and ahs.branchid={nBranchId} ;");
+                stringBuilder.Add($"update accountheadsub ahs set paytermsid = -2 where ahs.paytermsid = 2 and ahs.branchid={nBranchId} ;");
+                stringBuilder.Add($"update accountheadsub ahs set paytermsid = -3 where ahs.paytermsid = 3 and ahs.branchid={nBranchId} ;");
+                stringBuilder.Add($"update accountheadsub ahs set paytermsid = -4 where ahs.paytermsid = 4 and ahs.branchid={nBranchId} ;");
 
                 stringBuilder.Add($"update doctor d set department_id = dt.dptid from department dt  where d.department_id = dt.tempid and dt.branchid={nBranchId} and d.branchid={nBranchId};");
                 stringBuilder.Add($"update doctor d set specialistid = s.splid from specialist s  where d.specialistid = s.tempid and s.branchid={nBranchId} and d.branchid={nBranchId};");
