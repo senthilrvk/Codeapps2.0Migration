@@ -431,6 +431,24 @@ namespace CodeAppsDataMigration.Migration
                 },
                  //condition="where   branchid ="+nFromBranchId.ToString()
             },
+           new TableMap
+           {
+                SqlTable = "Godown",
+                PgTable  = "godown",
+                Columns = new[]
+                {
+                    ("GodownId","godownid","bigint"),
+                    ("GodownName","godownname","text"),
+                    ("UserName","username","text"),
+                    ("Pwd","pwd","text"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+           },
           new TableMap
            {
             SqlTable = "PurBillSeries",
