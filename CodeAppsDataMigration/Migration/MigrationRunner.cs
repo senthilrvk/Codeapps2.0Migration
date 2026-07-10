@@ -806,9 +806,9 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update pmrmedicine pm set pmruniquekey = ps.pmruniquekey from pmrsheet ps  where pm.pmruniquekey = ps.tempid and pm.branchid={nBranchId} and ps.branchid={nBranchId} ;");
                 stringBuilder.Add($"update pmrmedicine pm set productid = ps.productid from productmain{nMainBranchId} ps  where pm.productid = ps.tempid and pm.branchid={nBranchId} and ps.branchid={nBranchId} ;");
 
-                stringBuilder.Add($"update godownreturnmain{nMainBranchId} grm set godownid = g.godownid from godown g  where grd.godownid = g.tempid and grd.branchid={nBranchId} and g.branchid={nBranchId} ;");
-                stringBuilder.Add($"update godownreturnmain{nMainBranchId} grm set staffid = ah.acid from accounthead{nMainBranchId} ah  where grd.staffid = ah.tempid and grd.branchid={nBranchId} and ah.branchid={nBranchId} ;");
-                stringBuilder.Add($"update godownreturnmain{nMainBranchId} grm set acid = ah.acid from accounthead{nMainBranchId} ah  where grd.acid = ah.tempid and grd.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+                stringBuilder.Add($"update godownreturnmain{nMainBranchId} grm set godownid = g.godownid from godown g  where grm.godownid = g.tempid and grm.branchid={nBranchId} and g.branchid={nBranchId} ;");
+                stringBuilder.Add($"update godownreturnmain{nMainBranchId} grm set staffid = ah.acid from accounthead{nMainBranchId} ah  where grm.staffid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+                stringBuilder.Add($"update godownreturnmain{nMainBranchId} grm set acid = ah.acid from accounthead{nMainBranchId} ah  where grm.acid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
 
 
                 stringBuilder.Add($"update godownreturndetails{nMainBranchId} grd set godownreturnid = grm.godownreturnid from godownreturnmain{nMainBranchId} grm  where grd.godownreturnid = grm.tempid and grd.branchid={nBranchId} and grm.branchid={nBranchId} ;");
