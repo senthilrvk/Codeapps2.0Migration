@@ -806,6 +806,8 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update pmrmedicine pm set pmruniquekey = ps.pmruniquekey from pmrsheet ps  where pm.pmruniquekey = ps.tempid and pm.branchid={nBranchId} and ps.branchid={nBranchId} ;");
                 stringBuilder.Add($"update pmrmedicine pm set productid = ps.productid from productmain{nMainBranchId} ps  where pm.productid = ps.tempid and pm.branchid={nBranchId} and ps.branchid={nBranchId} ;");
 
+                stringBuilder.Add($"update godownreturndetails{nMainBranchId} grd set godownreturnid = grm.godownreturnid from godownreturnmain{nMainBranchId} grm  where grd.godownreturnid = grm.tempid and grd.branchid={nBranchId} and grm.branchid={nBranchId} ;");
+
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)

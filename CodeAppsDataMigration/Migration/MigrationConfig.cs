@@ -4240,6 +4240,68 @@ namespace CodeAppsDataMigration.Migration
                 },
                 condition="where branchid ="+nFromBranchId.ToString()
             },
+            new TableMap
+            {
+                SqlTable = "GodownReturn",
+                PgTable  = "godownreturnmain"+nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("GodownReturnId","tempid","bigint"),
+                    ("GodownTransferNo","godowntransferno","bigint"),
+                    ("GodownReturnNo","godownreturnno","bigint"),
+                    ("TransId","transid","bigint"),
+                    ("TransDate","transdate","date"),
+                    ("GodownId","godownid","bigint"),
+                    ("StaffId","staffid","bigint"),
+                    ("TransTime","transtime","text"),
+                    ("NoOfRecord","noofrecord","integer"),
+                    ("TransAmt","transamt","numeric"),
+                    ("TransferVoucherNo","voucherno","bigint"),
+                    ("TransferUniqueVoucherId","uniquevoucherid","bigint"),
+                    ("AcId","acid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    {"vprefixid",0 }
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
+            new TableMap
+            {
+                SqlTable = "GodownReturnDetails",
+                PgTable  = "godownreturndetails"+nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("GodownReturnDetails_Id","godownreturndetailsid","bigint"),
+                    ("GodownReturnId","godownreturnid","bigint"),
+                    ("TransId","transid","bigint"),
+                    ("ProductId","productid","bigint"),
+                    ("TransQty","transqty","numeric"),
+                    ("TransRate","transrate","numeric"),
+                    ("TransAmt","transamt","numeric"),
+                    ("BatchSlno","batchslno","bigint"),
+                    ("Pack","pack","integer"),
+                    ("ExpDate","expdate","date"),
+                    ("Batch","batch","text"),
+                    ("PurSlNo","purslno","bigint"),
+                    ("PurDate","purdate","date"),
+                    ("PurRate","purrate","numeric"),
+                    ("SelRate","selrate","numeric"),
+                    ("MRP","mrp","numeric"),
+                    ("StockQty","stockqty","numeric"),
+                    ("TaxPers","taxpers","numeric"),
+                    ("TaxAmt","taxamt","numeric"),
+                    ("Amount","amount","numeric"),
+                    ("branchId","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                },
+                condition="where branchid ="+nFromBranchId.ToString()
+            },
         };
 
     }
