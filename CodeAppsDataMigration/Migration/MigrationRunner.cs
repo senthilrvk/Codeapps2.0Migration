@@ -2160,6 +2160,35 @@ namespace CodeAppsDataMigration.Migration
         }
 
 
+        public void fnTotalQtyUpdateTransaction(long nMainBranchId, long nBranchId)
+        {
+
+            ReportProgress("Updating SalesReturnLog in SQL Server...", 0);
+            string strUpdateQuery = "";
+
+            try
+            {       
+
+                strUpdateQuery += $"\n update issuesubdetails{nMainBranchId} set totqty=qty+freqty+advfre-rqty where branchid={nBranchId} and mainbranchid={nMainBranchId};";
+                strUpdateQuery += $"\n update issuereturndetails{nMainBranchId} set totqty=qty+freqty+advfre where branchid={nBranchId} and mainbranchid={nMainBranchId};";
+                strUpdateQuery += $"\n update deliveryoutdetails{nMainBranchId} set totqty=qty+freqty+advfre where branchid={nBranchId} and mainbranchid={nMainBranchId};";
+                strUpdateQuery += $"\n update receiptreturndetails{nMainBranchId} set totqty=receiptretqty where branchid={nBranchId} and mainbranchid={nMainBranchId};";
+
+
+                if (strUpdateQuery != "")
+                    ExecPgNonQuery(strUpdateQuery);
+
+                ReportProgress("Updating SalesReturnLog successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating SalesReturnLog failed: {ex.Message} Update Query {strUpdateQuery}", 2);
+                throw; // abort so the branch transaction is rolled back
+            }
+        }
+
+
      }
+
 
 }
