@@ -437,7 +437,7 @@ namespace CodeAppsDataMigration.Migration
                 PgTable  = "godown",
                 Columns = new[]
                 {
-                    ("GodownId","godownid","bigint"),
+                    ("GodownId","tempid","bigint"),
                     ("GodownName","godownname","text"),
                     ("UserName","username","text"),
                     ("Pwd","pwd","text"),
