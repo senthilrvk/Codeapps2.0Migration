@@ -2570,8 +2570,7 @@ namespace CodeAppsDataMigration.Migration
 
               Columns = new[]
               {
-
-
+                    ("TransId","tempid","bigint"),
                     ("GodownTransferNo","godowntransferno","bigint"),
                     ("TransDate","godowntransferdate","date"),
                     ("StaffId","staffid","bigint"),
@@ -2584,6 +2583,7 @@ namespace CodeAppsDataMigration.Migration
                     ("GodownTransfer_Cancel","billcancel","text"),
                     ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint"),
+                    
               },
               Constants = new Dictionary<string, object>
               {

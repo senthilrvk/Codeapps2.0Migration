@@ -814,6 +814,8 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update godownreturndetails{nMainBranchId} grd set godownreturnid = grm.godownreturnid from godownreturnmain{nMainBranchId} grm  where grd.godownreturnid = grm.tempid and grd.branchid={nBranchId} and grm.branchid={nBranchId} ;");
                 stringBuilder.Add($"update godownreturndetails{nMainBranchId} grd set productid = pm.productid from productmain{nMainBranchId} pm  where grd.productid = pm.tempid and grd.branchid={nBranchId} and pm.branchid={nBranchId} ;");
 
+                stringBuilder.Add($"update godowntransferdetails{nMainBranchId} gtd set godowntransferid = gtm.godowntransferid from godowntransfermain{nMainBranchId} gtm  where gtd.godowntransferid = gtm.tempid and gtd.branchid={nBranchId} and gtm.branchid={nBranchId} ;");
+                stringBuilder.Add($"update godowntransferdetails{nMainBranchId} gtd set productid = pm.productid from productmain{nMainBranchId} pm  where gtd.productid = pm.tempid and gtd.branchid={nBranchId} and pm.branchid={nBranchId} ;");
 
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
