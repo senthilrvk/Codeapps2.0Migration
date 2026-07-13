@@ -582,7 +582,7 @@ namespace CodeAppsDataMigration.Migration
 
                 //issuereturndetails
                 stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} AND pm.mainbranchid = {nMainBranchId}");
-              
+
                 stringBuilder.Add($"update issuereturndetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} AND mainbranchid ={nMainBranchId}");
                 stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND isub.mainbranchid = {nMainBranchId}  and pm.producttype='product'");
 
@@ -1181,7 +1181,7 @@ namespace CodeAppsDataMigration.Migration
                             strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='CancelledBillRemove' and branchid='" + nBranchId + "';";
                             break;
                         case "BillPost":
-                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='BillPost' and branchid='" + nBranchId + "';";
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='CashBillPostAccounts' and branchid='" + nBranchId + "';";
                             break;
                         case "DcAccountsPost":
                             strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='DeliveryOutAccountsPost' and branchid='" + nBranchId + "';";
@@ -1216,6 +1216,22 @@ namespace CodeAppsDataMigration.Migration
                         case "InclusiveInSales":
                             strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='InclusiveInSales' and branchid='" + nBranchId + "';";
                             strUpdateQuery += $"\n UPDATE billseries SET billserbillinclusive = '{Value}' WHERE   mainbranchid ={nMainBranchId} AND branchid ={nBranchId} AND billsersource = 'SALES';";
+                            break;
+                        case "GSTRAddDebitNote":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='GSTRAddDebitNote' and branchid='" + nBranchId + "';";
+                            break;
+                        case "HsnSummaryReturnAddExpiry":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='HsnSummaryReturnAddExpiry' and branchid='" + nBranchId + "';";
+                            break;
+                        case "DebitNotePost":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='DebitNotePost' and branchid='" + nBranchId + "';";
+                            break;
+                        case "ExpiryReturn":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='ExpiryReturnAccountPost' and branchid='" + nBranchId + "';";
+                            break;
+                        case "IssueReturn":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='SalesReturnAccountPost' and branchid='" + nBranchId + "';";
+                            strUpdateQuery += $"\n Update accounthead{nMainBranchId} set retadjustment = '" + Value + "' where mainbranchid = '" + nMainBranchId + "'  and branchid='" + nBranchId + "';";
                             break;
 
                     }
@@ -1420,10 +1436,10 @@ namespace CodeAppsDataMigration.Migration
                         case "AppointmentBillNo":
                             strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='AppointmentBillNo' and branchid='" + nBranchId + "';";
                             break;
-                        //case "DischargeId":
-                        //    strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='BillPrintSaveOrder' and branchid='" + nBranchId + "';";
-                        //    break;
-                       
+                            //case "DischargeId":
+                            //    strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='BillPrintSaveOrder' and branchid='" + nBranchId + "';";
+                            //    break;
+
 
                     }
 
@@ -1987,7 +2003,7 @@ namespace CodeAppsDataMigration.Migration
 
                 }
 
-              //  strUpdateQuery += $"\n update printdisplaysettings set printname = 'CreditNotePrintModelOne' where printname = 'PrintModelCreditNote';";
+                //  strUpdateQuery += $"\n update printdisplaysettings set printname = 'CreditNotePrintModelOne' where printname = 'PrintModelCreditNote';";
 
                 strUpdateQuery += $"\n UPDATE billseries SET printfilename = 'CreditNotePrintModelOne',printfilepreview='CreditNotePrintModelOne'";
                 strUpdateQuery += $"\n WHERE printfilename = 'PrintModelCreditNote' and mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'CREDIT NOTE';";
@@ -2033,7 +2049,7 @@ namespace CodeAppsDataMigration.Migration
                 throw; // abort so the branch transaction is rolled back
             }
         }
-    
+
         public void fnServiceItemInsertProductSub(long nMainBranchId, long nBranchId)
         {
             try
@@ -2048,7 +2064,7 @@ namespace CodeAppsDataMigration.Migration
 	                select 	productid,'' location,0 purrate,prodweight selrate,0 whrate,0 mrp,0 sprate1,0 sprate2,0 sprate3,0 sprate4,0 sprate5, 
 	                0 pcsselrate,0  pcswhrate,0  pcsmrp,0  pcssprate1,0  pcssprate2,0  pcssprate3,0  pcssprate4,0  pcssprate5,False bonline,0  neethidis,True binventoryitem, 
 	                0 salesdiscount,0  rolqty, branchid, mainbranchid,0  tempid
-	               from productmain{nMainBranchId} pm where pm.producttype='serviceitem' and pm.branchid={nBranchId} and pm.mainbranchid={nMainBranchId};";                
+	               from productmain{nMainBranchId} pm where pm.producttype='serviceitem' and pm.branchid={nBranchId} and pm.mainbranchid={nMainBranchId};";
 
                 ExecPgNonQuery(strUpdateQuery);
 
@@ -2150,7 +2166,7 @@ namespace CodeAppsDataMigration.Migration
                 strUpdateQuery += $"\n update saleretlog{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
                 strUpdateQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
                 strUpdateQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES' and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
-            
+
 
                 connection.Close();
 
@@ -2174,7 +2190,7 @@ namespace CodeAppsDataMigration.Migration
             string strUpdateQuery = "";
 
             try
-            {       
+            {
 
                 strUpdateQuery += $"\n update issuesubdetails{nMainBranchId} set totqty=qty+freqty+advfre-rqty where branchid={nBranchId} and mainbranchid={nMainBranchId};";
                 strUpdateQuery += $"\n update issuereturndetails{nMainBranchId} set totqty=qty+freqty+advfre where branchid={nBranchId} and mainbranchid={nMainBranchId};";
@@ -2195,7 +2211,260 @@ namespace CodeAppsDataMigration.Migration
         }
 
 
-     }
+        public void fnUserPrevilegeMainUpdate(long nMainBranchId, long nBranchId)
+        {
+
+            ReportProgress("Updating user privilege in PostgreSQL...", 0);
+
+            string strQuery = $"select distinct accesslevel from accounthead{nMainBranchId} where accesslevel>0;";
+            strQuery += $"\n select * from accesslevel where mainbranchid={nMainBranchId} and branchid={nBranchId};";
+
+            string strUpdateQuery = "";
+
+            try
+            {
+                System.Data.DataSet dsDataSet = new System.Data.DataSet();
+                using (var command = PgCmd(strQuery))
+                {
+                    NpgsqlDataAdapter adapter = new NpgsqlDataAdapter(command);
+                    adapter.Fill(dsDataSet);
+                }
+
+                System.Data.DataTable dtAccessLevelUsed = new System.Data.DataTable();
+                if (dsDataSet.Tables.Count > 0)
+                {
+                    dtAccessLevelUsed = dsDataSet.Tables[0];
+                }
+
+                System.Data.DataTable dtAccessLevel = new System.Data.DataTable();
+                if (dsDataSet.Tables.Count > 1)
+                {
+                    dtAccessLevel = dsDataSet.Tables[1];
+                }
+
+                DataRow[] accessRows;
+                long nAccessId = 0;
+
+                foreach (DataRow row in dtAccessLevelUsed.Rows)
+                {
+                    long nAccessLevel = Convert.ToInt64(row["accesslevel"]);
+
+                    string strAccessName;
+                    switch (nAccessLevel)
+                    {
+                        case 1:
+                            strAccessName = "SuperAdmin";
+                            accessRows = dtAccessLevel.Select($"accessname = '{strAccessName}'");
+                            if (accessRows.Length != 0)
+                            {
+                                nAccessId = Convert.ToInt64(accessRows[0]["accessid"]);
+                                strUpdateQuery += $"\n update accounthead{nMainBranchId} set accesslevel={nAccessId} where accesslevel={nAccessLevel} and branchid={nBranchId} and mainbranchid={nMainBranchId};";
+                            }
+                            break;
+                        case 2:
+                            strAccessName = "Admin";
+                            accessRows = dtAccessLevel.Select($"accessname = '{strAccessName}'");
+                            if (accessRows.Length != 0)
+                            {
+                                nAccessId = Convert.ToInt64(accessRows[0]["accessid"]);
+                                strUpdateQuery += $"\n update accounthead{nMainBranchId} set accesslevel={nAccessId} where accesslevel={nAccessLevel} and branchid={nBranchId} and mainbranchid={nMainBranchId};";
+                            }
+                            break;
+                        case 3:
+                            strAccessName = "Manager";
+                            accessRows = dtAccessLevel.Select($"accessname = '{strAccessName}'");
+                            if (accessRows.Length != 0)
+                            {
+                                nAccessId = Convert.ToInt64(accessRows[0]["accessid"]);
+                                strUpdateQuery += $"\n update accounthead{nMainBranchId} set accesslevel={nAccessId} where accesslevel={nAccessLevel} and branchid={nBranchId} and mainbranchid={nMainBranchId};";
+                            }
+                            break;
+                        case 4:
+                            strAccessName = "Staff";
+                            accessRows = dtAccessLevel.Select($"accessname = '{strAccessName}'");
+                            if (accessRows.Length != 0)
+                            {
+                                nAccessId = Convert.ToInt64(accessRows[0]["accessid"]);
+                                strUpdateQuery += $"\n update accounthead{nMainBranchId} set accesslevel={nAccessId} where accesslevel={nAccessLevel} and branchid={nBranchId} and mainbranchid={nMainBranchId};";
+                            }
+                            break;
+                        case 5:
+                            strAccessName = "Rep";
+                            accessRows = dtAccessLevel.Select($"accessname = '{strAccessName}'");
+                            if (accessRows.Length != 0)
+                            {
+                                nAccessId = Convert.ToInt64(accessRows[0]["accessid"]);
+                                strUpdateQuery += $"\n update accounthead{nMainBranchId} set accesslevel={nAccessId} where accesslevel={nAccessLevel} and branchid={nBranchId} and mainbranchid={nMainBranchId};";
+                            }
+                            break;
+                        default:
+                            continue;
+                    }
+
+                }
+
+                if (strUpdateQuery != "")
+                    ExecPgNonQuery(strUpdateQuery);
+
+                ReportProgress("Updating user privilege successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating user privilege failed: {ex.Message} Update Query {strUpdateQuery}", 2);
+                throw; // abort so the branch transaction is rolled back
+            }
+        }
+
+
+        public void fnUserPrevilegeUpdate(long nMainBranchId, long nBranchId)
+        {
+
+            ReportProgress("Updating user privilege...", 0);
+
+            // ---- SQL Server (source): privilege header + detail rows ----
+            string strSqlQuery = "select * from UserPrevilage where PrevilageName>0;";
+            strSqlQuery += "\n select * from UserPrevilageDetails where AccessLevelId>0;";
+
+            string strUpdateQuery = "";
+
+            try
+            {
+                System.Data.DataSet dsSql = new System.Data.DataSet();
+                using (var connection = SqlServerConnection.Create())
+                {
+                    connection.Open();
+                    using (var command = new SqlCommand(strSqlQuery, connection))
+                    {
+                        SqlDataAdapter adapter = new SqlDataAdapter(command);
+                        adapter.Fill(dsSql);
+                    }
+                    connection.Close();
+                }
+
+                System.Data.DataTable dtUserPrevilage = new System.Data.DataTable();
+                if (dsSql.Tables.Count > 0)
+                    dtUserPrevilage = dsSql.Tables[0];
+
+                System.Data.DataTable dtUserPrevilageDetails = new System.Data.DataTable();
+                if (dsSql.Tables.Count > 1)
+                    dtUserPrevilageDetails = dsSql.Tables[1];
+
+                // ---- PostgreSQL (target): access levels for this branch ----
+                System.Data.DataTable dtAccessLevel = new System.Data.DataTable();
+                using (var pgCommand = PgCmd($"select * from accesslevel where mainbranchid={nMainBranchId} and branchid={nBranchId};"))
+                {
+                    NpgsqlDataAdapter pgAdapter = new NpgsqlDataAdapter(pgCommand);
+                    pgAdapter.Fill(dtAccessLevel);
+                }
+
+                // Boolean flag columns on UserPrevilage; each column that is set becomes a privilagedetail row.
+                string[] arrPrivilegeKeys = new string[]
+                {
+                    "PurEdit", "SalesEdit", "PurCancel", "SalesCancel", "AccountEdit",
+                    "AccountCancel", "PRateVisible", "SalesRateEdit", "AddStaff", "NameEdit"
+                };
+
+                // ---- Pass 1: map each privilege level -> access id, update accounthead, save the true flags ----
+                foreach (DataRow row in dtUserPrevilage.Rows)
+                {
+                    long nAccessLevel = Convert.ToInt64(row["PrevilageName"]);
+                    string strAccessName = fnGetAccessName(nAccessLevel);
+                    if (strAccessName == "")
+                        continue;
+
+                    DataRow[] accessRows = dtAccessLevel.Select($"accessname = '{strAccessName}'");
+                    if (accessRows.Length == 0)
+                        continue;
+
+                    long nAccessId = Convert.ToInt64(accessRows[0]["accessid"]);
+
+                    //strUpdateQuery += $"\n update accounthead{nMainBranchId} set accesslevel={nAccessId} where accesslevel={nAccessLevel} and branchid={nBranchId} and mainbranchid={nMainBranchId};";
+
+                    foreach (string strKey in arrPrivilegeKeys)
+                    {
+                        if (fnIsFlagTrue(row, strKey))
+                            strUpdateQuery += fnUserPrevilegeDetailsSave(strKey, nMainBranchId, nBranchId, nAccessId, strAccessName, 0);
+                    }
+                }
+
+                // ---- Pass 2: save the per-key detail rows already present in UserPrevilageDetails ----
+                foreach (DataRow row in dtUserPrevilageDetails.Rows)
+                {
+                    long nAccessLevel = Convert.ToInt64(row["AccessLevelId"]);
+                    string strAccessName = fnGetAccessName(nAccessLevel);
+                    if (strAccessName == "")
+                        continue;
+
+                    DataRow[] accessRows = dtAccessLevel.Select($"accessname = '{strAccessName}'");
+                    if (accessRows.Length == 0)
+                        continue;
+
+                    long nAccessId = Convert.ToInt64(accessRows[0]["accessid"]);
+                    long nEditDays = Convert.ToInt64(row["AccessLevelValue"].ToString());
+
+                    strUpdateQuery += fnUserPrevilegeDetailsSave(row["AccessLevelKey"].ToString(), nMainBranchId, nBranchId, nAccessId, strAccessName, nEditDays);
+                }
+
+                if (strUpdateQuery != "")
+                    ExecPgNonQuery(strUpdateQuery);
+
+                ReportProgress("Updating user privilege successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating user privilege failed: {ex.Message} Update Query {strUpdateQuery}", 2);
+                throw; // abort so the branch transaction is rolled back
+            }
+        }
+
+        /// <summary>Maps a numeric privilege level (1-5) to its access-level name.</summary>
+        private string fnGetAccessName(long nAccessLevel)
+        {
+            switch (nAccessLevel)
+            {
+                case 1: return "SuperAdmin";
+                case 2: return "Admin";
+                case 3: return "Manager";
+                case 4: return "Staff";
+                case 5: return "Rep";
+                default: return "0";
+            }
+        }
+
+        /// <summary>True when a bit/boolean flag column on the row is set.</summary>
+        private bool fnIsFlagTrue(DataRow row, string strColumn)
+        {
+            if (!row.Table.Columns.Contains(strColumn))
+                return false;
+            object val = row[strColumn];
+            if (val == null || val == DBNull.Value)
+                return false;
+            if (val is bool b)
+                return b;
+
+            string s = val.ToString().Trim();
+            return s == "1" || s.Equals("true", StringComparison.OrdinalIgnoreCase) || s.Equals("yes", StringComparison.OrdinalIgnoreCase);
+        }
+
+
+        private string fnUserPrevilegeDetailsSave(string strPrivilegeKey, long nMainBranchId, long nBranchId, long nAccessId, string strPrivilegeName, long nEditDays)
+        {
+            string sql = $@"
+                   WITH up AS (
+                      INSERT INTO userprivilage(privilagename, branchid, mainbranchid, tempid, accessid)
+                      SELECT '{strPrivilegeName}', {nBranchId}, {nMainBranchId}, 0, {nAccessId}
+                      WHERE NOT EXISTS (SELECT 1 FROM userprivilage WHERE accessid={nAccessId} AND branchid={nBranchId} AND mainbranchid={nMainBranchId})
+                      RETURNING privilageid
+                    )
+                   INSERT INTO privilagedetail(privilageid, privilegekey, privilegeeditdays, privilegevalue, branchid, mainbranchid, tempid)
+                   SELECT COALESCE((SELECT privilageid FROM up),
+                  (SELECT privilageid FROM userprivilage WHERE accessid={nAccessId} AND branchid={nBranchId} AND mainbranchid={nMainBranchId})),
+                 '{strPrivilegeKey}', {nEditDays}, 'Yes', {nBranchId}, {nMainBranchId}, 0;";
+            return sql;
+        }
+
+
+    }
 
 
 }
