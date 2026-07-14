@@ -318,6 +318,25 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
 
 
+                //
+
+                // SalesOrder Details
+                stringBuilder.Add($"UPDATE salesorderdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='product'");
+                stringBuilder.Add($"UPDATE salesordermain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE salesordermain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE salesordermain{nMainBranchId} im SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.staffid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
+                strQuery = $"update salesordermain{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
+                strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES ORDER' and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
+                stringBuilder.Add(strQuery);
+
+                stringBuilder.Add($"UPDATE salesorderdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+
+                strQuery = $"update salesorderdetails{nMainBranchId} im set billserid =  bs.billserid from billseries bs where bs.tempid = im.billserid";
+                strQuery += $"\n and bs.branchid = im.branchid and bs.mainbranchid = im.mainbranchid";
+                strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES ORDER' and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
+                stringBuilder.Add(strQuery);
+
                 // servicemain
 
                 stringBuilder.Add($"UPDATE servicemain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
@@ -814,8 +833,18 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update godownreturndetails{nMainBranchId} grd set godownreturnid = grm.godownreturnid from godownreturnmain{nMainBranchId} grm  where grd.godownreturnid = grm.tempid and grd.branchid={nBranchId} and grm.branchid={nBranchId} ;");
                 stringBuilder.Add($"update godownreturndetails{nMainBranchId} grd set productid = pm.productid from productmain{nMainBranchId} pm  where grd.productid = pm.tempid and grd.branchid={nBranchId} and pm.branchid={nBranchId} ;");
 
+                stringBuilder.Add($"update godowntransfermain{nMainBranchId} gtm set godownid = g.godownid from godown g  where gtm.godownid = g.tempid and gtm.branchid={nBranchId} and g.branchid={nBranchId} ;");
+                stringBuilder.Add($"update godowntransfermain{nMainBranchId} gtm set staffid = ah.acid from accounthead{nMainBranchId} ah  where gtm.staffid = ah.tempid and gtm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+
                 stringBuilder.Add($"update godowntransferdetails{nMainBranchId} gtd set godowntransferid = gtm.godowntransferid from godowntransfermain{nMainBranchId} gtm  where gtd.godowntransferid = gtm.tempid and gtd.branchid={nBranchId} and gtm.branchid={nBranchId} ;");
                 stringBuilder.Add($"update godowntransferdetails{nMainBranchId} gtd set productid = pm.productid from productmain{nMainBranchId} pm  where gtd.productid = pm.tempid and gtd.branchid={nBranchId} and pm.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"update creditdebitnotedismain grm set acid = ah.acid from accounthead{nMainBranchId} ah  where grm.acid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+                stringBuilder.Add($"update creditdebitnotedismain grm set salesmanid = ah.acid from accounthead{nMainBranchId} ah  where grm.acid = ah.tempid and salesmanflag = true and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"update creditdebitnotedissub gtd set creditdebitnotemainid = gtm.creditdebitnotemainid from creditdebitnotedismain gtm  where gtd.creditdebitnotemainid = gtm.tempid and gtd.branchid={nBranchId} and gtm.branchid={nBranchId} ;");
+                stringBuilder.Add($"update creditdebitnotedissub grm set headid = ah.acid from accounthead{nMainBranchId} ah  where grm.headid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+                stringBuilder.Add($"update creditdebitnotedissub grm set hsnid = h.hsnid from hsn{nMainBranchId} h  where grm.hsnid = h.tempid and grm.branchid={nBranchId} and h.branchid={nBranchId} ;");
 
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;

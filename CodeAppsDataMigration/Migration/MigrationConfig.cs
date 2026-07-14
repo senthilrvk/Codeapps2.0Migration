@@ -2723,7 +2723,8 @@ namespace CodeAppsDataMigration.Migration
                     ("SalesOrderMain_Time","issuetime","text"),        // time -> text
                     ("SalesOrderMain_DeliverDate","duedate","date"),   // or dispdate
                     ("SalesOrder_Cancel","issuecancel","text"),        // bit -> text
-                    ("SalesOrder_Flag","statusflag","text"),           // or delflag / billedflag
+                    ("SalesOrder_Flag","billedflag","text"),           // or delflag / billedflag
+                    ("SalesOrder_Field2","statusflag","text"),
                     ("SalesOrder_RepId","salesexeid","bigint"),        // or agentid
                     ("SalesOrder_From","orderfrom","text"),            // or sourcefrom
                     ("SalesOrderMain_Phone","phoneno","text"),         // or smsno
@@ -4424,6 +4425,74 @@ namespace CodeAppsDataMigration.Migration
                 },
                      condition="where   branchid ="+nFromBranchId.ToString()
              },
+             new TableMap
+            {
+                SqlTable = "CreditDebitNoteDisMain",
+                PgTable  = "creditdebitnotedismain",
+                Columns = new[]
+                {
+                    ("CreditDebitNoteMainId","tempid","bigint"),
+                    ("VoucherType","vouchertype","text"),
+                    ("BillDate","billdate","date"),
+                    ("BillNo","billno","bigint"),
+                    ("UniqueBillNo","uniquebillno","bigint"),
+                    ("SalesmanId","salesmanid","bigint"),
+                    ("PayTerms","payterms","text"),
+                    ("Remarks","remarks","text"),
+                    ("branchid","branchid","bigint"),
+                    ("CreditDebitEntryBillNo","creditdebitentrybillno","bigint"),
+                    ("CreditDebitEntryCancel","creditdebitentrycancel","boolean"),
+                    ("EnterDate","enterdate","date"),
+                    ("CreditDebitEntrySupplyType","creditdebitentrysupplytype","text"),        
+                    ("BillAmount","billamount","numeric"),
+                    ("StateType","statetype","numeric"),
+                    ("TcsAmt","tcsamt","numeric"),
+                    ("AcId","acid","bigint"),
+                    ("Rof","rof","numeric"),
+                    ("mainbranchid","mainbranchid","bigint"),
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition = "where branchid =" + nFromBranchId.ToString()
+            },
+             new TableMap
+            {
+                SqlTable = "CreditDebitNoteDisSub",
+                PgTable  = "creditdebitnotedissub",
+                Columns = new[]
+                {
+                   
+                    ("CreditDebitNoteMainId","creditdebitnotemainid","bigint"),
+                    ("HeadId","headid","bigint"),
+                    ("Debit","debit","numeric"),
+                    ("Credit","credit","numeric"),
+                    ("HeadType","headtype","text"),
+                    ("branchid","branchid","bigint"),
+                    ("Amount","amount","numeric"),
+                    ("TaxPers","taxpers","numeric"),
+                    ("TaxId","taxid","bigint"),
+                    ("TaxAmt","taxamt","numeric"),
+                    ("CessPers","cesspers","numeric"),
+                    ("CessAmount","cessamount","numeric"),
+                    ("Total","total","numeric"),
+                    ("HsnId","hsnid","bigint"),
+                    ("HsnCode","hsncode","text"),
+                    ("SGSTTaxPers","sgsttaxpers","numeric"),
+                    ("SGSTTaxAmount","sgsttaxamount","numeric"),
+                    ("CGSTTaxPers","cgsttaxpers","numeric"),
+                    ("CGSTTaxAmount","cgsttaxamount","numeric"),
+                    ("IGSTTaxPers","igsttaxpers","numeric"),
+                    ("IGSTTaxAmount","igsttaxamount","numeric"),
+                    ("mainbranchid","mainbranchid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    
+                },
+                condition = "where branchid =" + nFromBranchId.ToString()
+            },
         };
 
     }
