@@ -844,7 +844,7 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"update creditdebitnotedissub gtd set creditdebitnotemainid = gtm.creditdebitnotemainid from creditdebitnotedismain gtm  where gtd.creditdebitnotemainid = gtm.tempid and gtd.branchid={nBranchId} and gtm.branchid={nBranchId} ;");
                 stringBuilder.Add($"update creditdebitnotedissub grm set headid = ah.acid from accounthead{nMainBranchId} ah  where grm.headid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
-                stringBuilder.Add($"update creditdebitnotedissub grm set hsnid = h.hsnid from hsn{nMainBranchId} h  where grm.hsnid = h.tempid and grm.branchid={nBranchId} and h.branchid={nBranchId} ;");
+                stringBuilder.Add($"update creditdebitnotedissub grm set hsnid = h.hsn_id from hsn{nMainBranchId} h  where grm.hsnid = h.tempid and grm.branchid={nBranchId} and h.branchid={nBranchId} ;");
 
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
@@ -1263,6 +1263,12 @@ namespace CodeAppsDataMigration.Migration
                         case "IssueReturn":
                             strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='SalesReturnAccountPost' and branchid='" + nBranchId + "';";
                             strUpdateQuery += $"\n Update accounthead{nMainBranchId} set retadjustment = '" + Value + "' where mainbranchid = '" + nMainBranchId + "'  and branchid='" + nBranchId + "';";
+                            break;
+                        case "SalesItemCode":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='SalesItemCode' and branchid='" + nBranchId + "';";
+                            break;
+                        case "PurchaseItemCode":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='PurchaseItemCode' and branchid='" + nBranchId + "';";
                             break;
 
                     }
