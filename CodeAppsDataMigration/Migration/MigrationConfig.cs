@@ -680,7 +680,6 @@ namespace CodeAppsDataMigration.Migration
             {
                 SqlTable = "ProductSub",
                 PgTable  = "productsub"+nMainBranchId.ToString(),
-
                 Columns = new[]
                 {
                     // ---------- Identity ----------
@@ -719,17 +718,13 @@ namespace CodeAppsDataMigration.Migration
 
                     // ---------- Discounts ----------
                     ("0", "salesdiscount", "numeric"),
-
                     // ---------- Stock ----------
                     ("ProdRol", "rolqty", "numeric"),
-
                     // ---------- Neethi ----------
                     ("ProdNeethiDis", "neethidis", "numeric"),
-
                     // ---------- Flags ----------
                     ("bOnline", "bonline", "boolean"),
                     ("bInventoryItem", "binventoryitem", "boolean"),
-
                     // ---------- Constant ----------
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint")
@@ -1543,6 +1538,7 @@ namespace CodeAppsDataMigration.Migration
                     ("DebitNote_ShippingStateCode", "shippingstatecode", "text"),
                     ("PDvoucherno", "voucherno", "bigint"),
                     ("UniqueVoucherId", "uniquevoucherid", "bigint"),
+                    ("Field2", "entrytype", "bigint"),
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint"),
 
@@ -1551,7 +1547,6 @@ namespace CodeAppsDataMigration.Migration
                 {
                      { "printheadername", "" },
                      { "vprefixid", "6"},
-                     { "entrytype", "product"},
                 },
                 condition="where   branchid ="+nFromBranchId.ToString()
             },
@@ -1943,6 +1938,7 @@ namespace CodeAppsDataMigration.Migration
                     ("SalesVoucherUniqueId", "uniquevoucherid", "bigint"),
                     ("GodownId", "godownid", "numeric"),
                     ("Issue_Field1", "gstinno", "text"),
+                    ("Issue_Field2","sourcefrom", "text"),
                     ("branchid", "branchid", "integer"),
                     ("mainbranchid", "mainbranchid", "bigint")
               },
@@ -1963,8 +1959,7 @@ namespace CodeAppsDataMigration.Migration
                         { "cashamt", "0"},
                         { "temporderno", "0"},
                         { "currencyid", "0"},
-                        { "currencyrate", "0"},
-                        { "sourcefrom", ""},
+                        { "currencyrate", "0"},                        
                         { "doctid", "0"},
                         { "crvoucherno", "0"},
                         { "cruniquevoucherid", "0"},
@@ -2334,7 +2329,6 @@ namespace CodeAppsDataMigration.Migration
            {
              SqlTable = "EInvoiceDetails",
              PgTable  =  "einvoicedetails"+nMainBranchId.ToString(),
-
               Columns = new[]
               {
 

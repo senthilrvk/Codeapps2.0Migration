@@ -181,17 +181,19 @@ namespace CodeAppsDataMigration
             {
                 await Task.Run(() =>
                 {
-                    var runner = new MigrationRunner(sql, pg);
-                    runner.SetProgressCallback((msg, pct) =>
-                    {
-                        ((IProgress<(string, int)>)progress).Report((msg, pct));
-                    });
+                var runner = new MigrationRunner(sql, pg);
+                runner.SetProgressCallback((msg, pct) =>
+                {
+                    ((IProgress<(string, int)>)progress).Report((msg, pct));
+                });
 
-                    runner.fnSqlMainBranchValueUpdate();
+                runner.fnSqlMainBranchValueUpdate();
 
-                    runner.FromDbTaxUpdate();
+                runner.FromDbTaxUpdate();
 
-                    foreach (var map in mappings)
+                foreach (var map in mappings)
+                {
+                    if (map.FromBranchId != 0 && map.ToBranchId != 0)
                     {
                         ((IProgress<(string, int)>)progress).Report(($"Migrating {map.Display}...", 0));
 
@@ -201,41 +203,44 @@ namespace CodeAppsDataMigration
                         runner.BeginBranchTransaction();
                         try
                         {
-                            runner.RunAll(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                            runner.UpdatePrimaryKeyColumns(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                            runner.fnControOrderUpdate(nMainBranchId);
-                            runner.fnPrintFileNameUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
-                            runner.fnBranchSettingUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                            runner.fnVouchePrefixUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                            runner.fnBranchUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
-                            runner.fnBillSeriesInclusiveUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
-                            runner.fnBillNosUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
-                            runner.fnDefaultValueUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
-                            runner.fnHsnUpdate( nMainBranchId, map.ToBranchId);
-                            runner.fnServiceItemInsertProductSub(nMainBranchId, map.ToBranchId);
-                            runner.fnSalesRetLogInsert(map.FromBranchId, nMainBranchId, map.ToBranchId);
-                            runner.fnTotalQtyUpdateTransaction(nMainBranchId, map.ToBranchId);
-                            runner.fnUserPrevilegeMainUpdate(nMainBranchId, map.ToBranchId);
-                            runner.fnUserPrevilegeUpdate(nMainBranchId, map.ToBranchId);
-                            runner.CommitBranchTransaction();
-                        }
-                        catch (Exception Exme)
-                        {
-                            runner.RollbackBranchTransaction();
-                            // Attach which branch mapping was being processed, then surface
-                            // to the outer (UI-thread) handler which shows the full detail.
-                            // Also embed the failing query script (when available) directly in
-                            // Message so it is visible in the debugger tooltip, not just the
-                            // MessageBox / log file.
-                            var innerMe = Migration.MigrationException.Find(Exme);
-                            string scriptTail = string.IsNullOrEmpty(innerMe?.FailingQuery)
-                                ? ""
-                                : Environment.NewLine + Environment.NewLine +
-                                  "---- Failing script ----" + Environment.NewLine +
-                                  innerMe.FailingQuery;
-                            throw new Exception(
-                                $"Failed while migrating branch '{map.Display}'. " + Exme.Message + scriptTail,
-                                Exme);
+                                runner.fnSqlServerTableValueUpdate(map.FromBranchId);
+                                runner.RunAll(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                                runner.UpdatePrimaryKeyColumns(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                                runner.fnControOrderUpdate(nMainBranchId);
+                                runner.fnPrintFileNameUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
+                                runner.fnBranchSettingUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                                runner.fnVouchePrefixUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                                runner.fnBranchUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
+                                runner.fnBillSeriesInclusiveUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
+                                runner.fnBillNosUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
+                                runner.fnDefaultValueUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
+                                runner.fnHsnUpdate(nMainBranchId, map.ToBranchId);
+                              //  runner.fnServiceItemInsertProductSub(nMainBranchId, map.ToBranchId);
+                                runner.fnSalesRetLogInsert(map.FromBranchId, nMainBranchId, map.ToBranchId);
+                                runner.fnTotalQtyUpdateTransaction(nMainBranchId, map.ToBranchId);
+                                runner.fnUserPrevilegeMainUpdate(nMainBranchId, map.ToBranchId);
+                                runner.fnUserPrevilegeUpdate(nMainBranchId, map.ToBranchId);
+                                runner.CommitBranchTransaction();
+                            }
+                            catch (Exception Exme)
+                            {
+                                runner.RollbackBranchTransaction();
+                                // Attach which branch mapping was being processed, then surface
+                                // to the outer (UI-thread) handler which shows the full detail.
+                                // Also embed the failing query script (when available) directly in
+                                // Message so it is visible in the debugger tooltip, not just the
+                                // MessageBox / log file.
+                                var innerMe = Migration.MigrationException.Find(Exme);
+                                string scriptTail = string.IsNullOrEmpty(innerMe?.FailingQuery)
+                                    ? ""
+                                    : Environment.NewLine + Environment.NewLine +
+                                      "---- Failing script ----" + Environment.NewLine +
+                                      innerMe.FailingQuery;
+                                throw new Exception(
+                                    $"Failed while migrating branch '{map.Display}'. " + Exme.Message + scriptTail,
+                                    Exme);
+                            }
+
                         }
                     }
 
