@@ -887,6 +887,8 @@ namespace CodeAppsDataMigration.Migration
                 strQuery = $"update debitnotemain{nMainBranchId} irm set entrytype = 'Productwise'  where COALESCE(entrytype,'') = '' and irm.branchid= {nBranchId};";
                 stringBuilder.Add(strQuery);
 
+                stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET godownid = g .godownid FROM godown g WHERE im.godownid = g.tempid AND g.branchid = {nBranchId} and g.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE issuesubdetails{nMainBranchId} isd SET godownid = g.godownid FROM godown g WHERE isd.godownid = g.tempid AND g.branchid = {nBranchId} and g.mainbranchid = {nMainBranchId}");
 
 
                 strQuery = $"\n INSERT INTO public.issuereturndetails{nMainBranchId}(";
