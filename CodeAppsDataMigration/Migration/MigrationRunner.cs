@@ -1585,6 +1585,7 @@ namespace CodeAppsDataMigration.Migration
 
         public void fnBranchUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
         {
+            long nBillNo = 0;
             ReportProgress("Updating Branch in SQL Server...", 0);
             string strQuery = @"select * from branch where branchid=" + nFromBranchId;
             try
@@ -1644,6 +1645,8 @@ namespace CodeAppsDataMigration.Migration
                     string Branch_BarCodeDesign = row["Branch_BarCodeDesign"].ToString().Replace("'", "''");
                     string AcId = row["AcId"].ToString();
 
+                    nBillNo = Convert.ToInt64(row["NextBillNo"].ToString());
+
                     strUpdateQuery += "\n UPDATE branch SET " +
                         "branchcode = '" + BranchCode + "', " +
                         "branchname = '" + BranchName + "', " +
@@ -1691,9 +1694,11 @@ namespace CodeAppsDataMigration.Migration
                         " WHERE mainbranchid = " + nMainBranchId +
                         " AND branchid = " + nBranchId + ";";
                 }
-
+                
+              
                 ExecPgNonQuery(strUpdateQuery);
                 ReportProgress("Updating Branch successfully", 2);
+
             }
             catch (Exception ex)
             {
@@ -1959,6 +1964,9 @@ namespace CodeAppsDataMigration.Migration
                     nBillNo = Convert.ToInt64(row["ERSlNo"].ToString());
                     strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
                     strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'EXPIRY RETURN';";
+
+                    nBillNo = Convert.ToInt64(row["NextBillNo"].ToString());
+                    strUpdateQuery += $"\n update branchsetting set settingbillno = {nBillNo} where settingname ='SalesNexBillNo' and branchid = {nBranchId} and mainbranchid = {nMainBranchId};";
 
 
                     nBillNo = 1;
