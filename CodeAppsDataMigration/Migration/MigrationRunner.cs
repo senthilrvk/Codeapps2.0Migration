@@ -1573,15 +1573,16 @@ namespace CodeAppsDataMigration.Migration
 
                 ExecPgNonQuery(strUpdateQuery);
 
-                ReportProgress("Updating BranchSetting  successfully", 2);
+                ReportProgress("Updating HospitalSetting  successfully", 2);
             }
             catch (Exception ex)
             {
-                ReportProgress($"Updating BranchSetting  failed: {ex.Message}", 2);
+                ReportProgress($"Updating HospitalSetting  failed: {ex.Message}", 2);
                 MessageBox.Show(ex.Message.ToString());
                 throw; // abort so the branch transaction is rolled back
             }
         }
+        
 
         public void fnBranchUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
         {

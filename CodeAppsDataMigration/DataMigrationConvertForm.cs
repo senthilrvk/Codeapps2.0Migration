@@ -220,6 +220,7 @@ namespace CodeAppsDataMigration
                                 runner.fnTotalQtyUpdateTransaction(nMainBranchId, map.ToBranchId);
                                 runner.fnUserPrevilegeMainUpdate(nMainBranchId, map.ToBranchId);
                                 runner.fnUserPrevilegeUpdate(nMainBranchId, map.ToBranchId);
+                                runner.fnHospitalSettingUpdate( nMainBranchId, map.ToBranchId, map.FromBranchId);
                                 runner.CommitBranchTransaction();
                             }
                             catch (Exception Exme)
