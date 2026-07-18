@@ -789,12 +789,22 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update revisiting r set specialistid = s.splid from specialist s  where r.specialistid = s.tempid and r.branchid={nBranchId} and s.branchid={nBranchId} ;");
                 stringBuilder.Add($"update revisiting r set acid = ah.acid from accounthead{nMainBranchId} ah  where r.acid = ah.tempid and r.branchid={nBranchId} and ah.branchid={nBranchId} ;");
                 stringBuilder.Add($"UPDATE revisiting r SET visitstaffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = r.visitstaffid AND r.branchid = {nBranchId} and r.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"update revisiting r set paytermsid = ah.acid from accounthead{nMainBranchId} ah  where r.paytermsid = ah.tempid and ah.bankflag = true and ah.upiflag =true and r.branchid={nBranchId} and ah.branchid={nBranchId};");
+                stringBuilder.Add($"update revisiting r set paytermsid = -1 where r.paytermsid = 1 and r.branchid={nBranchId} ;");
+                stringBuilder.Add($"update revisiting r set paytermsid = -2 where r.paytermsid = 2 and r.branchid={nBranchId} ;");
+                stringBuilder.Add($"update revisiting r set paytermsid = -3 where r.paytermsid = 3 and r.branchid={nBranchId} ;");
+                stringBuilder.Add($"update revisiting r set paytermsid = -4 where r.paytermsid = 4 and r.branchid={nBranchId} ;");
 
                 stringBuilder.Add($"update labbill l set revisitid = r.visitid from revisiting r  where l.revisitid = r.tempid and l.branchid={nBranchId} and r.branchid={nBranchId} ;");
                 stringBuilder.Add($"update labbill l set hospitalid = h.hosid::text from hospital h  where l.hospitalid = h.tempid::text and l.branchid={nBranchId} and h.branchid={nBranchId} ;");
                 stringBuilder.Add($"update labbill l set doctorid = d.doctorid from doctor d  where l.doctorid = d.tempid and l.branchid={nBranchId} and d.branchid={nBranchId} ;");
                 stringBuilder.Add($"UPDATE labbill l SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = l.staffid AND l.branchid = {nBranchId} and l.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE labbill l SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = l.acid AND l.branchid = {nBranchId} and l.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"update labbill l set paytermsid = ah.acid from accounthead{nMainBranchId} ah  where l.paytermsid = ah.tempid and ah.bankflag = true and ah.upiflag =true and l.branchid={nBranchId} and ah.branchid={nBranchId};");
+                stringBuilder.Add($"update labbill l set paytermsid = -1 where l.paytermsid = 1 and l.branchid={nBranchId} ;");
+                stringBuilder.Add($"update labbill l set paytermsid = -2 where l.paytermsid = 2 and l.branchid={nBranchId} ;");
+                stringBuilder.Add($"update labbill l set paytermsid = -3 where l.paytermsid = 3 and l.branchid={nBranchId} ;");
+                stringBuilder.Add($"update labbill l set paytermsid = -4 where l.paytermsid = 4 and l.branchid={nBranchId} ;");
 
                 stringBuilder.Add($"update labbillsub  lbs set labbillid = l.labbillid from labbill l  where lbs.labbillid = l.tempid and lbs.branchid={nBranchId} and l.branchid={nBranchId} ;");
                 stringBuilder.Add($"update labbillsub lbs set departmentid = d.dptid::text from department d  where lbs.departmentid = d.tempid::text and lbs.branchid={nBranchId} and d.branchid={nBranchId} ;");
@@ -817,6 +827,11 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"UPDATE pmrappointment pa SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = pa.acid AND pa.branchid = {nBranchId} and pa.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"update pmrappointment pa set doctorid = d.doctorid from doctor d  where pa.doctorid = d.tempid and pa.branchid={nBranchId} and d.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrappointment pa set paytermsid = ah.acid from accounthead{nMainBranchId} ah  where pa.paytermsid = ah.tempid and ah.bankflag = true and ah.upiflag =true and pa.branchid={nBranchId} and ah.branchid={nBranchId};");
+                stringBuilder.Add($"update pmrappointment pa set paytermsid = -1 where pa.paytermsid = 1 and pa.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrappointment pa set paytermsid = -2 where pa.paytermsid = 2 and pa.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrappointment pa set paytermsid = -3 where pa.paytermsid = 3 and pa.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrappointment pa set paytermsid = -4 where pa.paytermsid = 4 and pa.branchid={nBranchId} ;");
 
                 stringBuilder.Add($"update pmrsheet ps set revisitid = r.visitid from revisiting r  where ps.revisitid = r.tempid and ps.branchid={nBranchId} and r.branchid={nBranchId} ;");
                 stringBuilder.Add($"update pmrsheet ps set doctorid = d.doctorid from doctor d  where ps.doctorid = d.tempid and ps.branchid={nBranchId} and d.branchid={nBranchId} ;");
@@ -2611,6 +2626,7 @@ namespace CodeAppsDataMigration.Migration
             using var cmd = new SqlCommand(strQuery, conn);
             cmd.ExecuteNonQuery();
         }
+        
     }
 
 
