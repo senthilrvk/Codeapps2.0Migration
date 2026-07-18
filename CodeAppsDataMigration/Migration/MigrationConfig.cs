@@ -1839,7 +1839,7 @@ namespace CodeAppsDataMigration.Migration
                     ("ChequeEntry_NarrationName2","narrationname2","text"),
                     ("ChequeEntry_Amt","chequeamt","numeric"),
                     ("ChequeEntry_BankName","bankname","text"),
-                    ("VPrifix_Id","vprifixid","integer"),
+                    ("VPrifix_Id","vprefixid","integer"),
                     ("Voucher_VoucherNo","voucherno","bigint"),
                     ("AC_Id","acid","bigint"),
                     ("Rec_Id","recid","bigint"),
@@ -1854,8 +1854,9 @@ namespace CodeAppsDataMigration.Migration
                 },
                 Constants = new Dictionary<string, object>
                 {
+                    {"reconcilationflag","No" },
                 },
-                condition="where   branchid ="+nFromBranchId.ToString()
+                condition="where branchid ="+nFromBranchId.ToString()
           },
           new TableMap
           {

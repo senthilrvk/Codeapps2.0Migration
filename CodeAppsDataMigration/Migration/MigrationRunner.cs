@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualBasic;
 using Npgsql;
 using System;
@@ -2626,8 +2627,24 @@ namespace CodeAppsDataMigration.Migration
             using var cmd = new SqlCommand(strQuery, conn);
             cmd.ExecuteNonQuery();
         }
-        
-    }
+
+        public void fnChequeDepositFlagUpdate(long nToBranchId,long nMainBranchId)
+        {
+
+            string strQuery  = $"\n update chequeentry{nMainBranchId} ce set reconcilationflag = 'Yes'  from voucherdetails{nMainBranchId} vd";
+                   strQuery += $"\n where ce.vprefixid = vd.vprefixid and ce.voucherno = vd.voucherno and ce.uniquevoucherid = vd.uniquevoucherid";
+                   strQuery += $"\n and ce.branchid = vd.branchid and ce.mainbranchid = vd.mainbranchid";
+                   strQuery += $"\n and vd.reconamt<>0 and ce.branchid = {nToBranchId} and ce.mainbranchid = {nMainBranchId} and ce.vprefixid in (3,4);";
+
+            ExecPgNonQuery(strQuery);
+
+            ReportProgress("Updating ChequeDeposit successfully", 2);
+
+
+        }
+
+
+     }
 
 
 }
