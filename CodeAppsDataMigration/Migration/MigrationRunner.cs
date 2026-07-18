@@ -1551,10 +1551,10 @@ namespace CodeAppsDataMigration.Migration
                     switch (KeyValue)
                     {
                         case "RegNo":
-                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='RegNo' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and hossettingname='RegNo' and branchid='" + nBranchId + "' ;";
                             break;
                         case "OpNo":
-                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='OpNo' and branchid='" + nBranchId + "';";
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and hossettingname='OpNo' and branchid='" + nBranchId + "';";
                             break;
                         //case "Shift":
                         //    strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='LabBillNo' and branchid='" + nBranchId + "';";
@@ -1563,19 +1563,19 @@ namespace CodeAppsDataMigration.Migration
                         //    strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='AgeRange3' and branchid='" + nBranchId + "';";
                         //    break;
                         case "RevisitNo":
-                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='RevisitNo' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and hossettingname='RevisitNo' and branchid='" + nBranchId + "' ;";
                             break;
                         case "LabBillNo":
-                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='LabBillNo' and branchid='" + nBranchId + "';";
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and hossettingname='LabBillNo' and branchid='" + nBranchId + "';";
                             break;
                         case "TestResultBillNo":
-                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='TestResultBillNo' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and hossettingname='TestResultBillNo' and branchid='" + nBranchId + "' ;";
                             break;
                         case "PMRBillNo":
-                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='PMRBillNo' and branchid='" + nBranchId + "' ;";
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and hossettingname='PMRBillNo' and branchid='" + nBranchId + "' ;";
                             break;
                         case "AppointmentBillNo":
-                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='AppointmentBillNo' and branchid='" + nBranchId + "';";
+                            strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and hossettingname='AppointmentBillNo' and branchid='" + nBranchId + "';";
                             break;
                             //case "DischargeId":
                             //    strUpdateQuery += "\n Update hospitalsetting set hossettingsvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='BillPrintSaveOrder' and branchid='" + nBranchId + "';";
