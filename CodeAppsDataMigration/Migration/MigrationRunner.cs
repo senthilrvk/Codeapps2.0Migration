@@ -2161,7 +2161,7 @@ namespace CodeAppsDataMigration.Migration
                 string strUpdateQuery = "";
 
                 strUpdateQuery += $@"
-                    INSERT INTO public.hsn1(
+                    INSERT INTO public.hsn{nMainBranchId}(
                         hsn_code,hsn_gstpers,hsn_description1,hsn_description2,unitid,hsn_cess,hsn_additionalcess,hsn_othercharge,
                         hsn_addrateperunit,hsn_thousandrateperunit,branchid, mainbranchid, taxid,tempid
                     )
