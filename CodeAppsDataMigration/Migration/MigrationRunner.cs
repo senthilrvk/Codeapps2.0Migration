@@ -1775,7 +1775,6 @@ namespace CodeAppsDataMigration.Migration
         new AccountIdMigration { AccountId = 39, HeadName = "PURCHASE TAX 12%", AcId = -11, PosgresAcId = -86 },
         new AccountIdMigration { AccountId = 40, HeadName = "PURCHASE AMOUNT 40", AcId = -27, PosgresAcId = -87 },
         new AccountIdMigration { AccountId = 41, HeadName = "PURCHASE TAX 40 %", AcId = -28, PosgresAcId = -88 },
-        new AccountIdMigration { AccountId = 42, HeadName = "PURCHASE RETUN DEBIT NOTE", AcId = 3, PosgresAcId = -89 },
     };
 
         }
