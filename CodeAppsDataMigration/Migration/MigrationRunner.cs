@@ -1756,7 +1756,7 @@ namespace CodeAppsDataMigration.Migration
         new AccountIdMigration { AccountId = 20, HeadName = "CREDIT NOTE AMOUNT", AcId = 27, PosgresAcId = -68 },
         new AccountIdMigration { AccountId = 21, HeadName = "PURCHASE AMOUNT 5 %", AcId = 31, PosgresAcId = -69 },
         new AccountIdMigration { AccountId = 22, HeadName = "SALES AMOUNT 5 %", AcId = 32, PosgresAcId = -70 },
-        new AccountIdMigration { AccountId = 23, HeadName = "CREDIT NOTE TAX 18%", AcId = 33, PosgresAcId = -140 },
+        new AccountIdMigration { AccountId = 23, HeadName = "CREDIT NOTE TAX 18%", AcId = 33, PosgresAcId = -71 },
         new AccountIdMigration { AccountId = 24, HeadName = "CREDIT NOTE TAX 28%", AcId = 34, PosgresAcId = -72 },
         new AccountIdMigration { AccountId = 25, HeadName = "DEBIT NOTE AMOUNT", AcId = 35, PosgresAcId = -80 },
         new AccountIdMigration { AccountId = 26, HeadName = "ROUND OFF", AcId = 39, PosgresAcId = -47 },
@@ -1767,6 +1767,15 @@ namespace CodeAppsDataMigration.Migration
         new AccountIdMigration { AccountId = 31, HeadName = "TDS", AcId = 48, PosgresAcId = -77 },
         new AccountIdMigration { AccountId = 32, HeadName = "DEBIT NOTE TAX 18%", AcId = 49, PosgresAcId = -78 },
         new AccountIdMigration { AccountId = 33, HeadName = "DEBIT NOTE TAX 28%", AcId = 50, PosgresAcId = -79 },
+        new AccountIdMigration { AccountId = 34, HeadName = "COMMISION", AcId = 45, PosgresAcId = -81 },
+        new AccountIdMigration { AccountId = 35, HeadName = "COURIER CHARGE1", AcId = -6, PosgresAcId = -82 },
+        new AccountIdMigration { AccountId = 36, HeadName = "PURCHASE AMOUNT 18", AcId = -12, PosgresAcId = -83 },
+        new AccountIdMigration { AccountId = 37, HeadName = "PURCHASE TAX 18%", AcId = -13, PosgresAcId = -84 },
+        new AccountIdMigration { AccountId = 38, HeadName = "PURCHASE AMOUNT 12", AcId = -10, PosgresAcId = -85 },
+        new AccountIdMigration { AccountId = 39, HeadName = "PURCHASE TAX 12%", AcId = -11, PosgresAcId = -86 },
+        new AccountIdMigration { AccountId = 40, HeadName = "PURCHASE AMOUNT 40", AcId = -27, PosgresAcId = -87 },
+        new AccountIdMigration { AccountId = 41, HeadName = "PURCHASE TAX 40 %", AcId = -28, PosgresAcId = -88 },
+        new AccountIdMigration { AccountId = 42, HeadName = "PURCHASE RETUN DEBIT NOTE", AcId = 3, PosgresAcId = -89 },
     };
 
         }
