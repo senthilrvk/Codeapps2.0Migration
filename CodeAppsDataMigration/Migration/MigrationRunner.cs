@@ -870,7 +870,11 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update creditdebitnotedissub grm set headid = ah.acid from accounthead{nMainBranchId} ah  where grm.headid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
                 stringBuilder.Add($"update creditdebitnotedissub grm set hsnid = h.hsn_id from hsn{nMainBranchId} h  where grm.hsnid = h.tempid and grm.branchid={nBranchId} and h.branchid={nBranchId} ;");
 
-
+                stringBuilder.Add($"update correction{nMainBranchId} c set  productid = pm.productid from productmain{nMainBranchId} pm  where c.productid = pm.tempid and c.branchid={nBranchId} and pm.branchid={nBranchId} ;");
+                stringBuilder.Add($"update correction{nMainBranchId} c  set salesmanid = ah.acid from accounthead{nMainBranchId} ah  where c.salesmanid = ah.tempid and salesmanflag = true and c.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+                stringBuilder.Add($"update correction{nMainBranchId} c  set  staffid = ah.acid from accounthead{nMainBranchId} ah  where c.staffid = ah.tempid and c.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+                stringBuilder.Add($"update correction{nMainBranchId} c set godownid = g.godownid from godown g  where c.godownid = g.tempid and c.branchid={nBranchId} and g.branchid={nBranchId} ;");
+                stringBuilder.Add($"UPDATE correction{nMainBranchId} c SET reasonid = ah.categoryid FROM category ah WHERE ah.tempid = c.reasonid AND c.branchid = {nBranchId} and c.mainbranchid = {nMainBranchId}");
 
                 strQuery = $"update creditdebitnotedismain ird set uniquebillno =  irm.issuereturnid from issuereturnmain{nMainBranchId} irm where ird.uniquebillno = irm.uniquereturnno";
                 strQuery += $"\n and ird.billno = irm.uniquereturnno and ird.branchid = irm.branchid and ird.mainbranchid = irm.mainbranchid";

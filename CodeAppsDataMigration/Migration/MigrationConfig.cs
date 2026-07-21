@@ -2471,7 +2471,7 @@ namespace CodeAppsDataMigration.Migration
 
               Columns = new[]
               {
-                  ("Delivery_Id", "deliveryoutid", "bigint"),
+                    ("Delivery_Id", "deliveryoutid", "bigint"),
                     ("Delivery_SlNo", "deliveryoutno", "bigint"),
                     ("UniqueId", "uniquebillno", "bigint"),
                     ("Delivery_BillDate", "deliveryoutdate", "date"),
@@ -4487,6 +4487,37 @@ namespace CodeAppsDataMigration.Migration
                     
                 },
                 condition = "where branchid =" + nFromBranchId.ToString()
+            },
+             new TableMap
+            {
+                SqlTable = "Correction",
+                PgTable  = "correction"+nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("CorrectionOldValue","oldvalue","text"),
+                    ("CorrectionNewValue","newvalue","text"),
+                    ("CorrectionFieldName","corfieldname","text"),
+                    ("ProductId","productid","bigint"),
+                    ("BatchSlno","batchslno","bigint"),
+                    ("CorrectionDate","cordate","date"),
+                    ("CorrectionTime","cortime","text"),
+                    ("Pack","pack","integer"),
+                    ("SalesmanId","salesmanid","bigint"),
+                    ("CorrectionRemarks","remarks","text"),
+                    ("CorrectionPurRate","purrate","numeric"),
+                    ("CorrectionSelRate","selrate","numeric"),
+                    ("CorrectionCurStock","curstock","numeric"),
+                    ("Field1","reasonid","bigint"),
+                    ("GodownId","godownid","bigint"),
+                    ("StaffId","staffid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+                    { "batchslno1",0}
+                },
+                condition = "where BranchId =" + nFromBranchId.ToString()
             },
         };
 
