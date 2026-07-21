@@ -681,7 +681,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE deliveryoutdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId}  AND isub.mainbranchid = {nMainBranchId}  and pm.producttype='product'");
                 stringBuilder.Add($"update deliveryoutdetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} and mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE deliveryoutdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} AND pm.mainbranchid ={nMainBranchId}");
-
+                stringBuilder.Add($"UPDATE deliveryoutdetails{nMainBranchId} dod SET deliveryoutid = dom.deliveryoutid FROM deliveryoutmain{nMainBranchId} dom WHERE dom.tempid = dod.deliveryoutid AND  dod.branchid={nBranchId} AND dod.mainbranch ={nMainBranchId}");
                 //ExpenseEntryDetails
                 strQuery = $"update expenseentrydetails{nMainBranchId} eed set expensemainid =  eem.entrymainid from expenseentrymain eem where eem.tempid = eed.expensemainid";
                 strQuery += $"\n and eed.branchid = eem.branchid and eed.mainbranchid = eem.mainbranchid";

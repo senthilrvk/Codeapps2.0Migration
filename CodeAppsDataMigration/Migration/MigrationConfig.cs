@@ -2364,10 +2364,11 @@ namespace CodeAppsDataMigration.Migration
               Columns = new[]
               {
 
-                   ("UniqueId", "deliveryoutid", "bigint"),
+                    ("UniqueId", "tempid", "bigint"),
                     ("Delivery_SlNo", "deliveryoutno", "bigint"),
                     ("Delivery_BillDate", "deliveryoutdate", "date"),
                     ("DeliverySub_Batch", "batch", "text"),
+                    ("Store_BatchSlNo", "batchslno", "text"),
                     ("DeliverySub_ExpDate", "expdate", "date"),
                     ("DeliverySub_OriginalRate", "originalrate", "numeric(18,3)"),
                     ("DeliverySub_SelRate", "selrate", "numeric(18,3)"),
@@ -2471,7 +2472,7 @@ namespace CodeAppsDataMigration.Migration
 
               Columns = new[]
               {
-                    ("Delivery_Id", "deliveryoutid", "bigint"),
+                    ("Delivery_Id", "tempid", "bigint"),
                     ("Delivery_SlNo", "deliveryoutno", "bigint"),
                     ("UniqueId", "uniquebillno", "bigint"),
                     ("Delivery_BillDate", "deliveryoutdate", "date"),
@@ -2521,7 +2522,6 @@ namespace CodeAppsDataMigration.Migration
                   { "cardno", "" },
                   { "cardexpdate", DateTime.Now.ToString("yyyy-MM-dd") },
                   { "cardname", "text" },
-                  { "transporter", "text" },
                   { "duedate", DateTime.Now.ToString("yyyy-MM-dd")},
                   { "bankcharge", 0 },
                   { "postage", 0 },
@@ -2531,10 +2531,10 @@ namespace CodeAppsDataMigration.Migration
                   { "discname", "" },
                   { "issuetime", "" },
                   { "orderfrom", "" },
-                  { "pricemenuid", 0 },
+                  { "pricemenuid", 1 },
                   { "remarks", "" },
                   { "remarks1", "" },
-                  { "inclusivesales", "" },
+                  { "inclusivesales", "No" },
                   { "bankid", 0 },
                   { "smsno", "" },
                   { "phoneno", "" },
