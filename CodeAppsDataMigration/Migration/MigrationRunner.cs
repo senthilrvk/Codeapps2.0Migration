@@ -2359,6 +2359,7 @@ namespace CodeAppsDataMigration.Migration
                 strUpdateQuery += $"\n update issuereturndetails{nMainBranchId} set totqty=qty+freqty+advfre where branchid={nBranchId} and mainbranchid={nMainBranchId};";
                 strUpdateQuery += $"\n update deliveryoutdetails{nMainBranchId} set totqty=qty+freqty+advfre where branchid={nBranchId} and mainbranchid={nMainBranchId};";
                 strUpdateQuery += $"\n update receiptreturndetails{nMainBranchId} set totqty=receiptretqty where branchid={nBranchId} and mainbranchid={nMainBranchId};";
+                strUpdateQuery += $"\n update openingstockdetails{nMainBranchId} set totalqty=totlqty where branchid={nBranchId} and mainbranchid={nMainBranchId};";
 
 
                 if (strUpdateQuery != "")

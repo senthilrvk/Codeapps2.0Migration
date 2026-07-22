@@ -1378,6 +1378,7 @@ namespace CodeAppsDataMigration.Migration
                    ("OpeningStock_CessAmt","cessamt","numeric(18,3)"),
                    ("ProductId","productid","bigint"),
                    ("OpeningStockMain_Id","dcinno","bigint"),
+                   ("TotQty","totlqty","bigint"),
                    ("branchid","branchid","bigint"),
                    ("mainbranchid","mainbranchid","bigint")
               },
@@ -1405,7 +1406,6 @@ namespace CodeAppsDataMigration.Migration
                  {"netamtperprod","0"},
                  {"purratewithtax","0"},
                  {"freight","0"},
-                 {"totlqty","0"},
                  {"neethidispers","0"},
                  {"amtbeforetax","0"},
                  {"wratedis","0"},
@@ -2366,6 +2366,7 @@ namespace CodeAppsDataMigration.Migration
 
                     ("UniqueId", "tempid", "bigint"),
                     ("Delivery_SlNo", "deliveryoutno", "bigint"),
+                     ("UniqueId", "uniquebillno", "bigint"),
                     ("Delivery_BillDate", "deliveryoutdate", "date"),
                     ("DeliverySub_Batch", "batch", "text"),
                     ("Store_BatchSlNo", "batchslno", "text"),
@@ -2410,7 +2411,6 @@ namespace CodeAppsDataMigration.Migration
               {
 
                   { "billserid", 0 },
-                  { "uniquebillno", 0},
                   { "whrate", 0},
                   { "qtytype", "Nos" },
                   { "advfre", 0 },
@@ -2504,9 +2504,6 @@ namespace CodeAppsDataMigration.Migration
                     ("Delivery_ShippingStateCode", "shippingstatecode", "text"),
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint")
-
-
-
 
               },
               Constants = new Dictionary<string, object>
