@@ -957,6 +957,8 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"update store{nMainBranchId}  st set actpurrate = st.receiptrate where st.actpurrate = 0 and st.receiptrate> 0 AND st.branchid = {nBranchId} AND st.mainbranchid = {nMainBranchId}");
 
+                stringBuilder.Add($"update store{nMainBranchId}  st set landcost = st.receiptrate where st.landcost = 0 and st.receiptrate > 0 AND st.branchid = {nBranchId} AND st.mainbranchid = {nMainBranchId};");
+
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)
