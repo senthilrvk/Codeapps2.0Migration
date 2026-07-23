@@ -54,7 +54,7 @@ namespace CodeAppsDataMigration
             cmbPgMainBranch.FormattingEnabled = true;
             cmbPgMainBranch.Location = new Point(181, 15);
             cmbPgMainBranch.Name = "cmbPgMainBranch";
-            cmbPgMainBranch.Size = new Size(445, 23);
+            cmbPgMainBranch.Size = new Size(787, 23);
             cmbPgMainBranch.TabIndex = 1;
             cmbPgMainBranch.SelectedIndexChanged += cmbPgMainBranch_SelectedIndexChanged;
             // 
@@ -69,7 +69,7 @@ namespace CodeAppsDataMigration
             grdBranchMap.Name = "grdBranchMap";
             grdBranchMap.RowHeadersVisible = false;
             grdBranchMap.SelectionMode = DataGridViewSelectionMode.CellSelect;
-            grdBranchMap.Size = new Size(770, 350);
+            grdBranchMap.Size = new Size(1032, 350);
             grdBranchMap.TabIndex = 2;
             // 
             // colSqlBranch
@@ -89,7 +89,7 @@ namespace CodeAppsDataMigration
             // 
             // btnDataTransfer
             // 
-            btnDataTransfer.Location = new Point(610, 415);
+            btnDataTransfer.Location = new Point(867, 415);
             btnDataTransfer.Name = "btnDataTransfer";
             btnDataTransfer.Size = new Size(175, 30);
             btnDataTransfer.TabIndex = 3;
@@ -101,7 +101,7 @@ namespace CodeAppsDataMigration
             // 
             progressBar.Location = new Point(15, 460);
             progressBar.Name = "progressBar";
-            progressBar.Size = new Size(770, 25);
+            progressBar.Size = new Size(1032, 25);
             progressBar.TabIndex = 4;
             // 
             // lblStatus
@@ -117,7 +117,7 @@ namespace CodeAppsDataMigration
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 525);
+            ClientSize = new Size(1059, 525);
             Controls.Add(lblPgMainBranch);
             Controls.Add(cmbPgMainBranch);
             Controls.Add(grdBranchMap);

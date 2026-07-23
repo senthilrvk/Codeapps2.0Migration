@@ -22,7 +22,7 @@ namespace CodeAppsDataMigration
         }
 
         // Columns to display in the GridView
-        private readonly string[] _displayColumns = { "branchid", "branchcode", "branchname", "branchaddr1", "branchaddr2" };
+        private readonly string[] _displayColumns = { "branchid", "branchcode", "branchname", "branchadr1", "branchadr2" };
 
         private void LoadBranches()
         {

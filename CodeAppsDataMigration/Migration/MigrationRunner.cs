@@ -955,6 +955,8 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE debitnotedetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxper AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} AND pm.mainbranchid = {nMainBranchId}");
 
+                stringBuilder.Add($"update store{nMainBranchId}  st set actpurrate = st.receiptrate where st.actpurrate = 0 and st.receiptrate> 0 AND st.branchid = {nBranchId} AND st.mainbranchid = {nMainBranchId}");
+
                 int totalQueries = stringBuilder.Count;
                 int queryIndex = 1;
                 foreach (string queryTemplate in stringBuilder)

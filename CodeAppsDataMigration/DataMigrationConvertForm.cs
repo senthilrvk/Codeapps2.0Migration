@@ -39,7 +39,7 @@ namespace CodeAppsDataMigration
                 _sqlBranches = new DataTable();
                 _sqlBranches.Load(reader);
 
-                _sqlBranches.Columns.Add("DisplayText", typeof(string), "BranchName + ' [' + BranchId + ']'");
+                _sqlBranches.Columns.Add("DisplayText", typeof(string), "BranchName + ' [' + BranchId + '] (' + ISNULL(BranchAdr1, '') + ')'");
                 PopulateGridSqlBranches();
             }
             catch (Exception ex)
@@ -72,7 +72,7 @@ namespace CodeAppsDataMigration
                 var dt = new DataTable();
                 dt.Load(reader);
 
-                dt.Columns.Add("DisplayText", typeof(string), "mainbranchname + ' [' + mainbranchid + ']'");
+                dt.Columns.Add("DisplayText", typeof(string), "mainbranchname + ' [' + mainbranchid + '] (' + ISNULL(mainbranchadr1, '') + ')'");
                 cmbPgMainBranch.DataSource = dt;
                 cmbPgMainBranch.DisplayMember = "DisplayText";
                 cmbPgMainBranch.ValueMember = "mainbranchid";
@@ -94,7 +94,7 @@ namespace CodeAppsDataMigration
 
                 _pgBranchAll = new DataTable();
                 _pgBranchAll.Load(reader);
-                _pgBranchAll.Columns.Add("DisplayText", typeof(string), "branchname + ' [' + branchid + ']'");
+                _pgBranchAll.Columns.Add("DisplayText", typeof(string), "branchname + ' [' + branchid + '] (' + ISNULL(branchadr1, '') + ')'");
 
                 FilterPgBranches();
             }
