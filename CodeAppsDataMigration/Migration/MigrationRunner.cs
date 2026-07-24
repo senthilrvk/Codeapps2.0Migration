@@ -295,7 +295,9 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"UPDATE branch im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
 
-                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET categoryid = ca.categoryid FROM category ca WHERE ca.branchid={nBranchId} and  ca.tempid = pm.categoryid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET categoryid = ca.categoryid FROM category ca WHERE ca.branchid ={nBranchId} and  ca.tempid = pm.categoryid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET unitid     = ca.unitid     FROM category ca WHERE ca.branchid ={nBranchId} and  ca.tempid = pm.unitid     AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.prodlinkeshopid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture{nMainBranchId} mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET hsnid = hs.hsn_id FROM hsn{nMainBranchId} hs WHERE hs.tempid = pm.hsnid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
