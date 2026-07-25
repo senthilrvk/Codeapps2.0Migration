@@ -296,7 +296,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE branch im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
 
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET categoryid = ca.categoryid FROM category ca WHERE ca.branchid ={nBranchId} and  ca.tempid = pm.categoryid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
-                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET unitid     = ca.unitid     FROM category ca WHERE ca.branchid ={nBranchId} and  ca.tempid = pm.unitid     AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET unitid     = ca.categoryid     FROM category ca WHERE ca.branchid ={nBranchId} and  ca.tempid = pm.unitid     AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.prodlinkeshopid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture{nMainBranchId} mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
@@ -838,7 +838,7 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"update pmrsheet ps set revisitid = r.visitid from revisiting r  where ps.revisitid = r.tempid and ps.branchid={nBranchId} and r.branchid={nBranchId} ;");
                 stringBuilder.Add($"update pmrsheet ps set doctorid = d.doctorid from doctor d  where ps.doctorid = d.tempid and ps.branchid={nBranchId} and d.branchid={nBranchId} ;");
-                stringBuilder.Add($"update pmrsheet ps set doctorid = d.doctorid from doctor d  where ps.doctorid = d.tempid and ps.branchid={nBranchId} and d.branchid={nBranchId} ;");
+                stringBuilder.Add($"update pmrsheet ps set acid = ah.acid from accounthead{nMainBranchId} ah  where ps.acid = ah.tempid and ps.branchid={nBranchId} and ah.branchid={nBranchId} ;");
                 stringBuilder.Add($"UPDATE pmrsheet ps SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = ps.staffid AND ps.branchid = {nBranchId} and ps.mainbranchid = {nMainBranchId}");
 
                 stringBuilder.Add($"update pmrdiagnosis pd set pmruniquekey = ps.pmruniquekey from pmrsheet ps  where pd.pmruniquekey = ps.tempid and pd.branchid={nBranchId} and ps.branchid={nBranchId} ;");
