@@ -1671,6 +1671,7 @@ namespace CodeAppsDataMigration.Migration
                     string Branch_SecurePwd = row["Branch_SecurePwd"].ToString().Replace("'", "''");
                     string Branch_BarCodeDesign = row["Branch_BarCodeDesign"].ToString().Replace("'", "''");
                     string AcId = row["AcId"].ToString();
+                    long dAppCode = long.TryParse(row["Branch_Field4"].ToString().Replace("'", "''"), out long dAppCodeVal) ? dAppCodeVal : 0;
 
                     nBillNo = Convert.ToInt64(row["NextBillNo"].ToString());
 
@@ -1717,6 +1718,7 @@ namespace CodeAppsDataMigration.Migration
                         "branchwhatsappurl = '', " +
                         "branchsecurepwd = '" + Branch_SecurePwd + "', " +
                         "branchbarcodedesign = '" + Branch_BarCodeDesign + "', " +
+                        "branchappcode = '" + dAppCode + "', " +
                         "acid = " + (string.IsNullOrEmpty(AcId) ? 0 : AcId) +
                         " WHERE mainbranchid = " + nMainBranchId +
                         " AND branchid = " + nBranchId + ";";
