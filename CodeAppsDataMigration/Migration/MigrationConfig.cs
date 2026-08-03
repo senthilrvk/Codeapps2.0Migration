@@ -2617,7 +2617,8 @@ namespace CodeAppsDataMigration.Migration
                  PgTable  =  "stocktransfermain"+nMainBranchId.ToString(),
                   Columns = new[]
                   {
-                        ("ToBranch","billserid","bigint"),
+                        ("TransId","billserid","bigint"),
+                        ("ToBranch","tobranch","bigint"),
                         ("TransDate","transdate","date"),
                         ("StaffId","staffid","bigint"),
                         ("TransTime","transtime","text"),

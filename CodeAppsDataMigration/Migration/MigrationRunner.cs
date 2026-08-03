@@ -772,7 +772,17 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET doctid = dc.doctorid FROM doctor dc WHERE im.doctid = dc.tempid AND dc.branchid = {nBranchId} and dc.mainbranchid = {nMainBranchId}");
 
-                stringBuilder.Add($"update stocktransfermain{nMainBranchId} st set tobranch = br.branchid from branch br where st.billserid = br.tempid and frombranch={nBranchId};");
+                stringBuilder.Add($"update stocktransfermain{nMainBranchId} st set tobranch = br.branchid from branch br where st.tobranch = br.tempid and frombranch={nBranchId};");
+                stringBuilder.Add($"UPDATE stocktransfermain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE im.acid = ah.tempid and im.frombranch={nBranchId} AND  ah.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE stocktransfermain{nMainBranchId} im SET fromacid = ah.acid FROM accounthead{nMainBranchId} ah WHERE im.fromacid = ah.tempid and im.frombranch={nBranchId} AND  ah.mainbranchid = {nMainBranchId}");
+
+                stringBuilder.Add($"UPDATE stocktransferdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId}  AND isub.mainbranchid = {nMainBranchId}  and pm.producttype='product'");
+
+
+                strQuery = $"update stocktransferdetails{nMainBranchId} rsub set transid =  rm.transid from stocktransfermain{nMainBranchId} rm where rm.billserid = rsub.transid";
+                strQuery += $"\n and rsub.branchid = rm.frombranch and rsub.mainbranchid = rm.mainbranchid and rm.frombranch={nBranchId} and rsub.branchid={nBranchId} and rm.mainbranchid={nMainBranchId}; ";
+                stringBuilder.Add(strQuery);
+
 
                 stringBuilder.Add($"update accountheadsub ahs set acid = ah.acid from accounthead{nMainBranchId} ah  where ahs.acid = ah.tempid and ahs.branchid={nBranchId} and ah.branchid={nBranchId};");
                 stringBuilder.Add($"update accountheadsub ahs set doctorid = d.doctorid from doctor d  where ahs.doctorid = d.tempid and ahs.branchid={nBranchId} and d.branchid={nBranchId};");
