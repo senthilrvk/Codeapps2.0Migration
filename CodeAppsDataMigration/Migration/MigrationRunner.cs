@@ -1747,6 +1747,70 @@ namespace CodeAppsDataMigration.Migration
         }
 
 
+
+        public void fnPriceMenuUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
+        {
+            ReportProgress("Updating Branchsetting in SQL Server...", 0);
+
+            string strQuery = " select * from PriceMenu";
+
+            try
+            {
+                System.Data.DataTable dtsql = new System.Data.DataTable();
+                using var connection = SqlServerConnection.Create();
+                connection.Open();
+                var query = string.Format(strQuery);
+                using var command = new SqlCommand(query, connection);
+                SqlDataAdapter adapter = new SqlDataAdapter(command);
+                adapter.Fill(dtsql);
+                connection.Close();
+
+                //strQuery = @"select * from branchsetting where branchid="+nBranchId+ " and mainbranchid=";
+                //DataTable dtposgres = new DataTable();
+                //using var posconnection = PostgresConnection.Create();
+                //posconnection.Open();
+                //var posquery = string.Format(strQuery);
+                //using var poscommand = new SqlCommand(query, connection);
+                //adapter = new SqlDataAdapter(command);
+                //adapter.Fill(dtposgres);
+                //posconnection.Close();
+                // Seed pricemenuonmain for this main branch from pricemenu, but only
+                // if no rows exist yet for this mainbranchid (insert-if-not-exists).
+                string strInsertQuery = $@"
+insert into pricemenuonmain
+(
+    pricemenuname, active, displayname, orderno, bpermission, mainbranchid
+)
+select pricemenuname, false, displayname, orderno, false, {nMainBranchId}
+from pricemenu
+where not exists (
+    select 1 from pricemenuonmain where mainbranchid = {nMainBranchId}
+);";
+
+                ExecPgNonQuery(strInsertQuery);
+
+                string strUpdateQuery = "";
+                foreach (DataRow row in dtsql.Rows)
+                {
+                    string strDisplayName   = row["DisplayName"].ToString();
+                    string strPriceMenuName = row["PriceMenu_Name"].ToString();
+                    bool Active = Convert.ToBoolean(row["Active"].ToString());
+                    int OrderNo = Convert.ToInt32(row["OrderNo"].ToString());
+                    strUpdateQuery += $"\n Update pricemenuonmain set displayname = '{strDisplayName}',active='{Active}',orderno='{OrderNo}' where pricemenuname ='{strPriceMenuName}' and mainbranchid= '{nMainBranchId}' ;";   
+                }
+
+                ExecPgNonQuery(strUpdateQuery);
+
+                ReportProgress("Updating BranchSetting  successfully", 2);
+            }
+            catch (Exception ex)
+            {
+                ReportProgress($"Updating BranchSetting  failed: {ex.Message}", 2);
+                MessageBox.Show(ex.Message.ToString());
+                throw; // abort so the branch transaction is rolled back
+            }
+        }
+
         public static List<AccountIdMigration> GetAccountIdMigrations()
         {
             return new List<AccountIdMigration>
