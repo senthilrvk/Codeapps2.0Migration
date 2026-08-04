@@ -363,7 +363,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE servicesubdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
                 strQuery = $"update servicesubdetails{nMainBranchId} isub set billserid =  sm.billserid from servicemain{nMainBranchId} sm where isub.servicemainno = sm.servicemainno";
-                strQuery += $"\n and isub.servicemainno = sm.servicemainno and isub.branchid = sm.branchid and isub.mainbranchid = sm.mainbranchid";
+                strQuery += $"\n and isub.uniquebillno = sm.uniquebillno and isub.branchid = sm.branchid and isub.mainbranchid = sm.mainbranchid";
                 strQuery += $"\n and sm.branchid ={nBranchId} and sm.mainbranchid ={nMainBranchId}";
                 stringBuilder.Add(strQuery);
 
