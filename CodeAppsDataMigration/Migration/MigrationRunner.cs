@@ -1785,9 +1785,9 @@ namespace CodeAppsDataMigration.Migration
                 string strInsertQuery = $@"
 insert into pricemenuonmain
 (
-    pricemenuname, active, displayname, orderno, bpermission, mainbranchid
+    pricemenuname, active, displayname, orderno, bpermission, mainbranchid,priceheadid
 )
-select pricemenuname, false, displayname, orderno, false, {nMainBranchId}
+select pricemenuname, false, displayname, orderno, false, {nMainBranchId},pricemenuid
 from pricemenu
 where not exists (
     select 1 from pricemenuonmain where mainbranchid = {nMainBranchId}
