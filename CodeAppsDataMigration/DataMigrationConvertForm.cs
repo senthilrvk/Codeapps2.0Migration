@@ -215,7 +215,7 @@ namespace CodeAppsDataMigration
                                 runner.fnBillNosUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
                                 runner.fnDefaultValueUpdate(map.FromBranchId, nMainBranchId, map.ToBranchId);
                                 runner.fnHsnUpdate(nMainBranchId, map.ToBranchId);
-                              //  runner.fnServiceItemInsertProductSub(nMainBranchId, map.ToBranchId);
+                                runner.fnServiceItemInsertProductSub(nMainBranchId, map.ToBranchId);
                                 runner.fnSalesRetLogInsert(map.FromBranchId, nMainBranchId, map.ToBranchId);
                                 runner.fnTotalQtyUpdateTransaction(nMainBranchId, map.ToBranchId);
                                 runner.fnUserPrevilegeMainUpdate(nMainBranchId, map.ToBranchId);
