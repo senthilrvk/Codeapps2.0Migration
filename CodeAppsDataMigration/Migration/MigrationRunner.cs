@@ -1401,6 +1401,12 @@ namespace CodeAppsDataMigration.Migration
                         case "OurMarginInSales":
                             strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='OurMarginInSales' and branchid='" + nBranchId + "';";
                             break;
+                        case "PharmaAppOrderNo":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='PharmaAppOrderNo' and branchid='" + nBranchId + "';";
+                            break;
+                        case "PharmaAppId":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='PharmaAppId' and branchid='" + nBranchId + "';";
+                            break;
 
                     }
 
