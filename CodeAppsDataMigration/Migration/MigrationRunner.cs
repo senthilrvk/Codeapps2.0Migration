@@ -301,7 +301,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.prodlinkeshopid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET manufacture_id = mf.manufacture_id FROM manufacture{nMainBranchId} mf WHERE mf.tempid = pm.manufacture_id AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET hsnid = hs.hsn_id FROM hsn{nMainBranchId} hs WHERE hs.tempid = pm.hsnid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
-
+                stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET chemicalid = c.chemicalid FROM chemical c WHERE c.tempid = pm.chemicalid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET productsearch = itemdesc  WHERE pm.producttype = 'serviceitem' AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
                 stringBuilder.Add($"delete from ProductSub{nMainBranchId} ps where ps.productid not in (select tempid from productmain{nMainBranchId} ) and ps.branchid = {nBranchId}");
