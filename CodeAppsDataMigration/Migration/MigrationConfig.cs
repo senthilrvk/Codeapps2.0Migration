@@ -2781,7 +2781,7 @@ namespace CodeAppsDataMigration.Migration
                 PgTable  = "quotationmain" + nMainBranchId.ToString(),
                 Columns = new[]
                 {
-                    ("UniqueId","quotationid","bigint"),
+                    ("UniqueId","billserid","bigint"),
                     ("Quotation_Id","quotationno","bigint"),
                     ("Quotation_EnterDate","enterdate","date"),
                     ("Quotation_DisPers","dispers","numeric"),
@@ -2807,25 +2807,24 @@ namespace CodeAppsDataMigration.Migration
                     ("Quotation_Enquiry","enquiry","text"),
                     // ↓ type-changed / ambiguous — confirm ↓
                     ("DelFlag","delflag","boolean"),            // varchar(10) -> boolean
-                    ("Quotation_Type","entrytype","text"),  // or entrytype
                     ("Quotation_SaleType","pricemenuid","integer"),     // or quotationpurtype
                     ("Field1","remarks","text"),                // mirrors Receipt's Field1->remarks
                     ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
-                {
-                    { "billserid",          0},
-                    {" duedate ",           DateTime.Now.ToString("yyyy-MM-dd") },
-                    {" discname",           "" },
-                    {" quotationtime ",     "" },
-                    {" orderfrom ",         "" },
-                    {" pricemenuid"  ,      0 },
-                    {" remarks1 ",          "" },
-                    {" inclusivesales ",    ""},
-                    {" smsno ",             "" },
-                    {" phoneno  ",          "" },
-                    {" address1",           "" }
+                {                   
+                    {"duedate ",           DateTime.Now.ToString("yyyy-MM-dd") },
+                    {"discname",           "" },
+                    {"quotationtime ",     "" },
+                    {"orderfrom ",         "" },
+                    {"pricemenuid"  ,      0 },
+                    {"remarks1 ",          "" },
+                    {"inclusivesales ",    ""},
+                    {"smsno ",             "" },
+                    {"phoneno  ",          "" },
+                    {"address1",           "" },
+                    {"entrytype",           "quotation" }
                 },
                 condition = "where branchid =" + nFromBranchId.ToString()
             },
@@ -2835,7 +2834,7 @@ namespace CodeAppsDataMigration.Migration
                 PgTable  = "quotationdetails" + nMainBranchId.ToString(),
                 Columns = new[]
                 {
-                    ("QuotationSub_Id","quotationdetailsid","bigint"),
+                   
                     ("UniqueId","quotationid","bigint"),
                     ("Quotation_Id","quotationno","bigint"),
                     ("ProductId","productid","bigint"),
