@@ -346,8 +346,8 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
 
 
-                strQuery = $"update quotationmain{nMainBranchId} dom set billserid =  bs.billserid from billseries bs where bs.tempid = dom.billserid";
-                strQuery += $"\n and bs.branchid = dom.branchid and bs.mainbranchid = dom.mainbranchid";
+                strQuery = $"update quotationmain{nMainBranchId} dom set billserid =  bs.billserid from billseries bs ";
+                strQuery += $"\n where bs.branchid = dom.branchid and bs.mainbranchid = dom.mainbranchid";
                 strQuery += $"\n and dom.branchid ={nBranchId}    and dom.mainbranchid ={nMainBranchId} and bs.billsersource='QUOTATION'";
                 strQuery += $"\n  and bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId};";
                 stringBuilder.Add(strQuery);

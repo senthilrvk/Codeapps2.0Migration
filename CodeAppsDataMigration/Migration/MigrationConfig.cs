@@ -2807,7 +2807,7 @@ namespace CodeAppsDataMigration.Migration
                     ("Quotation_Enquiry","enquiry","text"),
                     // ↓ type-changed / ambiguous — confirm ↓
                     ("DelFlag","delflag","boolean"),            // varchar(10) -> boolean
-                    ("Quotation_SaleType","pricemenuid","integer"),     // or quotationpurtype
+                    ("Quotation_SaleType","pricemenuid","numeric"),     // or quotationpurtype
                     ("Field1","remarks","text"),                // mirrors Receipt's Field1->remarks
                     ("branchid","branchid","bigint"),
                     ("mainbranchid","mainbranchid","bigint"),
@@ -2818,7 +2818,6 @@ namespace CodeAppsDataMigration.Migration
                     {"discname",           "" },
                     {"quotationtime ",     "" },
                     {"orderfrom ",         "" },
-                    {"pricemenuid"  ,      0 },
                     {"remarks1 ",          "" },
                     {"inclusivesales ",    ""},
                     {"smsno ",             "" },
