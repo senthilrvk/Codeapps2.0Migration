@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.VisualBasic;
 using Npgsql;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.IO.Packaging;
 using System.Text;
@@ -345,6 +346,19 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n and rm.branchid ={nBranchId}    and rm.mainbranchid ={nMainBranchId}";
                 stringBuilder.Add(strQuery);
 
+
+
+                strQuery = $"UPDATE issuemain{nMainBranchId} SET temporderno = orderno::bigint WHERE orderno ~'^-?[0-9]+$'  AND branchid = {nBranchId}  AND mainbranchid = {nMainBranchId};";
+                stringBuilder.Add(strQuery);
+
+
+                strQuery = $"UPDATE issuemain{nMainBranchId} im set sourcefrom = 'Quotation' from quotationmain{nMainBranchId} qm";
+                strQuery += $"\n where im.temporderno = qm.quotationno and im.orderdate = qm.quotationdate and im.branchid = qm.branchid  and im.branchid={nBranchId} and im.mainbranchid={nMainBranchId};";
+                stringBuilder.Add(strQuery);
+
+                strQuery = $" UPDATE issuemain{nMainBranchId} im set temporderno = qm.quotationid from quotationmain{nMainBranchId} qm where";
+                strQuery += $"\n im.temporderno = qm.quotationno and im.orderdate = qm.quotationdate and im.branchid = qm.branchid and sourcefrom = 'Quotation' and im.branchid={nBranchId} and im.mainbranchid={nMainBranchId};";
+                stringBuilder.Add(strQuery);
 
                 strQuery = $"update quotationmain{nMainBranchId} dom set billserid =  bs.billserid from billseries bs ";
                 strQuery += $"\n where bs.branchid = dom.branchid and bs.mainbranchid = dom.mainbranchid";
