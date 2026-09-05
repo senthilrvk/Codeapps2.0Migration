@@ -1158,7 +1158,8 @@ namespace CodeAppsDataMigration.Migration
                   {"pcssprate5","0"},
                   {"purratewithtax","0"},
                   {"receiptid","0"},
-                 { "pcsactpurrate","0" },
+                  { "pcsactpurrate","0" },
+                  { "mfrdate",DateTime.Now.ToString("yyyy-MM-dd") },
              },
              condition="where   branchid ="+nFromBranchId.ToString()
           }
@@ -1264,6 +1265,7 @@ namespace CodeAppsDataMigration.Migration
                  {"hsnrateperunit","0"},
                 { "pcsactpurrate","0" },
                  { "stkbilledqty","0" },
+                  { "mfrdate",DateTime.Now.ToString("yyyy-MM-dd") },
             },
                  condition="where   branchid ="+nFromBranchId.ToString()
             },
