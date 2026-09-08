@@ -159,7 +159,7 @@ namespace CodeAppsDataMigration.Migration
                     ("branchid", "branchid", "bigint"),
                     ("mainbranchid", "mainbranchid", "bigint")
                 },
-               condition="where ac_id>55 and  branchid ="+nFromBranchId.ToString(),
+               condition="where ac_id>53 and  branchid ="+nFromBranchId.ToString(),
                Constants = new Dictionary<string, object>{
                    {"bankflag",false},
                    {"district", ""},
