@@ -305,7 +305,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET chemicalid = c.chemicalid FROM chemical c WHERE c.tempid = pm.chemicalid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET productsearch = itemdesc  WHERE pm.producttype = 'serviceitem' AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
-                stringBuilder.Add($"delete from ProductSub{nMainBranchId} ps where ps.productid not in (select tempid from productmain{nMainBranchId} ) and ps.branchid = {nBranchId}");
+               // stringBuilder.Add($"delete from ProductSub{nMainBranchId} ps where ps.productid not in (select tempid from productmain{nMainBranchId} ) and ps.branchid = {nBranchId}");
 
                 stringBuilder.Add($"UPDATE productsub{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId} and  isub.mainbranchid = {nMainBranchId} and pm.producttype='product'");
 
