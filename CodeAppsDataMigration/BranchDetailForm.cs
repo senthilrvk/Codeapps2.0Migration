@@ -37,7 +37,9 @@ namespace CodeAppsDataMigration
 
         // MSSQL column -> (PG column name, PG type). Only mapped fields are sent.
         // BranchId is intentionally omitted so the constant tempid=0 is preserved.
-        private static readonly Dictionary<string, (string PgName, string PgType)> _branchFieldMap =
+        // Shared with the Offline -> Online PG flow (PgBranchApiClient) so both create
+        // main branches with exactly the same fields.
+        internal static readonly Dictionary<string, (string PgName, string PgType)> _branchFieldMap =
           new(StringComparer.OrdinalIgnoreCase)
           {
               // Note: BranchId NOT included — PG auto-generates mainbranchid
@@ -64,7 +66,8 @@ namespace CodeAppsDataMigration
           };
 
         // Sub Branch (PG `branch` table) field map. Same shape as _branchFieldMap.
-        private static readonly Dictionary<string, (string PgName, string PgType)> _subBranchFieldMap =
+        // Shared with the Offline -> Online PG flow (PgBranchApiClient).
+        internal static readonly Dictionary<string, (string PgName, string PgType)> _subBranchFieldMap =
             new(StringComparer.OrdinalIgnoreCase)
             {
                 ["BranchCode"]            = ("branchcode",            "text"),
@@ -112,6 +115,26 @@ namespace CodeAppsDataMigration
                 ["AcId"]                  = ("acid",                  "bigint"),
                 ["Branch_NoField"]        = ("pincode",               "bigint"),
             };
+
+        // PG-only sub branch fields (no MSSQL source) sent with a default when not already present.
+        // Shared with the Offline -> Online PG flow (PgBranchApiClient).
+        internal static readonly (string PgName, object Value)[] _subBranchPgOnlyDefaults =
+        {
+            ("branchgstno",           ""),
+            ("branchtinno1",          ""),
+            ("branchdlno1",           ""),
+            ("accountmail",           ""),
+            ("branchlocation",        ""),
+            ("billpassword",          ""),
+            ("taxtype",               ""),
+            ("fssai",                 ""),
+            ("lutno",                 ""),
+            ("expectregno",           ""),
+            ("branchtokenpassword",   ""),
+            ("branchwhatsapptokenno", ""),
+            ("branchwhatsappurl",     ""),
+            ("branchappcode",         0),
+        };
 
         public BranchDetailForm(DataGridViewRow row, DataTable dataTable)
         {
@@ -833,20 +856,8 @@ namespace CodeAppsDataMigration
                     debug.AppendLine($"[ADD ] PG-only '{key}' = {value}");
                 }
             }
-            AddIfMissing("branchgstno",         "");
-            AddIfMissing("branchtinno1",        "");
-            AddIfMissing("branchdlno1",         "");
-            AddIfMissing("accountmail",         "");
-            AddIfMissing("branchlocation",      "");
-            AddIfMissing("billpassword",        "");
-            AddIfMissing("taxtype",             "");
-            AddIfMissing("fssai",               "");
-            AddIfMissing("lutno",               "");
-            AddIfMissing("expectregno",         "");
-            AddIfMissing("branchtokenpassword", "");
-            AddIfMissing("branchwhatsapptokenno", "");
-            AddIfMissing("branchwhatsappurl",     "");
-            AddIfMissing("branchappcode",       0);
+            foreach (var (pgName, value) in _subBranchPgOnlyDefaults)
+                AddIfMissing(pgName, value);
             AddIfMissing("tempid",              _textBoxes.TryGetValue("TempId", out var tmpSub) ? ParseLongOrDefault(tmpSub.Text) : 0);
 
             // 3) Runtime fields
@@ -909,7 +920,9 @@ namespace CodeAppsDataMigration
             return debug;
         }
 
-        private static async Task<(HttpResponseMessage resp, string body)> PostJsonAsync(string url, string json)
+        // ---- The helpers below are shared with the Offline -> Online PG flow (PgCreateBranchForm) ----
+
+        internal static async Task<(HttpResponseMessage resp, string body)> PostJsonAsync(string url, string json)
         {
             var content = new StringContent(json, Encoding.UTF8, "application/json");
             var resp = await _httpClient.PostAsync(url, content);
@@ -917,7 +930,7 @@ namespace CodeAppsDataMigration
             return (resp, body);
         }
 
-        private static void AppendCallToLog(StringBuilder log, string label, string url,
+        internal static void AppendCallToLog(StringBuilder log, string label, string url,
             HttpResponseMessage resp, string requestJson, string responseBody, StringBuilder fieldTrace)
         {
             log.AppendLine();
@@ -932,7 +945,7 @@ namespace CodeAppsDataMigration
             log.AppendLine(responseBody);
         }
 
-        private static void WriteLogFile(StringBuilder log)
+        internal static void WriteLogFile(StringBuilder log)
         {
             try
             {
@@ -942,7 +955,7 @@ namespace CodeAppsDataMigration
             catch { /* logging is best-effort */ }
         }
 
-        private static void ShowApiError(string label, HttpResponseMessage resp, string body, string requestJson)
+        internal static void ShowApiError(string label, HttpResponseMessage resp, string body, string requestJson)
         {
             var preview = requestJson.Length > 1500 ? requestJson.Substring(0, 1500) + "...(truncated)" : requestJson;
             MessageBox.Show(
@@ -954,7 +967,7 @@ namespace CodeAppsDataMigration
 
         // Treats the API body as failed when {"Flag": false} (or "flag": false) is present.
         // Returns the API's Message text via apiMessage when available.
-        private static bool IsApiResponseSuccess(string responseBody, out string apiMessage)
+        internal static bool IsApiResponseSuccess(string responseBody, out string apiMessage)
         {
             apiMessage = string.Empty;
             if (string.IsNullOrWhiteSpace(responseBody)) return true;
@@ -994,7 +1007,7 @@ namespace CodeAppsDataMigration
             return true;
         }
 
-        private static long ExtractMainBranchId(string responseBody)
+        internal static long ExtractMainBranchId(string responseBody)
         {
             if (string.IsNullOrWhiteSpace(responseBody)) return 0;
 
@@ -1042,14 +1055,14 @@ namespace CodeAppsDataMigration
             return 0;
         }
 
-        private static object? ConvertToPgValue(string pgName, string pgType, string text)
+        internal static object? ConvertToPgValue(string pgName, string pgType, string text)
         {
             var trimmed = text.Trim();
 
             if (pgName == "mainbranchpincode")
                 return trimmed;
 
-            if (pgName == "statecode" || pgName == "mainbranchstatecode")
+            if (pgName == "statecode" || pgName == "mainbranchstatecode" || pgName == "branchstatecode")
             {
                 var sb = new StringBuilder();
                 foreach (var ch in trimmed)
@@ -1076,7 +1089,7 @@ namespace CodeAppsDataMigration
             };
         }
 
-        private static object GetDefaultValue(string pgType) => pgType switch
+        internal static object GetDefaultValue(string pgType) => pgType switch
         {
             "text"    => "",
             "boolean" => false,

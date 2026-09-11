@@ -70,6 +70,15 @@ namespace CodeAppsDataMigration
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            // Keep the Offline -> Online PG connections saved by PgToPgMigrationForm.
+            XElement? pgMigration = null;
+            try
+            {
+                if (File.Exists(_xmlPath))
+                    pgMigration = XDocument.Load(_xmlPath).Root?.Element("PgMigration");
+            }
+            catch { /* file unreadable - rebuild without it */ }
+
             var doc = new XDocument(
                 new XElement("ConnectionStrings",
                     new XElement("SqlServer",
@@ -101,6 +110,9 @@ namespace CodeAppsDataMigration
                     )
                 )
             );
+
+            if (pgMigration != null)
+                doc.Root!.Add(new XElement(pgMigration));
 
             doc.Save(_xmlPath);
             MessageBox.Show("Connection settings saved successfully!", "Success",

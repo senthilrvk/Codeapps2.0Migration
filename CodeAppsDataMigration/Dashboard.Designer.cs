@@ -21,6 +21,7 @@ namespace CodeAppsDataMigration
             lblTitle = new Label();
             pnlMenu = new Panel();
             btnDataMigration = new Button();
+            btnPgToPg = new Button();
             btnExcelImport = new Button();
             btnBranchList = new Button();
             btnConnectionSettings = new Button();
@@ -60,6 +61,7 @@ namespace CodeAppsDataMigration
             pnlMenu.Controls.Add(btnCountCompare);
             pnlMenu.Controls.Add(btnBranchList);
             pnlMenu.Controls.Add(btnExcelImport);
+            pnlMenu.Controls.Add(btnPgToPg);
             pnlMenu.Controls.Add(btnDataMigration);
 
             // Data Migration button
@@ -75,6 +77,20 @@ namespace CodeAppsDataMigration
             btnDataMigration.Cursor = Cursors.Hand;
             btnDataMigration.Margin = new Padding(0, 0, 0, 5);
             btnDataMigration.Click += btnDataMigration_Click;
+
+            // Offline -> Online PostgreSQL button
+            btnPgToPg.Text = "  Offline → Online PG";
+            btnPgToPg.Dock = DockStyle.Top;
+            btnPgToPg.Size = new Size(200, 50);
+            btnPgToPg.FlatStyle = FlatStyle.Flat;
+            btnPgToPg.FlatAppearance.BorderSize = 0;
+            btnPgToPg.BackColor = Color.FromArgb(49, 130, 206);
+            btnPgToPg.ForeColor = Color.White;
+            btnPgToPg.Font = new Font("Segoe UI", 11F, FontStyle.Regular);
+            btnPgToPg.TextAlign = ContentAlignment.MiddleLeft;
+            btnPgToPg.Cursor = Cursors.Hand;
+            btnPgToPg.Margin = new Padding(0, 0, 0, 5);
+            btnPgToPg.Click += btnPgToPg_Click;
 
             // Excel Import button
             btnExcelImport.Text = "  Excel Import";
@@ -176,6 +192,7 @@ namespace CodeAppsDataMigration
             // Description label
             lblDescription.Text = "Select an option from the menu to get started.\n\n" +
                 "  Data Migration  -  Transfer data from SQL Server to PostgreSQL\n\n" +
+                "  Offline → Online PG  -  Copy a client's offline PostgreSQL data to the new online PostgreSQL\n\n" +
                 "  Excel Import  -  Import Excel data into PostgreSQL\n\n" +
                 "  Branch List  -  View SQL Server branches and create in PostgreSQL\n\n" +
                 "  Count Compare  -  Compare table row counts between SQL Server and PostgreSQL\n\n" +
@@ -189,7 +206,7 @@ namespace CodeAppsDataMigration
             // ========== Dashboard Form ==========
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(900, 500);
+            ClientSize = new Size(900, 560);
             Controls.Add(pnlContent);
             Controls.Add(pnlMenu);
             Controls.Add(pnlHeader);
@@ -213,6 +230,7 @@ namespace CodeAppsDataMigration
         private Label lblTitle;
         private Panel pnlMenu;
         private Button btnDataMigration;
+        private Button btnPgToPg;
         private Button btnExcelImport;
         private Button btnBranchList;
         private Button btnConnectionSettings;
