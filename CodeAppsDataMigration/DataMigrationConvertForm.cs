@@ -222,6 +222,7 @@ namespace CodeAppsDataMigration
                                 runner.fnUserPrevilegeUpdate(nMainBranchId, map.ToBranchId);
                                 runner.fnHospitalSettingUpdate( nMainBranchId, map.ToBranchId, map.FromBranchId);
                                 runner.fnChequeDepositFlagUpdate(map.ToBranchId, nMainBranchId);
+                                runner.fnProductSearchUpdate(map.ToBranchId, nMainBranchId);
                                 runner.fnPriceMenuUpdate(nMainBranchId, map.ToBranchId, map.FromBranchId);
                                 runner.CommitBranchTransaction();
                             }

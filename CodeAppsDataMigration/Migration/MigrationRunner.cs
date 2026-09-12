@@ -2800,13 +2800,13 @@ where not exists (
             cmd.ExecuteNonQuery();
         }
 
-        public void fnChequeDepositFlagUpdate(long nToBranchId,long nMainBranchId)
+        public void fnChequeDepositFlagUpdate(long nToBranchId, long nMainBranchId)
         {
 
-            string strQuery  = $"\n update chequeentry{nMainBranchId} ce set reconcilationflag = 'Yes'  from voucherdetails{nMainBranchId} vd";
-                   strQuery += $"\n where ce.vprefixid = vd.vprefixid and ce.voucherno = vd.voucherno and ce.uniquevoucherid = vd.uniquevoucherid";
-                   strQuery += $"\n and ce.branchid = vd.branchid and ce.mainbranchid = vd.mainbranchid";
-                   strQuery += $"\n and vd.reconamt<>0 and ce.branchid = {nToBranchId} and ce.mainbranchid = {nMainBranchId} and ce.vprefixid in (3,4);";
+            string strQuery = $"\n update chequeentry{nMainBranchId} ce set reconcilationflag = 'Yes'  from voucherdetails{nMainBranchId} vd";
+            strQuery += $"\n where ce.vprefixid = vd.vprefixid and ce.voucherno = vd.voucherno and ce.uniquevoucherid = vd.uniquevoucherid";
+            strQuery += $"\n and ce.branchid = vd.branchid and ce.mainbranchid = vd.mainbranchid";
+            strQuery += $"\n and vd.reconamt<>0 and ce.branchid = {nToBranchId} and ce.mainbranchid = {nMainBranchId} and ce.vprefixid in (3,4);";
 
             ExecPgNonQuery(strQuery);
 
@@ -2814,9 +2814,21 @@ where not exists (
 
 
         }
+        public void fnProductSearchUpdate(long nToBranchId, long nMainBranchId)
+        {
+
+            string strQuery = $"\n update productmain{nMainBranchId} SET productsearch = regexp_replace(itemdesc, '[^a-zA-Z0-9]', '', 'g')";            
+            strQuery += $"\n where branchid = {nToBranchId} and mainbranchid = {nMainBranchId};";
+
+            ExecPgNonQuery(strQuery);
+
+            ReportProgress("Updating ProductSearch successfully", 2);
 
 
-     }
+        }
+
+
+    }
 
 
 }
