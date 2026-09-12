@@ -308,7 +308,7 @@ namespace CodeAppsDataMigration.Migration
             {
                 ("Hsn_Id", "tempid","bigint"),
                 ("Hsn_Code", "hsn_code","text"),
-                ("Hsn_GstPers", "hsn_gstpers","numeric"),
+                ("Hsn_FiledNo2", "hsn_gstpers","numeric"),
                 ("hsn_description1", "hsn_description1","text"),
                 ("hsn_description2", "hsn_description2","text"),
                 ("unitid", "unitid","bigint"),

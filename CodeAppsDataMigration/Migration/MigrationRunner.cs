@@ -309,7 +309,7 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"UPDATE productsub{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId} and  isub.mainbranchid = {nMainBranchId} and pm.producttype='product'");
 
-                stringBuilder.Add($"UPDATE hsn{nMainBranchId} hs SET taxid = pm.taxid FROM productmain{nMainBranchId} pm WHERE hs.hsn_id = pm.hsnid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE hsn{nMainBranchId} hs SET taxid = tx.taxid FROM tax tx WHERE hs.hsn_gstpers = tx.taxpercent  and hs.mainbranchid = {nMainBranchId} and hs.branchid={nBranchId} ");
 
                 // Sales
                 stringBuilder.Add($"UPDATE issuesubdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId} AND  isub.mainbranchid = {nMainBranchId} and pm.producttype='product'");
@@ -1174,10 +1174,15 @@ namespace CodeAppsDataMigration.Migration
         {
             ReportProgress("Updating tax data in SQL Server...", 0);
 
-            string strQuery = @"update Product set ProdLinkEShopId = Tax.TaxPercent  from Product inner join TaxGroup on Product.TaxGroupId = TaxGroup.TaxGroupId
-               inner join TaxDetails on TaxGroup.TaxGroupId = TaxDetails.TaxGroupId
-               inner join Tax on Tax.taxid = TaxDetails.TaxId
-               where TransType = 'PURCHASE'";
+            string strQuery = "\n update Product set ProdLinkEShopId = Tax.TaxPercent  from Product inner join TaxGroup on Product.TaxGroupId = TaxGroup.TaxGroupId";
+            strQuery += "\n inner join TaxDetails on TaxGroup.TaxGroupId = TaxDetails.TaxGroupId";
+            strQuery += "\n inner join Tax on Tax.taxid = TaxDetails.TaxId";
+            strQuery += "\n where TransType = 'PURCHASE'";
+
+            strQuery += "\n update hsn set Hsn_FiledNo2 = Tax.TaxPercent  from hsn inner join TaxGroup on hsn.TaxGroupId = TaxGroup.TaxGroupId";
+            strQuery += "\n inner join TaxDetails on TaxGroup.TaxGroupId = TaxDetails.TaxGroupId";
+            strQuery += "\n inner join Tax on Tax.taxid = TaxDetails.TaxId";
+            strQuery += "\n where TransType = 'PURCHASE'";
 
             try
             {
