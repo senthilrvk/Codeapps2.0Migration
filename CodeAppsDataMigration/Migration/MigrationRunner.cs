@@ -474,6 +474,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE receiptreturnmain{nMainBranchId} rm SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.staffid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE receiptreturnmain{nMainBranchId} rm SET reasonid = ah.categoryid FROM category ah WHERE ah.tempid = rm.reasonid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
 
+                stringBuilder.Add($"UPDATE receiptreturndetails{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE receiptreturndetails{nMainBranchId} rm SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.staffid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE receiptreturndetails{nMainBranchId} os SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = os.productid  AND  os.branchid = {nBranchId} and os.mainbranchid = {nMainBranchId}  and pm.producttype='product'");
                 stringBuilder.Add($"UPDATE receiptreturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.receiptsubtaxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
