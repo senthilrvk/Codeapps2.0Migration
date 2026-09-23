@@ -5,6 +5,7 @@ using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -14,6 +15,14 @@ namespace CodeAppsDataMigration
     {
         private DataTable _pgBranchAll = new DataTable();
         private DataTable _sqlBranches = new DataTable();
+
+        /// <summary>
+        /// PostgreSQL tables that tell us a branch is already in use. Each one is suffixed
+        /// with the main branch id (see MigrationConfig), e.g. "store5" / "issuemain5".
+        /// "receiptmain" is the purchase table.
+        /// </summary>
+        private static readonly string[] BranchDataTables =
+            { "store", "issuemain", "receiptmain" };
 
         public DataMigrationConvertForm()
         {
@@ -116,13 +125,41 @@ namespace CodeAppsDataMigration
 
             int mainBranchId = Convert.ToInt32(cmbPgMainBranch.SelectedValue);
 
-            var filtered = _pgBranchAll.Clone();
+            // Every branch that belongs to the selected main branch.
+            var branchesOfMain = new List<DataRow>();
             foreach (DataRow row in _pgBranchAll.Rows)
             {
+                if (row["mainbranchid"] == DBNull.Value) continue;
                 if (Convert.ToInt32(row["mainbranchid"]) == mainBranchId)
-                {
+                    branchesOfMain.Add(row);
+            }
+
+            // A branch that already holds data (store / issue / purchase) is not a valid
+            // migration target, so it is left out of the list instead of being offered.
+            HashSet<long> usedBranchIds;
+            try
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                usedBranchIds = GetBranchIdsWithData(
+                    mainBranchId,
+                    branchesOfMain.Select(r => Convert.ToInt64(r["branchid"])));
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to check which PostgreSQL branches already have data: " + ex.Message,
+                    "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                usedBranchIds = new HashSet<long>();
+            }
+            finally
+            {
+                Cursor.Current = Cursors.Default;
+            }
+
+            var filtered = _pgBranchAll.Clone();
+            foreach (DataRow row in branchesOfMain)
+            {
+                if (!usedBranchIds.Contains(Convert.ToInt64(row["branchid"])))
                     filtered.ImportRow(row);
-                }
             }
 
             colPgBranch.DataSource = filtered;
@@ -133,6 +170,54 @@ namespace CodeAppsDataMigration
             {
                 gridRow.Cells[colPgBranch.Name].Value = null;
             }
+
+            int hidden = branchesOfMain.Count - filtered.Rows.Count;
+            lblStatus.Text = hidden > 0
+                ? $"{filtered.Rows.Count} empty branch(es) available - {hidden} hidden because they already have data."
+                : $"{filtered.Rows.Count} branch(es) available.";
+        }
+
+        /// <summary>
+        /// Returns the ids of the given branches that already contain rows in any of the
+        /// <see cref="BranchDataTables"/> for this main branch. Tables that do not exist in
+        /// the target database (or have no branchid column) are ignored.
+        /// </summary>
+        private static HashSet<long> GetBranchIdsWithData(int mainBranchId, IEnumerable<long> branchIds)
+        {
+            var used = new HashSet<long>();
+            var ids = branchIds.Distinct().ToArray();
+            if (ids.Length == 0) return used;
+
+            using var conn = PostgresConnection.Create();
+            conn.Open();
+
+            foreach (string prefix in BranchDataTables)
+            {
+                string table = prefix + mainBranchId;
+                if (!PgTableHasBranchId(conn, table)) continue;
+
+                using var cmd = new NpgsqlCommand(
+                    $"SELECT DISTINCT branchid FROM public.\"{table}\" WHERE branchid = ANY(@ids)", conn);
+                cmd.Parameters.AddWithValue("ids", ids);
+
+                using var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                    if (!reader.IsDBNull(0))
+                        used.Add(Convert.ToInt64(reader.GetValue(0)));
+                }
+            }
+
+            return used;
+        }
+
+        private static bool PgTableHasBranchId(NpgsqlConnection conn, string table)
+        {
+            using var cmd = new NpgsqlCommand(@"
+                SELECT 1 FROM information_schema.columns
+                WHERE table_schema = 'public' AND table_name = @t AND column_name = 'branchid' LIMIT 1", conn);
+            cmd.Parameters.AddWithValue("t", table);
+            return cmd.ExecuteScalar() != null;
         }
 
         private async void btnDataTransfer_Click(object sender, EventArgs e)

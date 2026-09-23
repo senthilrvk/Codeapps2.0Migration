@@ -423,8 +423,9 @@ namespace CodeAppsDataMigration
 
                 using var conn = PostgresConnection.Create();
                 conn.Open();
+                // Newest main branch first, so the one just created is at the top of the list.
                 using var cmd = new NpgsqlCommand(
-                    "SELECT mainbranchid, mainbranchname FROM mainbranch ORDER BY mainbranchname", conn);
+                    "SELECT mainbranchid, mainbranchname FROM mainbranch ORDER BY mainbranchid DESC", conn);
                 using var reader = cmd.ExecuteReader();
 
                 while (reader.Read())
