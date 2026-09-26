@@ -554,7 +554,7 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n vd.chequeno, vd.chequedate, 0 voucheramt, vd.bankname, 0 acid, vd.repid, vd.staffid, vd.vouchertime, vd.remarks,";
                 strQuery += $"\n vd.enterdate, vd.tdspers, ";
                 strQuery += $"\n vd.tdsamt,'' transtype,False bvouchercancel, vd.branchid, vd.mainbranchid, 0 revacid, vd.refno,'' headtype,0 balanceamt";
-                strQuery += $"\n from voucherdetails{nMainBranchId} vd where vd.vprefixid in (1,2,3,4,8,10) and vd.branchid={nBranchId} and vd.mainbranchid={nMainBranchId};";
+                strQuery += $"\n from voucherdetails{nMainBranchId} vd where vd.vprefixid in (1,2,3,4,10) and vd.branchid={nBranchId} and vd.mainbranchid={nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
 
@@ -618,9 +618,46 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $" and os.acid in (select acid from accounthead{nMainBranchId} where supplierflag=true and branchid={nBranchId});";
                 stringBuilder.Add(strQuery);
 
+
+                //contra entry
+                strQuery = $"INSERT INTO vouchermain{nMainBranchId}(";
+                strQuery += $" vouchermaindate, vprefixid, voucherno, uniquevoucherid, vouchergroupid, voucherprefix,";
+                strQuery += $" chequeno, chequedate, voucheramt, bankname, acid, repid, staffid, vouchertime, remarks, enterdate, tdspers,";
+                strQuery += $" tdsamt, transtype, bvouchercancel, branchid, mainbranchid, revacid, refno, headtype, balanceamt";
+                strQuery += $" )";
+                strQuery += $" select distinct     vd.voucherdate, vd.vprefixid, vd.voucherno, vd.uniquevoucherid,0 vouchergroupid, vd.voucherprefix,";
+                strQuery += $" vd.chequeno, vd.chequedate, 0 voucheramt, vd.bankname, 0 acid,0 repid, vd.staffid, '' vouchertime, vd.remarks,";
+                strQuery += $" vd.enterdate, vd.tdspers,";
+                strQuery += $" vd.tdsamt,'' transtype,False bvouchercancel, vd.branchid, vd.mainbranchid, 0 revacid, vd.refno,'' headtype,0 balanceamt";
+                strQuery += $" from voucherdetails{nMainBranchId} vd where vd.vprefixid in (8) and vd.branchid = {nBranchId} and vd.mainbranchid = {nMainBranchId};";
+
+                stringBuilder.Add(strQuery);
+
+
+                strQuery = $"update vouchermain{nMainBranchId} vm set voucheramt = vd.voucheramt  from voucherdetails{nMainBranchId} vd where";
+                strQuery += $"\n vm.voucherno = vd.voucherno and vm.vprefixid = vd.vprefixid and vm.uniquevoucherid = vd.uniquevoucherid";
+                strQuery += $"\n and vm.branchid = vd.branchid";
+                strQuery += $"\n and vm.branchid = {nBranchId} and vm.mainbranchid = {nMainBranchId} and vd.voucheramt > 0 and vd.vprefixid = 8;";
+                stringBuilder.Add(strQuery);
+
+                strQuery = $"update vouchermain{nMainBranchId} vm set revacid = vd.acid  from voucherdetails{nMainBranchId} vd where";
+                strQuery += $"\n vm.voucherno = vd.voucherno and vm.vprefixid = vd.vprefixid and vm.uniquevoucherid = vd.uniquevoucherid";
+                strQuery += $"\n and vm.branchid = vd.branchid";
+                strQuery += $"\n and vm.branchid = {nBranchId} and vm.mainbranchid = {nMainBranchId} and vd.voucheramt > 0 and vd.vprefixid = 8 ;";
+                stringBuilder.Add(strQuery);
+
+
+                strQuery = $"update vouchermain{nMainBranchId} vm set acid = vd.acid  from voucherdetails{nMainBranchId} vd where";
+                strQuery += $"\n vm.voucherno = vd.voucherno and vm.vprefixid = vd.vprefixid and vm.uniquevoucherid = vd.uniquevoucherid";
+                strQuery += $"\n and vm.branchid = vd.branchid";
+                strQuery += $"\n and vm.branchid = {nBranchId} and vm.mainbranchid = {nMainBranchId} and vd.voucheramt < 0 and vd.vprefixid = 8;";
+                stringBuilder.Add(strQuery);
+
+                //end entry
+
                 //voucheraccoutnheadupdate
-               // stringBuilder.Add($"UPDATE vouchermain{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>53 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
-              //  stringBuilder.Add($"UPDATE vouchermain{nMainBranchId} rm SET revacid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.revacid and rm.revacid>53 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+                // stringBuilder.Add($"UPDATE vouchermain{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>53 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
+                //  stringBuilder.Add($"UPDATE vouchermain{nMainBranchId} rm SET revacid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.revacid and rm.revacid>53 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
 
 
                 //returnadjustmentlog
