@@ -62,6 +62,8 @@ namespace CodeAppsDataMigration
             chkPgErrorDetail = new CheckBox();
             btnTestPg = new Button();
 
+            lblApiMode = new Label();
+            cmbApiMode = new ComboBox();
             lblMainBranchUrl = new Label();
             txtMainBranchUrl = new TextBox();
             lblSubBranchUrl = new Label();
@@ -459,6 +461,8 @@ namespace CodeAppsDataMigration
             //
             // tabApiUrls
             //
+            tabApiUrls.Controls.Add(lblApiMode);
+            tabApiUrls.Controls.Add(cmbApiMode);
             tabApiUrls.Controls.Add(lblMainBranchUrl);
             tabApiUrls.Controls.Add(txtMainBranchUrl);
             tabApiUrls.Controls.Add(lblSubBranchUrl);
@@ -474,18 +478,37 @@ namespace CodeAppsDataMigration
             tabApiUrls.UseVisualStyleBackColor = true;
 
             //
+            // lblApiMode
+            //
+            lblApiMode.AutoSize = true;
+            lblApiMode.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            lblApiMode.Location = new Point(15, 15);
+            lblApiMode.Name = "lblApiMode";
+            lblApiMode.Text = "Environment:";
+
+            //
+            // cmbApiMode
+            //
+            cmbApiMode.DropDownStyle = ComboBoxStyle.DropDownList;
+            cmbApiMode.Items.AddRange(new object[] { "Select", "Developer", "Offline", "Online" });
+            cmbApiMode.Location = new Point(15, 37);
+            cmbApiMode.Name = "cmbApiMode";
+            cmbApiMode.Size = new Size(160, 23);
+            cmbApiMode.SelectedIndexChanged += cmbApiMode_SelectedIndexChanged;
+
+            //
             // lblMainBranchUrl
             //
             lblMainBranchUrl.AutoSize = true;
             lblMainBranchUrl.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblMainBranchUrl.Location = new Point(15, 18);
+            lblMainBranchUrl.Location = new Point(15, 72);
             lblMainBranchUrl.Name = "lblMainBranchUrl";
             lblMainBranchUrl.Text = "Main Branch API URL:";
 
             //
             // txtMainBranchUrl
             //
-            txtMainBranchUrl.Location = new Point(15, 40);
+            txtMainBranchUrl.Location = new Point(15, 94);
             txtMainBranchUrl.Name = "txtMainBranchUrl";
             txtMainBranchUrl.Size = new Size(420, 23);
 
@@ -494,14 +517,14 @@ namespace CodeAppsDataMigration
             //
             lblSubBranchUrl.AutoSize = true;
             lblSubBranchUrl.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            lblSubBranchUrl.Location = new Point(15, 75);
+            lblSubBranchUrl.Location = new Point(15, 127);
             lblSubBranchUrl.Name = "lblSubBranchUrl";
             lblSubBranchUrl.Text = "Sub Branch API URL:";
 
             //
             // txtSubBranchUrl
             //
-            txtSubBranchUrl.Location = new Point(15, 97);
+            txtSubBranchUrl.Location = new Point(15, 149);
             txtSubBranchUrl.Name = "txtSubBranchUrl";
             txtSubBranchUrl.Size = new Size(420, 23);
 
@@ -511,7 +534,7 @@ namespace CodeAppsDataMigration
             lblSavedApiUrls.AutoSize = true;
             lblSavedApiUrls.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
             lblSavedApiUrls.ForeColor = Color.FromArgb(45, 55, 72);
-            lblSavedApiUrls.Location = new Point(15, 135);
+            lblSavedApiUrls.Location = new Point(15, 185);
             lblSavedApiUrls.Name = "lblSavedApiUrls";
             lblSavedApiUrls.Text = "Saved API URLs:";
 
@@ -520,9 +543,9 @@ namespace CodeAppsDataMigration
             //
             lstSavedApiUrls.Font = new Font("Segoe UI", 9.5F);
             lstSavedApiUrls.FormattingEnabled = true;
-            lstSavedApiUrls.Location = new Point(15, 158);
+            lstSavedApiUrls.Location = new Point(15, 208);
             lstSavedApiUrls.Name = "lstSavedApiUrls";
-            lstSavedApiUrls.Size = new Size(420, 170);
+            lstSavedApiUrls.Size = new Size(420, 125);
             lstSavedApiUrls.BorderStyle = BorderStyle.FixedSingle;
 
             //
@@ -580,6 +603,8 @@ namespace CodeAppsDataMigration
         private TabPage tabSqlServer;
         private TabPage tabPostgres;
         private TabPage tabApiUrls;
+        private Label lblApiMode;
+        private ComboBox cmbApiMode;
         private Label lblMainBranchUrl;
         private TextBox txtMainBranchUrl;
         private Label lblSubBranchUrl;

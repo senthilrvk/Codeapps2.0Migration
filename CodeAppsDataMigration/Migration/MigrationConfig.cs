@@ -4517,6 +4517,104 @@ namespace CodeAppsDataMigration.Migration
                 },
                 condition = "where BranchId =" + nFromBranchId.ToString()
             },
+             new TableMap
+            {
+                SqlTable = "OrderForm",
+                PgTable  = "purchaseordermain"+nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("OrderForm_Id","tempid","bigint"),
+                    ("OrderForm_No","orderno","bigint"),
+                    ("OrderForm_Date","orderdate","date"),
+                    ("OrderForm_OrdValue","ordervalue","numeric"),
+                    ("OrderForm_Bank","orderbank","text"),
+                    ("OrderForm_Transporter","orderransporter","text"),
+                    ("AcId","acid","bigint"),
+                    ("OrderForm_Type","ordertype","text"),
+                    ("OrderForm_Time","ordertime","text"),
+                    ("OrderForm_ClaimNo","claimno","text"),
+                    ("OrderForm_ClaimDate","claimdate","date"),
+                    ("OrderForm_Description1","orderdescription1","text"),
+                    ("OrderForm_Description2","orderdescription2","text"),
+                    ("OrderForm_Cancel","bordercancel","boolean"),
+                    ("OrderForm_Remarks","orderremarks","text"),
+                    ("OrderForm_PurType","orderpurtype","text"),
+                    ("OrderForm_NotificationDate","notificationdate","date"),
+                    ("OrderForm_PurOrderNo","purorderno","text"),
+                    ("OrderForm_PurOrderDate","purorderdate","text"),
+                    ("OrderForm_ShippingName","shippingname","text"),
+                    ("OrderForm_ShippingAddr1","shippingaddr1","text"),
+                    ("OrderForm_ShippingAddr2","shippingaddr2","text"),
+                    ("OrderForm_Shippinggstno","shippinggstno","text"),
+                    ("OrderForm_ShippingTransporter","shippingtransporter","text"),
+                    ("OrderForm_ShippingState","shippingstate","text"),
+                    ("OrderForm_ShippingStateCode","shippingstatecode","text"),
+                    ("StaffId","staffid","bigint"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+
+                },
+                condition = "where BranchId =" + nFromBranchId.ToString()
+            },
+             new TableMap
+            {
+                SqlTable = "OrderFormDetails",
+                PgTable  = "purchaseorderdetails"+nMainBranchId.ToString(),
+                Columns = new[]
+                {
+                    ("OrderFormerSub_Id","tempid","bigint"),
+                    ("OrderForm_Id","orderid","bigint"),
+                    ("OrderForm_No","orderno","bigint"),
+                    ("OrderFormSub_Mon1","ordersubmon1","integer"),
+                    ("OrderFormSub_Mon2","ordersubmon2","integer"),
+                    ("OrderFormSub_Mon3","ordersubmon3","integer"),
+                    ("OrderFormSub_CurStk","ordersubcurstk","integer"),
+                    ("OrderFormSub_OrdQty","ordersubqty","numeric"),
+                    ("OrderFormSub_OrdFre","ordersubfre","integer"),
+                    ("ProuductId","prouductid","integer"),
+                    ("OrderFormerSub_MonSal","ordermonsal","integer"),
+                    ("OrderFormSub_SelRate","orderselrate","numeric"),
+                    ("OrderFormSub_PurRate","orderpurchaserate","numeric"),
+                    ("OrderFormSub_Mrp","ordersubmrp","numeric"),
+                    ("OrderFormerSub_StkForNDays","orderstkforndays","bigint"),
+                    ("OrderFormSub_TaxPers","taxpers","numeric"),
+                    ("SalesOrderUniqueId","salesorderuniqueid","bigint"),
+                    ("OrderFromSub_Flag","ordersubflag","boolean"),
+                    ("OrderFormSub_Remarks","ordersubremarks","text"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+
+                },
+                condition = "where BranchId =" + nFromBranchId.ToString()
+            },
+             new TableMap
+            {
+                SqlTable = "ClosingStock",
+                PgTable  = "closingstock",
+                Columns = new[]
+                {
+                    ("ClosingDate","closingdate","date"),
+                    ("PurchaseValue","purvalue","numeric"),
+                    ("ActualPurchaseValue","actpurvalue","numeric"),
+                    ("LandingCostValue","lndcostvalue","numeric"),
+                    ("SalesValue","salesvalue","numeric"),
+                    ("SalesValueWithTax","salesvaluewithtax","numeric"),
+                    ("StockQty","stockqty","numeric"),
+                    ("branchid","branchid","bigint"),
+                    ("mainbranchid","mainbranchid","bigint")
+                },
+                Constants = new Dictionary<string, object>
+                {
+
+                },
+                condition = "where BranchId =" + nFromBranchId.ToString()
+            },
         };
 
     }

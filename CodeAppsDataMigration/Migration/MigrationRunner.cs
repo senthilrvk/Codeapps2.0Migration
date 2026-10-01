@@ -442,6 +442,18 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update receiptmain{nMainBranchId}    set paytermsid = 0  where branchid = {nBranchId} and mainbranchid = {nMainBranchId};");
                 stringBuilder.Add($"update receiptdetails{nMainBranchId} set priceid    = 0  where branchid = {nBranchId} and mainbranchid = {nMainBranchId}");
 
+                // purchaseordermain
+                stringBuilder.Add($"UPDATE purchaseordermain{nMainBranchId} po SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = po.acid AND po.branchid = {nBranchId} and po.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE purchaseordermain{nMainBranchId} po SET staffid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = po.staffid AND po.branchid = {nBranchId} and po.mainbranchid = {nMainBranchId}");
+
+                // purchaseorderdetails
+                strQuery = $"update purchaseorderdetails{nMainBranchId} pod set orderid = po.orderid from purchaseordermain{nMainBranchId} po where po.tempid = pod.orderid";
+                strQuery += $"\n and pod.branchid = po.branchid and pod.mainbranchid = po.mainbranchid";
+                strQuery += $"\n and po.branchid ={nBranchId}    and po.mainbranchid ={nMainBranchId}";
+                stringBuilder.Add(strQuery);
+                stringBuilder.Add($"UPDATE purchaseorderdetails{nMainBranchId} pod SET prouductid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = pod.prouductid AND pod.branchid = {nBranchId} and pod.mainbranchid = {nMainBranchId} and pm.producttype='product'");
+                stringBuilder.Add($"UPDATE purchaseorderdetails{nMainBranchId} pod SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pod.taxpers AND pod.branchid = {nBranchId} and pod.mainbranchid = {nMainBranchId}");
+
 
 
                 ///opening stock main

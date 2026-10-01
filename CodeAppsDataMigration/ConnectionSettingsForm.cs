@@ -59,6 +59,7 @@ namespace CodeAppsDataMigration
             var subUrl = apiUrls?.Element("SubBranchUrl")?.Value ?? "";
             txtMainBranchUrl.Text = mainUrl;
             txtSubBranchUrl.Text = subUrl;
+            SyncApiModeDropdown(mainUrl, subUrl);
 
             // Show saved API URLs list
             lstSavedApiUrls.Items.Clear();
@@ -66,6 +67,59 @@ namespace CodeAppsDataMigration
                 lstSavedApiUrls.Items.Add($"Main Branch  :  {mainUrl}");
             if (!string.IsNullOrWhiteSpace(subUrl))
                 lstSavedApiUrls.Items.Add($"Sub Branch   :  {subUrl}");
+        }
+
+        private const string MainBranchEndpoint = "api/mainbranch/CreateMainBranch";
+        private const string SubBranchEndpoint = "api/branch/CreateBranch";
+
+        // Set while LoadSettings syncs the Environment dropdown to the loaded
+        // URLs, so the SelectedIndexChanged handler doesn't overwrite them.
+        private bool suppressApiModeEvent = false;
+
+        // Same environment presets as the Print Service. Returns the base URL
+        // (protocol://domain[/apiPath]/) or null for "Select".
+        private static string? GetApiModeBaseUrl(string? mode) => mode switch
+        {
+            "Developer" => "https://localhost:44301/",
+            "Offline" => "http://localhost:8090/WebApi/",
+            "Online" => "https://demo.codeapps.info/WebApi/",
+            _ => null
+        };
+
+        // Picking an environment fills both API URLs; the user can still edit
+        // them before saving.
+        private void cmbApiMode_SelectedIndexChanged(object? sender, EventArgs e)
+        {
+            if (suppressApiModeEvent) return;
+
+            // "Select" is only the placeholder / "custom" marker, so leave the
+            // URLs exactly as they are.
+            var baseUrl = GetApiModeBaseUrl(cmbApiMode.SelectedItem?.ToString());
+            if (baseUrl == null) return;
+
+            txtMainBranchUrl.Text = baseUrl + MainBranchEndpoint;
+            txtSubBranchUrl.Text = baseUrl + SubBranchEndpoint;
+        }
+
+        // Selects the Environment entry that matches the saved URLs, or
+        // "Select" when they are a custom combination.
+        private void SyncApiModeDropdown(string mainUrl, string subUrl)
+        {
+            string? mode = null;
+            foreach (var candidate in new[] { "Developer", "Offline", "Online" })
+            {
+                var baseUrl = GetApiModeBaseUrl(candidate)!;
+                if (string.Equals(mainUrl.Trim(), baseUrl + MainBranchEndpoint, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(subUrl.Trim(), baseUrl + SubBranchEndpoint, StringComparison.OrdinalIgnoreCase))
+                {
+                    mode = candidate;
+                    break;
+                }
+            }
+
+            suppressApiModeEvent = true;
+            cmbApiMode.SelectedItem = mode ?? "Select";
+            suppressApiModeEvent = false;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
