@@ -619,6 +619,13 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
 
 
+                strQuery = $"update vouchermain{nMainBranchId} vm set acid = vd.acid  from voucherdetails{nMainBranchId} vd where";
+                strQuery += $"\n vm.voucherno = vd.voucherno and vm.vprefixid = vd.vprefixid and vm.uniquevoucherid = vd.uniquevoucherid";
+                strQuery += $"\n and vm.branchid = vd.branchid";
+                strQuery += $"\n and vm.branchid = {nBranchId} and vm.mainbranchid = {nMainBranchId} and vd.voucheramt > 0 and vd.vprefixid = 7 and vm.acid=0;";
+                stringBuilder.Add(strQuery);
+
+
                 strQuery = $" update vouchermain{nMainBranchId} vm set revacid = acid  WHERE  vm.vprefixid in (10) and vm.branchid={nBranchId} and vm.mainbranchid={nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
