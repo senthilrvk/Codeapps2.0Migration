@@ -2789,6 +2789,7 @@ namespace CodeAppsDataMigration.Migration
                     ("Quotation_DisPers","dispers","numeric"),
                     ("Quotation_DisAmt","disamt","numeric"),
                     ("AcId","acid","bigint"),
+                    ("Quotation_CustName","custname","text"),
                     ("SalesExeId","salesexeid","bigint"),
                     ("Quotation_DTotal","dtotal","numeric"),
                     ("Quotation_ATotal","atotal","numeric"),
