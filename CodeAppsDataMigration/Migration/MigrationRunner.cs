@@ -804,6 +804,16 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update deliveryoutdetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} and mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE deliveryoutdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} AND pm.mainbranchid ={nMainBranchId}");
                 stringBuilder.Add($"UPDATE deliveryoutdetails{nMainBranchId} dod SET deliveryoutid = dom.deliveryoutid FROM deliveryoutmain{nMainBranchId} dom WHERE dom.tempid = dod.deliveryoutid AND  dod.branchid={nBranchId} AND dod.mainbranchid ={nMainBranchId}");
+
+                //ReturnDeliveryOutMain
+                stringBuilder.Add($"UPDATE returndeliveryoutmain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} AND im.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE returndeliveryoutmain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId} AND im.mainbranchid = {nMainBranchId} ");
+
+                //ReturnDeliveryOutDetails
+                stringBuilder.Add($"UPDATE returndeliveryoutdetails{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND  isub.branchid = {nBranchId}  AND isub.mainbranchid = {nMainBranchId}  and pm.producttype='product'");
+                stringBuilder.Add($"update returndeliveryoutdetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} and mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE returndeliveryoutdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} AND pm.mainbranchid ={nMainBranchId}");
+                stringBuilder.Add($"UPDATE returndeliveryoutdetails{nMainBranchId} rdod SET retdeliveryoutid = rdom.retdeliveryoutid, retdeliveryoutno = rdom.retdeliveryoutno FROM returndeliveryoutmain{nMainBranchId} rdom WHERE rdom.tempid = rdod.retdeliveryoutid AND rdom.branchid = rdod.branchid AND rdom.mainbranchid = rdod.mainbranchid AND rdod.branchid={nBranchId} AND rdod.mainbranchid ={nMainBranchId}");
                 //ExpenseEntryDetails
                 strQuery = $"update expenseentrydetails{nMainBranchId} eed set expensemainid =  eem.entrymainid from expenseentrymain eem where eem.tempid = eed.expensemainid";
                 strQuery += $"\n and eed.branchid = eem.branchid and eed.mainbranchid = eem.mainbranchid";
