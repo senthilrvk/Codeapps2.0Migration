@@ -790,6 +790,9 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n  and bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
+                stringBuilder.Add($"UPDATE deliveryoutmain{nMainBranchId} im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} AND im.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE deliveryoutmain{nMainBranchId} im SET salesexeid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.salesexeid AND im.branchid = {nBranchId} AND im.mainbranchid = {nMainBranchId} ");
+
 
                 //DeliveryOutDetails
                 strQuery = $"update deliveryoutdetails{nMainBranchId} dos set billserid =  bs.billserid from billseries bs where bs.tempid = dos.billserid";
