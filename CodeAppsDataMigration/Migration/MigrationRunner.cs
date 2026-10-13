@@ -305,7 +305,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET chemicalid = c.chemicalid FROM chemical c WHERE c.tempid = pm.chemicalid AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE productmain{nMainBranchId} pm SET productsearch = itemdesc  WHERE pm.producttype = 'serviceitem' AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
-               // stringBuilder.Add($"delete from ProductSub{nMainBranchId} ps where ps.productid not in (select tempid from productmain{nMainBranchId} ) and ps.branchid = {nBranchId}");
+                // stringBuilder.Add($"delete from ProductSub{nMainBranchId} ps where ps.productid not in (select tempid from productmain{nMainBranchId} ) and ps.branchid = {nBranchId}");
 
                 stringBuilder.Add($"UPDATE productsub{nMainBranchId} isub SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = isub.productid AND isub.branchid = {nBranchId} and  isub.mainbranchid = {nMainBranchId} and pm.producttype='product'");
 
@@ -1003,7 +1003,7 @@ namespace CodeAppsDataMigration.Migration
 
                 stringBuilder.Add($"update godowntransferdetails{nMainBranchId} gtd set godowntransferid = gtm.godowntransferid from godowntransfermain{nMainBranchId} gtm  where gtd.godowntransferid = gtm.tempid and gtd.branchid={nBranchId} and gtm.branchid={nBranchId} ;");
                 stringBuilder.Add($"update godowntransferdetails{nMainBranchId} gtd set productid = pm.productid from productmain{nMainBranchId} pm  where gtd.productid = pm.tempid and gtd.branchid={nBranchId} and pm.branchid={nBranchId} ;");
-               // stringBuilder.Add($"UPDATE godowntransferdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+                // stringBuilder.Add($"UPDATE godowntransferdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
                 stringBuilder.Add($"update creditdebitnotedismain grm set acid = ah.acid from accounthead{nMainBranchId} ah  where grm.acid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
                 stringBuilder.Add($"update creditdebitnotedismain grm set salesmanid = ah.acid from accounthead{nMainBranchId} ah  where grm.acid = ah.tempid and salesmanflag = true and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
@@ -1542,6 +1542,9 @@ namespace CodeAppsDataMigration.Migration
                         case "PharmaAppId":
                             strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='PharmaAppId' and branchid='" + nBranchId + "';";
                             break;
+                        case "CalculateProfitMarginOnPurchase":
+                            strUpdateQuery += "\n Update branchsetting set settingvalue = '" + Value + "' where mainbranchid = '" + nMainBranchId + "' and settingname='CalculateProfitMarginOnPurchase' and branchid='" + nBranchId + "';";
+                            break;
 
                     }
 
@@ -1765,7 +1768,7 @@ namespace CodeAppsDataMigration.Migration
                 throw; // abort so the branch transaction is rolled back
             }
         }
-        
+
 
         public void fnBranchUpdate(long nMainBranchId, long nBranchId, long nFromBranchId)
         {
@@ -1880,8 +1883,8 @@ namespace CodeAppsDataMigration.Migration
                         " WHERE mainbranchid = " + nMainBranchId +
                         " AND branchid = " + nBranchId + ";";
                 }
-                
-              
+
+
                 ExecPgNonQuery(strUpdateQuery);
                 ReportProgress("Updating Branch successfully", 2);
 
@@ -1939,11 +1942,11 @@ where not exists (
                 string strUpdateQuery = "";
                 foreach (DataRow row in dtsql.Rows)
                 {
-                    string strDisplayName   = row["DisplayName"].ToString();
+                    string strDisplayName = row["DisplayName"].ToString();
                     string strPriceMenuName = row["PriceMenu_Name"].ToString();
                     bool Active = Convert.ToBoolean(row["Active"].ToString());
                     int OrderNo = Convert.ToInt32(row["OrderNo"].ToString());
-                    strUpdateQuery += $"\n Update pricemenuonmain set displayname = '{strDisplayName}',active='{Active}',orderno='{OrderNo}' where pricemenuname ='{strPriceMenuName}' and mainbranchid= '{nMainBranchId}' ;";   
+                    strUpdateQuery += $"\n Update pricemenuonmain set displayname = '{strDisplayName}',active='{Active}',orderno='{OrderNo}' where pricemenuname ='{strPriceMenuName}' and mainbranchid= '{nMainBranchId}' ;";
                 }
 
                 ExecPgNonQuery(strUpdateQuery);
@@ -2888,7 +2891,7 @@ where not exists (
         public void fnProductSearchUpdate(long nToBranchId, long nMainBranchId)
         {
 
-            string strQuery = $"\n update productmain{nMainBranchId} SET productsearch = regexp_replace(itemdesc, '[^a-zA-Z0-9]', '', 'g')";            
+            string strQuery = $"\n update productmain{nMainBranchId} SET productsearch = regexp_replace(itemdesc, '[^a-zA-Z0-9]', '', 'g')";
             strQuery += $"\n where branchid = {nToBranchId} and mainbranchid = {nMainBranchId};";
 
             ExecPgNonQuery(strQuery);
