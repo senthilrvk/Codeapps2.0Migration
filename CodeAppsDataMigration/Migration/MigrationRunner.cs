@@ -2012,6 +2012,21 @@ where not exists (
         new AccountIdMigration { AccountId = 40, HeadName = "PURCHASE AMOUNT 40", AcId = -27, PosgresAcId = -87 },
         new AccountIdMigration { AccountId = 41, HeadName = "PURCHASE TAX 40 %", AcId = -28, PosgresAcId = -88 },
         new AccountIdMigration { AccountId = 42, HeadName = "DISCOUNT RECEIVED", AcId = 10, PosgresAcId = -90 },
+        new AccountIdMigration { AccountId = 42, HeadName = "PURCHASE AMOUNT 28", AcId = -14, PosgresAcId = -95 },
+        new AccountIdMigration { AccountId = 42, HeadName = "PURCHASE TAX 28 %", AcId = -15, PosgresAcId = -96 },
+        new AccountIdMigration { AccountId = 42, HeadName = "DEBIT NOTE RECEIVABLE", AcId = -9, PosgresAcId = -101 },
+        new AccountIdMigration { AccountId = 42, HeadName = "Stamping Charge %", AcId = -3, PosgresAcId = -102 },
+        new AccountIdMigration { AccountId = 42, HeadName = "OtherCharge Gst %", AcId = -2, PosgresAcId = -103 },
+        new AccountIdMigration { AccountId = 42, HeadName = "Packing Gst %", AcId = -1, PosgresAcId = -104 },
+        new AccountIdMigration { AccountId = 41, HeadName = "OPENING BALANCE", AcId = 47, PosgresAcId = -105 },
+        new AccountIdMigration { AccountId = 42, HeadName = "CREDIT NOTE PAYABLE", AcId = 46, PosgresAcId = -106 },
+        new AccountIdMigration { AccountId = 42, HeadName = "PACKING CHARGE", AcId = 43, PosgresAcId = -107 },
+        new AccountIdMigration { AccountId = 42, HeadName = "CST AMOUNT", AcId = 21, PosgresAcId = -108 },
+        new AccountIdMigration { AccountId = 42, HeadName = "SALES TAX 1%", AcId = 14, PosgresAcId = -109 },
+        new AccountIdMigration { AccountId = 42, HeadName = "EXPIRY NOTE", AcId = 5, PosgresAcId = -110 },
+        new AccountIdMigration { AccountId = 42, HeadName = "SALES ACCOUNT", AcId = 2, PosgresAcId = -111 },
+        new AccountIdMigration { AccountId = 42, HeadName = "PURCHASE ACCOUNT", AcId = 1, PosgresAcId = -112 },
+
     };
 
         }
