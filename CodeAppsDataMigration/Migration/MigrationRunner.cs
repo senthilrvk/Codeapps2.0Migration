@@ -698,6 +698,10 @@ namespace CodeAppsDataMigration.Migration
                 //outstanding
                 stringBuilder.Add($"UPDATE outstanding{nMainBranchId} rm SET billserid = bs.billserid FROM billseries bs WHERE bs.tempid = rm.billserid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId} and rm.billserid<>0 and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and rm.vprefixid=5 and bs.billsersource='SALES' ");
                 stringBuilder.Add($"UPDATE outstanding{nMainBranchId} rm SET billserid = bs.billserid FROM billseries bs WHERE bs.tempid = rm.billserid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId} and rm.billserid<>0 and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId} and rm.vprefixid=6 and bs.billsersource='PURCHASE' ");
+                // Opening balances (vprefixid 10) are not remapped above, so they kept the old SQL Server
+                // bill series ids (1 = purchase, 3 = sales) that do not exist in billseries here.
+                // Use 0, the same value the app writes for opening balances it creates itself.
+                stringBuilder.Add($"UPDATE outstanding{nMainBranchId} SET billserid = 0 WHERE vprefixid = 10 AND branchid = {nBranchId} AND mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE outstanding{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid and rm.acid>53 AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE outstanding{nMainBranchId} rm SET salesmanid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.salesmanid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"update outstanding{nMainBranchId}    set sourcetype = 'Sales'  where vprefixid=5 and branchid = {nBranchId} and mainbranchid = {nMainBranchId};");
