@@ -925,10 +925,30 @@ namespace CodeAppsDataMigration
 
         internal static async Task<(HttpResponseMessage resp, string body)> PostJsonAsync(string url, string json)
         {
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var resp = await _httpClient.PostAsync(url, content);
+            using var request = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+
+            // Lets the API know this is the migration tool once it requires a sign in.
+            // No <ApiKey> configured -> sent exactly as before.
+            var apiKey = ReadApiKey();
+            if (!string.IsNullOrEmpty(apiKey))
+                request.Headers.Add("X-Api-Key", apiKey);
+
+            var resp = await _httpClient.SendAsync(request);
             var body = await resp.Content.ReadAsStringAsync();
             return (resp, body);
+        }
+
+        /// <summary>ConnectionStrings.xml → ApiUrls/ApiKey, or "" when not set.</summary>
+        private static string ReadApiKey()
+        {
+            var xmlPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "ConnectionStrings.xml");
+            if (!File.Exists(xmlPath)) return "";
+
+            var doc = XDocument.Load(xmlPath);
+            return (doc.Root?.Element("ApiUrls")?.Element("ApiKey")?.Value ?? "").Trim();
         }
 
         internal static void AppendCallToLog(StringBuilder log, string label, string url,
