@@ -2249,6 +2249,14 @@ where not exists (
                     nBillNo = Convert.ToInt64(row["NextBillNo"].ToString());
                     strUpdateQuery += $"\n update branchsetting set settingbillno = {nBillNo} where settingname ='SalesNexBillNo' and branchid = {nBranchId} and mainbranchid = {nMainBranchId};";
 
+                    nBillNo = Convert.ToInt64(row["NextDcSlNo"].ToString());
+                    strUpdateQuery += $"\n update branchsetting set settingbillno = {nBillNo} where settingname ='DeliveryOutNextNo' and branchid = {nBranchId} and mainbranchid = {nMainBranchId};";
+
+
+                    nBillNo = Convert.ToInt64(row["DcSlNo"].ToString());
+                    strUpdateQuery += $"\n UPDATE billseries SET billsercurrentbillno = '{nBillNo}'";
+                    strUpdateQuery += $"\n WHERE mainbranchid = '{nMainBranchId}' and branchid = {nBranchId} and billsersource = 'DELIVERYOUT';";
+
 
                     nBillNo = 1;
 
