@@ -930,11 +930,21 @@ namespace CodeAppsDataMigration
                 Content = new StringContent(json, Encoding.UTF8, "application/json")
             };
 
-            // Lets the API know this is the migration tool once it requires a sign in.
-            // No <ApiKey> configured -> sent exactly as before.
-            var apiKey = ReadApiKey();
-            if (!string.IsNullOrEmpty(apiKey))
-                request.Headers.Add("X-Api-Key", apiKey);
+            // The super user token from the start-up login makes the API see the caller as
+            // AppRoles.SuperUser (needed to create a main branch once a company exists).
+            // The API ignores the JWT whenever X-Api-Key is present, so the key is only sent
+            // without a token (e.g. an older API that signed in through SuperUserList).
+            if (!string.IsNullOrEmpty(AppSession.SuperUserToken))
+            {
+                request.Headers.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", AppSession.SuperUserToken);
+            }
+            else
+            {
+                var apiKey = ReadApiKey();
+                if (!string.IsNullOrEmpty(apiKey))
+                    request.Headers.Add("X-Api-Key", apiKey);
+            }
 
             var resp = await _httpClient.SendAsync(request);
             var body = await resp.Content.ReadAsStringAsync();

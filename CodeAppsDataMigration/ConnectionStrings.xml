@@ -27,5 +27,6 @@
     <MainBranchUrl>https://localhost:44301/api/mainbranch/CreateMainBranch</MainBranchUrl>
     <SubBranchUrl>https://localhost:44301/api/branch/CreateBranch</SubBranchUrl>
     <ApiKey></ApiKey>
+    <ApiBaseUrl>https://localhost:44301/api/</ApiBaseUrl>
   </ApiUrls>
 </ConnectionStrings>
