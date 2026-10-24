@@ -125,7 +125,7 @@ namespace CodeAppsDataMigration
         private void btnSave_Click(object sender, EventArgs e)
         {
             // Keep the Offline -> Online PG connections saved by PgToPgMigrationForm.
-            // Also keep ApiKey and the login form's ApiBaseUrl, which this form does not edit.
+            // Also keep ApiKey, which this form does not edit.
             XElement? pgMigration = null;
             XElement? oldApiUrls = null;
             try
@@ -172,9 +172,8 @@ namespace CodeAppsDataMigration
             );
 
             var apiUrls = doc.Root!.Element("ApiUrls")!;
-            foreach (var name in new[] { "ApiKey", "ApiBaseUrl" })
-                if (oldApiUrls?.Element(name) is { } kept)
-                    apiUrls.Add(new XElement(kept));
+            if (oldApiUrls?.Element("ApiKey") is { } kept)
+                apiUrls.Add(new XElement(kept));
 
             if (pgMigration != null)
                 doc.Root!.Add(new XElement(pgMigration));

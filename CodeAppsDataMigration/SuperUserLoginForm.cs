@@ -18,8 +18,8 @@ namespace CodeAppsDataMigration
     /// <summary>
     /// Super user sign in shown when the app starts (same flow as the web app's
     /// routes/sessions/login: POST api/SuperUser/Login, and on an older API without it (404)
-    /// the SuperUserList check). The API base comes from ConnectionStrings.xml → ApiUrls/ApiBaseUrl,
-    /// else from MainBranchUrl (everything up to and including "/api/").
+    /// the SuperUserList check). The API base comes from ConnectionStrings.xml → ApiUrls/MainBranchUrl
+    /// (everything up to and including "/api/").
     /// </summary>
     public class SuperUserLoginForm : Form
     {
@@ -616,12 +616,9 @@ namespace CodeAppsDataMigration
         //  API server + remember me
         // ──────────────────────────────────────────────────────────────
 
-        /// <summary>ApiUrls/ApiBaseUrl, else MainBranchUrl cut after "/api/".</summary>
+        /// <summary>ApiUrls/MainBranchUrl (saved by ConnectionSettingsForm) cut after "/api/".</summary>
         private static string ReadApiBaseUrl()
         {
-            var explicitBase = ReadApiUrlsValue("ApiBaseUrl");
-            if (explicitBase.Length > 0) return NormalizeBase(explicitBase);
-
             var mainUrl = ReadApiUrlsValue("MainBranchUrl");
             var i = mainUrl.IndexOf("/api/", StringComparison.OrdinalIgnoreCase);
             return i >= 0 ? mainUrl[..(i + 5)] : "";
@@ -644,9 +641,10 @@ namespace CodeAppsDataMigration
         private void SaveServer()
         {
             var url = NormalizeBase(txtServer.Text);
-            if (!Uri.TryCreate(url, UriKind.Absolute, out _))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out _)
+                || !url.EndsWith("/api/", StringComparison.OrdinalIgnoreCase))
             {
-                ShowError("Enter a full URL, e.g. https://localhost:44301/api/");
+                ShowError("Enter a full URL ending in /api/, e.g. https://localhost:44301/api/");
                 return;
             }
             txtServer.Text = url;
@@ -661,7 +659,9 @@ namespace CodeAppsDataMigration
                         apiUrls = new XElement("ApiUrls");
                         doc.Root.Add(apiUrls);
                     }
-                    apiUrls.SetElementValue("ApiBaseUrl", url);
+                    // Same endpoints as ConnectionSettingsForm's Environment presets.
+                    apiUrls.SetElementValue("MainBranchUrl", url + "mainbranch/CreateMainBranch");
+                    apiUrls.SetElementValue("SubBranchUrl", url + "branch/CreateBranch");
                     doc.Save(XmlPath);
                 }
             }
