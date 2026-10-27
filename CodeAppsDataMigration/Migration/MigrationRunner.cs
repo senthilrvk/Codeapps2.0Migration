@@ -497,7 +497,34 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE debitnotemain{nMainBranchId} rm SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = rm.acid AND rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId}");
                 // stringBuilder.Add($"UPDATE debitnotemain{nMainBranchId} rm SET entrytype='product' WHERE rm.branchid = {nBranchId} and rm.mainbranchid = {nMainBranchId} ");
 
+
+
+                stringBuilder.Add($"update creditdebitnotedismain grm set acid = ah.acid from accounthead{nMainBranchId} ah  where grm.acid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+                stringBuilder.Add($"update creditdebitnotedismain grm set salesmanid = ah.acid from accounthead{nMainBranchId} ah  where grm.acid = ah.tempid and salesmanflag = true and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"update creditdebitnotedissub gtd set creditdebitnotemainid = gtm.creditdebitnotemainid from creditdebitnotedismain gtm  where gtd.creditdebitnotemainid = gtm.tempid and gtd.branchid={nBranchId} and gtm.branchid={nBranchId} ;");
+                stringBuilder.Add($"update creditdebitnotedissub grm set headid = ah.acid from accounthead{nMainBranchId} ah  where grm.headid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
+                stringBuilder.Add($"update creditdebitnotedissub grm set hsnid = h.hsn_id from hsn{nMainBranchId} h  where grm.hsnid = h.tempid and grm.branchid={nBranchId} and h.branchid={nBranchId} ;");
+
+                stringBuilder.Add($"UPDATE creditdebitnotedissub pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
+
                 //debitnotedetails
+
+                strQuery = $"\n INSERT INTO public.debitnotedetails{nMainBranchId}(";
+                strQuery += $"\n debitnoteid, debitnoteno, subdate, batchslno, batch, pack, qtytype, expdate, purrate, selrate, mrp, qty, freqty, totqty, amount,";
+                strQuery += $"\n taxper, taxamt, itemdisc, itemdisamt, productid, taxid, landcost, receiptretid, receiptrettype, amountbeforetax, invono, invodate, sgsttaxpers,";
+                strQuery += $"\n sgsttaxamount, sgstamount, cgsttaxpers, cgsttaxamount, cgstamount, igsttaxpers, igsttaxamount, igstamount, receiptid, receiptno, oldtaxamount,";
+                strQuery += $"\n oldamount, purqty, cesspers, cessamt, totdis, totdisamt, debitfreqty, extracesspers, extracessamt, branchid, mainbranchid, accid, hsncode, hsnid";
+                strQuery += $"\n )";
+                strQuery += $"\n select uniquebillno debitnoteid,billno debitnoteno, billdate subdate,0 batchslno,'' batch,1 pack,'NOS' qtytype,billdate expdate,";
+                strQuery += $"\n  amount purrate,amount selrate,0 mrp,1 qty,0 freqty,1 totqty,total amount,";
+                strQuery += $"\n  cs.taxpers taxper, taxamt,0 itemdisc,0 itemdisamt, 0 productid, taxid,0 landcost,0 receiptretid,'' receiptrettype,0 amountbeforetax,'' invono,billdate invodate, sgsttaxpers,";
+                strQuery += $"\n  sgsttaxamount,0 sgstamount, cgsttaxpers, cgsttaxamount,0 cgstamount, igsttaxpers, igsttaxamount,0 igstamount,0 receiptid,0 receiptno,0 oldtaxamount, ";
+                strQuery += $"\n  0 oldamount,0 purqty,0 cesspers,0 cessamt,0 totdis,0 totdisamt,0 debitfreqty,0 extracesspers,0 extracessamt,cm.branchid,cm.mainbranchid,cs.headid accid, hsncode, hsnid";
+                strQuery += $"\n from creditdebitnotedissub cs inner join creditdebitnotedismain cm on cs.creditdebitnotemainid=cm.creditdebitnotemainid";
+                strQuery += $"\n and cm.branchid={nBranchId} and cm.vouchertype = 'DEBITNOTE';";
+                stringBuilder.Add(strQuery);
+
                 stringBuilder.Add($"UPDATE debitnotedetails{nMainBranchId} os SET productid = pm.productid FROM productmain{nMainBranchId} pm WHERE pm.tempid = os.productid AND  os.branchid = {nBranchId}  And os.mainbranchid = {nMainBranchId}  and pm.producttype='product'");
                 strQuery = $"update debitnotedetails{nMainBranchId} rsub set debitnoteid =  rm.debitnoteid from debitnotemain{nMainBranchId} rm where rm.billserid = rsub.debitnoteid";
                 strQuery += $"\n and rsub.branchid = rm.branchid and rsub.mainbranchid = rm.mainbranchid and rsub.debitnoteno=rm.debitnoteno";
@@ -828,7 +855,36 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId}  AND bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId};";
                 stringBuilder.Add(strQuery);
 
+
+
+
                 //issuereturndetails
+
+                strQuery = $"\n INSERT INTO public.issuereturndetails{nMainBranchId}(";
+                strQuery += $"\n issuereturnid, issuereturnno, uniquereturnno, issuereturndate, salesbillserid, issueno, salesuniquebillno, issuedate,";
+                strQuery += $"\n batch, expdate, originalrate, selrate, whrate, mrp, qtytype, qty, freqty, advfre, rqty, rfreqty, lqty, loosefree, totqty,";
+                strQuery += $"\n taxpers, taxamt, itemdispers, amount, oldamount, productid, batchslno, batchslno1, amoutbefortax, flgspecialrate, actualrate,";
+                strQuery += $"\n color, unit, taxid, itemdisamt, schmpers, schmamt, prodpack, pack, perrate, prodtype, amountbeforedis, adddispers, pricemenuid,";
+                strQuery += $"\n inclusivesales, salesmanid, agentprice, purrate, orgpurrate, salesmanprice, rmrp, sprate1, sprate2, sprate3, sprate4, sprate5,";
+                strQuery += $"\n pcsselrate, pcsmrp, pcswhrate, pcssprate1, pcssprate2, pcssprate3, pcssprate4, pcssprate5, sgsttaxpers, sgsttaxamount, sgstamount,";
+                strQuery += $"\n cgsttaxpers, cgsttaxamount, cgstamount, igsttaxpers, igsttaxamount, igstamount, godownid, cesspers, cessamt, neethidispers, packageid,";
+                strQuery += $"\n packageuniqueno, extracesspers, extracessamt, specialorgrate, extraschemeamt, addrateperunit, addrateunitamt, prodfrom, hsnid,";
+                strQuery += $"\n hsncode, branchid, mainbranchid, acid, priceid";
+                strQuery += $"\n )";
+                strQuery += $"\n  select";
+                strQuery += $"\n  uniquebillno issuereturnid,billno issuereturnno, uniquebillno uniquereturnno,billdate issuereturndate,0 salesbillserid,0 issueno,0 salesuniquebillno,billdate issuedate,";
+                strQuery += $"\n   '' batch,billdate expdate, amount originalrate,amount selrate,0 whrate,0 mrp,'NOS' qtytype,1 qty,0 freqty,0 advfre,0 rqty,0 rfreqty,0 lqty,0 loosefree,1 totqty,";
+                strQuery += $"\n  taxpers, taxamt,0 itemdispers,total amount,0 oldamount,0 productid,0 batchslno,0 batchslno1,0 amoutbefortax,0 flgspecialrate,amount actualrate,";
+                strQuery += $"\n   '' color,'' unit,taxid taxid,0 itemdisamt,0 schmpers,0 schmamt,1 prodpack,1 pack,0 perrate,'' prodtype,0 amountbeforedis,0 adddispers,1 pricemenuid,";
+                strQuery += $"\n  'No' inclusivesales,0 salesmanid,0 agentprice,0 purrate,0 orgpurrate,0 salesmanprice,0 rmrp,0 sprate1,0 sprate2,0 sprate3,0 sprate4,0 sprate5,";
+                strQuery += $"\n   0 pcsselrate,0 pcsmrp,0 pcswhrate,0 pcssprate1,0 pcssprate2,0 pcssprate3,0 pcssprate4,0 pcssprate5, sgsttaxpers, sgsttaxamount,0 sgstamount,";
+                strQuery += $"\n  cgsttaxpers, cgsttaxamount,0 cgstamount, igsttaxpers, igsttaxamount,0 igstamount,0 godownid,0 cesspers,0 cessamt,0 neethidispers,0 packageid,";
+                strQuery += $"\n  0 packageuniqueno,0 extracesspers,0 extracessamt,0 specialorgrate,0 extraschemeamt,0 addrateperunit,0 addrateunitamt,'' prodfrom, hsnid,";
+                strQuery += $"\n  hsncode, cm.branchid, cm.mainbranchid,cs.headid acid,0 priceid";
+                strQuery += $"\n  from creditdebitnotedissub cs inner join creditdebitnotedismain cm on cs.creditdebitnotemainid=cm.creditdebitnotemainid";
+                strQuery += $"\n  and cm.branchid= {nBranchId} and cm.vouchertype = 'CREDITNOTE';";
+                stringBuilder.Add(strQuery);
+
                 stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} AND pm.mainbranchid = {nMainBranchId}");
 
                 stringBuilder.Add($"update issuereturndetails{nMainBranchId} set totqty = qty + freqty + advfre where branchid = {nBranchId} AND mainbranchid ={nMainBranchId}");
@@ -839,7 +895,7 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n and im.branchid ={nBranchId}    and im.mainbranchid ={nMainBranchId} and bs.billsersource='SALES'  and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
                 stringBuilder.Add(strQuery);
                 strQuery = $"update issuereturndetails{nMainBranchId} ird set issuereturnid =  irm.issuereturnid from issuereturnmain{nMainBranchId} irm where ird.uniquereturnno = irm.uniquereturnno";
-                strQuery += $"\n and ird.branchid = irm.branchid and ird.mainbranchid = irm.mainbranchid";
+                strQuery += $"\n  and ird.issuereturnno = irm.issuereturnno and ird.branchid = irm.branchid and ird.mainbranchid = irm.mainbranchid";
                 strQuery += $"\n and ird.branchid ={nBranchId}    and ird.mainbranchid ={nMainBranchId} ";
 
                 stringBuilder.Add(strQuery);
@@ -1108,13 +1164,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"update godowntransferdetails{nMainBranchId} gtd set productid = pm.productid from productmain{nMainBranchId} pm  where gtd.productid = pm.tempid and gtd.branchid={nBranchId} and pm.branchid={nBranchId} ;");
                 // stringBuilder.Add($"UPDATE godowntransferdetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
 
-                stringBuilder.Add($"update creditdebitnotedismain grm set acid = ah.acid from accounthead{nMainBranchId} ah  where grm.acid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
-                stringBuilder.Add($"update creditdebitnotedismain grm set salesmanid = ah.acid from accounthead{nMainBranchId} ah  where grm.acid = ah.tempid and salesmanflag = true and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
-
-                stringBuilder.Add($"update creditdebitnotedissub gtd set creditdebitnotemainid = gtm.creditdebitnotemainid from creditdebitnotedismain gtm  where gtd.creditdebitnotemainid = gtm.tempid and gtd.branchid={nBranchId} and gtm.branchid={nBranchId} ;");
-                stringBuilder.Add($"update creditdebitnotedissub grm set headid = ah.acid from accounthead{nMainBranchId} ah  where grm.headid = ah.tempid and grm.branchid={nBranchId} and ah.branchid={nBranchId} ;");
-                stringBuilder.Add($"update creditdebitnotedissub grm set hsnid = h.hsn_id from hsn{nMainBranchId} h  where grm.hsnid = h.tempid and grm.branchid={nBranchId} and h.branchid={nBranchId} ;");
-
+               
                 stringBuilder.Add($"update correction{nMainBranchId} c set  productid = pm.productid from productmain{nMainBranchId} pm  where c.productid = pm.tempid and c.branchid={nBranchId} and pm.branchid={nBranchId} ;");
                 stringBuilder.Add($"update correction{nMainBranchId} c  set salesmanid = ah.acid from accounthead{nMainBranchId} ah  where c.salesmanid = ah.tempid and salesmanflag = true and c.branchid={nBranchId} and ah.branchid={nBranchId} ;");
                 stringBuilder.Add($"update correction{nMainBranchId} c  set  staffid = ah.acid from accounthead{nMainBranchId} ah  where c.staffid = ah.tempid and c.branchid={nBranchId} and ah.branchid={nBranchId} ;");
@@ -1138,13 +1188,11 @@ namespace CodeAppsDataMigration.Migration
                 strQuery += $"\n  and erm.branchid = {nBranchId} and erm.mainbranchid = {nMainBranchId} and  bs.branchid = {nBranchId} and bs.mainbranchid = {nMainBranchId}";
                 stringBuilder.Add(strQuery);
 
-                strQuery = $"update issuereturnmain{nMainBranchId} set sourcefrom = 'Accountentry' where COALESCE(sourcefrom,'') = 'AccountsEntry';";
-                stringBuilder.Add(strQuery);
+               
                 strQuery = $"update issuereturnmain{nMainBranchId} set sourcefrom = 'Productwise'  where COALESCE(sourcefrom,'') <> 'AccountsEntry' and issueno = 0;";
                 stringBuilder.Add(strQuery);
                 strQuery = $"update issuereturnmain{nMainBranchId} set sourcefrom = 'Billwise'     where COALESCE(sourcefrom,'') <> 'AccountsEntry' and issueno <> 0;";
                 stringBuilder.Add(strQuery);
-
 
                 strQuery = $"update issuereturnmain{nMainBranchId} irm set sourcefrom = 'Accountentry' where COALESCE(sourcefrom,'') = 'AccountsEntry' and irm.branchid= {nBranchId};";
                 stringBuilder.Add(strQuery);
@@ -1155,51 +1203,7 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add($"UPDATE issuemain{nMainBranchId} im SET godownid = g .godownid FROM godown g WHERE im.godownid = g.tempid AND g.branchid = {nBranchId} and g.mainbranchid = {nMainBranchId}");
                 stringBuilder.Add($"UPDATE issuesubdetails{nMainBranchId} isd SET godownid = g.godownid FROM godown g WHERE isd.godownid = g.tempid AND g.branchid = {nBranchId} and g.mainbranchid = {nMainBranchId}");
 
-
-                strQuery = $"\n INSERT INTO public.issuereturndetails{nMainBranchId}(";
-                strQuery += $"\n issuereturnid, issuereturnno, uniquereturnno, issuereturndate, salesbillserid, issueno, salesuniquebillno, issuedate,";
-                strQuery += $"\n batch, expdate, originalrate, selrate, whrate, mrp, qtytype, qty, freqty, advfre, rqty, rfreqty, lqty, loosefree, totqty,";
-                strQuery += $"\n taxpers, taxamt, itemdispers, amount, oldamount, productid, batchslno, batchslno1, amoutbefortax, flgspecialrate, actualrate,";
-                strQuery += $"\n color, unit, taxid, itemdisamt, schmpers, schmamt, prodpack, pack, perrate, prodtype, amountbeforedis, adddispers, pricemenuid,";
-                strQuery += $"\n inclusivesales, salesmanid, agentprice, purrate, orgpurrate, salesmanprice, rmrp, sprate1, sprate2, sprate3, sprate4, sprate5,";
-                strQuery += $"\n pcsselrate, pcsmrp, pcswhrate, pcssprate1, pcssprate2, pcssprate3, pcssprate4, pcssprate5, sgsttaxpers, sgsttaxamount, sgstamount,";
-                strQuery += $"\n cgsttaxpers, cgsttaxamount, cgstamount, igsttaxpers, igsttaxamount, igstamount, godownid, cesspers, cessamt, neethidispers, packageid,";
-                strQuery += $"\n packageuniqueno, extracesspers, extracessamt, specialorgrate, extraschemeamt, addrateperunit, addrateunitamt, prodfrom, hsnid,";
-                strQuery += $"\n hsncode, branchid, mainbranchid, acid, priceid";
-                strQuery += $"\n )";
-                strQuery += $"\n  select";
-                strQuery += $"\n  uniquebillno issuereturnid,billno issuereturnno, billno uniquereturnno,billdate issuereturndate,0 salesbillserid,0 issueno,0 salesuniquebillno,billdate issuedate,";
-                strQuery += $"\n   '' batch,billdate expdate, amount originalrate,amount selrate,0 whrate,0 mrp,'NOS' qtytype,1 qty,0 freqty,0 advfre,0 rqty,0 rfreqty,0 lqty,0 loosefree,1 totqty,";
-                strQuery += $"\n  taxpers, taxamt,0 itemdispers,total amount,0 oldamount,0 productid,0 batchslno,0 batchslno1,0 amoutbefortax,0 flgspecialrate,amount actualrate,";
-                strQuery += $"\n   '' color,'' unit,taxid taxid,0 itemdisamt,0 schmpers,0 schmamt,1 prodpack,1 pack,0 perrate,'' prodtype,0 amountbeforedis,0 adddispers,1 pricemenuid,";
-                strQuery += $"\n  'No' inclusivesales,0 salesmanid,0 agentprice,0 purrate,0 orgpurrate,0 salesmanprice,0 rmrp,0 sprate1,0 sprate2,0 sprate3,0 sprate4,0 sprate5,";
-                strQuery += $"\n   0 pcsselrate,0 pcsmrp,0 pcswhrate,0 pcssprate1,0 pcssprate2,0 pcssprate3,0 pcssprate4,0 pcssprate5, sgsttaxpers, sgsttaxamount,0 sgstamount,";
-                strQuery += $"\n  cgsttaxpers, cgsttaxamount,0 cgstamount, igsttaxpers, igsttaxamount,0 igstamount,0 godownid,0 cesspers,0 cessamt,0 neethidispers,0 packageid,";
-                strQuery += $"\n  0 packageuniqueno,0 extracesspers,0 extracessamt,0 specialorgrate,0 extraschemeamt,0 addrateperunit,0 addrateunitamt,'' prodfrom, hsnid,";
-                strQuery += $"\n  hsncode, cm.branchid, cm.mainbranchid, acid,0 priceid";
-                strQuery += $"\n  from creditdebitnotedissub cs inner join creditdebitnotedismain cm on cs.creditdebitnotemainid=cm.creditdebitnotemainid";
-                strQuery += $"\n  and cm.branchid= {nBranchId} and cm.vouchertype = 'CREDITNOTE';";
-                stringBuilder.Add(strQuery);
-
-
-                strQuery = $"\n INSERT INTO public.debitnotedetails{nMainBranchId}(";
-                strQuery += $"\n debitnoteid, debitnoteno, subdate, batchslno, batch, pack, qtytype, expdate, purrate, selrate, mrp, qty, freqty, totqty, amount,";
-                strQuery += $"\n taxper, taxamt, itemdisc, itemdisamt, productid, taxid, landcost, receiptretid, receiptrettype, amountbeforetax, invono, invodate, sgsttaxpers,";
-                strQuery += $"\n sgsttaxamount, sgstamount, cgsttaxpers, cgsttaxamount, cgstamount, igsttaxpers, igsttaxamount, igstamount, receiptid, receiptno, oldtaxamount,";
-                strQuery += $"\n oldamount, purqty, cesspers, cessamt, totdis, totdisamt, debitfreqty, extracesspers, extracessamt, branchid, mainbranchid, accid, hsncode, hsnid";
-                strQuery += $"\n )";
-                strQuery += $"\n select uniquebillno debitnoteid,billno debitnoteno, billdate subdate,0 batchslno,'' batch,1 pack,'NOS' qtytype,billdate expdate,";
-                strQuery += $"\n  0 purrate,amount selrate,0 mrp,1 qty,0 freqty,1 totqty,total amount,";
-                strQuery += $"\n  cs.taxpers taxper, taxamt,0 itemdisc,0 itemdisamt, 0 productid, taxid,0 landcost,0 receiptretid,'' receiptrettype,0 amountbeforetax,'' invono,billdate invodate, sgsttaxpers,";
-                strQuery += $"\n  sgsttaxamount,0 sgstamount, cgsttaxpers, cgsttaxamount,0 cgstamount, igsttaxpers, igsttaxamount,0 igstamount,0 receiptid,0 receiptno,0 oldtaxamount, ";
-                strQuery += $"\n  0 oldamount,0 purqty,0 cesspers,0 cessamt,0 totdis,0 totdisamt,0 debitfreqty,0 extracesspers,0 extracessamt,cm.branchid,cm.mainbranchid,acid accid, hsncode, hsnid";
-                strQuery += $"\n from creditdebitnotedissub cs inner join creditdebitnotedismain cm on cs.creditdebitnotemainid=cm.creditdebitnotemainid";
-                strQuery += $"\n and cm.branchid={nBranchId} and cm.vouchertype = 'DEBITNOTE';";
-                stringBuilder.Add(strQuery);
-
-                stringBuilder.Add($"UPDATE debitnotedetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxper AND pm.branchid = {nBranchId} and pm.mainbranchid = {nMainBranchId}");
-                stringBuilder.Add($"UPDATE issuereturndetails{nMainBranchId} pm SET taxid = tx.taxid FROM tax tx WHERE tx.taxpercent = pm.taxpers AND pm.branchid = {nBranchId} AND pm.mainbranchid = {nMainBranchId}");
-
+                                 
                 stringBuilder.Add($"update store{nMainBranchId}  st set actpurrate = st.receiptrate where st.actpurrate = 0 and st.receiptrate> 0 AND st.branchid = {nBranchId} AND st.mainbranchid = {nMainBranchId}");
 
                 stringBuilder.Add($"update store{nMainBranchId}  st set landcost = st.receiptrate where st.landcost = 0 and st.receiptrate > 0 AND st.branchid = {nBranchId} AND st.mainbranchid = {nMainBranchId};");
@@ -2874,11 +2878,20 @@ where not exists (
 
                 // ---- PostgreSQL (target): access levels for this branch ----
                 System.Data.DataTable dtAccessLevel = new System.Data.DataTable();
-                using (var pgCommand = PgCmd($"select * from accesslevel where mainbranchid={nMainBranchId} and branchid={nBranchId};"))
+                using (var pgCommand = PgCmd($"select * from accesslevel where mainbranchid={nMainBranchId};"))
                 {
                     NpgsqlDataAdapter pgAdapter = new NpgsqlDataAdapter(pgCommand);
                     pgAdapter.Fill(dtAccessLevel);
                 }
+
+                // ---- All staff accounts of this branch get the SuperAdmin access level ----
+                long dAccesId = 0;
+                DataRow[] superAdminRows = dtAccessLevel.Select("accessname = 'SuperAdmin'");
+                if (superAdminRows.Length != 0)
+                    dAccesId = Convert.ToInt64(superAdminRows[0]["accessid"]);
+
+                if (dAccesId != 0)
+                    strUpdateQuery += $"\n update accounthead{nMainBranchId} set accesslevel={dAccesId} where staffflag=true and branchid={nBranchId};";
 
                 // Boolean flag columns on UserPrevilage; each column that is set becomes a privilagedetail row.
                 string[] arrPrivilegeKeys = new string[]
