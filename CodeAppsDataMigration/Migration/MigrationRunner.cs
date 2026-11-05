@@ -1189,9 +1189,9 @@ namespace CodeAppsDataMigration.Migration
                 stringBuilder.Add(strQuery);
 
                
-                strQuery = $"update issuereturnmain{nMainBranchId} set sourcefrom = 'Productwise'  where COALESCE(sourcefrom,'') <> 'AccountsEntry' and issueno = 0;";
+                strQuery = $"update issuereturnmain{nMainBranchId} irm set sourcefrom = 'Productwise'  where COALESCE(sourcefrom,'') <> 'AccountsEntry' and issueno = 0 and irm.branchid= {nBranchId};";
                 stringBuilder.Add(strQuery);
-                strQuery = $"update issuereturnmain{nMainBranchId} set sourcefrom = 'Billwise'     where COALESCE(sourcefrom,'') <> 'AccountsEntry' and issueno <> 0;";
+                strQuery = $"update issuereturnmain{nMainBranchId} irm set sourcefrom = 'Billwise'     where COALESCE(sourcefrom,'') <> 'AccountsEntry' and issueno <> 0 and irm.branchid= {nBranchId};";
                 stringBuilder.Add(strQuery);
 
                 strQuery = $"update issuereturnmain{nMainBranchId} irm set sourcefrom = 'Accountentry' where COALESCE(sourcefrom,'') = 'AccountsEntry' and irm.branchid= {nBranchId};";
