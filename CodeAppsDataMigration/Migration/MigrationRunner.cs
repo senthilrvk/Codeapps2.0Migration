@@ -278,7 +278,7 @@ namespace CodeAppsDataMigration.Migration
             {
 
                 List<string> stringBuilder = new List<string>();
-                stringBuilder.Add($"UPDATE accounthead{nMainBranchId} ah SET areaid = a.area_id FROM area a WHERE a.tempid = ah.areaid AND ah.branchid = {nBranchId} and ah.mainbranchid = {nMainBranchId}");
+                stringBuilder.Add($"UPDATE accounthead{nMainBranchId} ah SET areaid = a.area_id FROM area a WHERE a.tempid = ah.areaid AND ah.branchid = {nBranchId} and ah.mainbranchid = {nMainBranchId} and a.mainbranchid={nMainBranchId}");
                 stringBuilder.Add($"UPDATE accounthead{nMainBranchId} ah SET bankflag = true  WHERE ah.supplytype = 'Yes' AND ah.branchid = {nBranchId} and ah.mainbranchid = {nMainBranchId}");
 
                 stringBuilder.Add($"UPDATE branch im SET acid = ah.acid FROM accounthead{nMainBranchId} ah WHERE ah.tempid = im.acid AND im.branchid = {nBranchId} and im.mainbranchid = {nMainBranchId}");
