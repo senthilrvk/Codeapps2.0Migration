@@ -2845,7 +2845,7 @@ namespace CodeAppsDataMigration.Migration
                         ("branchid","branchid","bigint"),
                         ("Pack","pack","integer"),
                         ("TransTaxPers","taxpers","numeric(18,3)"),
-                        ("tockTransfer_PurRate","purrate","numeric(18,3)"),
+                        ("StockTransfer_PurRate","purrate","numeric(18,3)"),
                         ("StockTransfer_SelRate","selrate","numeric(18,3)"),
                         ("StockTransfer_Mrp","mrp","numeric(18,3)"),
                         ("StockTransfer_SpRate1","sprate1","numeric(18,3)"),
