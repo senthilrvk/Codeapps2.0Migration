@@ -2884,8 +2884,8 @@ namespace CodeAppsDataMigration.Migration
                 PgTable  = "salesordermain" + nMainBranchId.ToString(),
                 Columns = new[]
                 {
-                    ("UniqueId","salesorderid","bigint"),
-                    ("SalesOrderMain_Id","salesorderno","bigint"),
+                    ("UniqueId","billserid","bigint"),
+                    ("SalesOrder_BillNo","salesorderno","bigint"),
                     ("SalesOrderMain_CustomerName","custname","text"),
                     ("AcId","acid","bigint"),
                     ("SalesOrderMain_Total","total","numeric"),
@@ -2930,6 +2930,7 @@ namespace CodeAppsDataMigration.Migration
                     ("SalesOrderSub_TaxAmt","taxamt","numeric"),
                     ("SalesOrderSub_PurRate","purrate","numeric"),
                     ("SalesOrderSub_SelRate","selrate","numeric"),
+                     ("SalesOrderSub_SelRate","originalrate","numeric"),
                     ("SalesOrderSub_Mrp","mrp","numeric"),
                     ("SalesOrderSub_DisPers","itemdispers","numeric"),
                     ("SalesOrderSub_BeforeTax","amoutbefortax","numeric"),
@@ -2948,8 +2949,7 @@ namespace CodeAppsDataMigration.Migration
                     ("SalesOrderSub_SpRate5","sprate5","numeric"),
                     ("SalesOrderSub_InclusiveSales","inclusivesales","text"),
                     ("SalesOrderSub_ConvertBillFlag","bconvertflag","boolean"),
-                    ("SalesOrderSub_Wgt","itemweight","text"),           // weak — see note
-                    ("branchid","branchid","bigint"),
+                    ("SalesOrderSub_Wgt","itemweight","text"), 
                     ("mainbranchid","mainbranchid","bigint"),
                 },
                 Constants = new Dictionary<string, object>
@@ -2957,9 +2957,10 @@ namespace CodeAppsDataMigration.Migration
                     { "repl","" },
                     { "prodfrom","" },
                     { "specialorgrate", 0 },
+                    { "branchid", nBranchId },
 
                 },
-                //condition = "where branchid =" + nFromBranchId.ToString()
+                condition = "where SalesOrderMain_Id in (select SalesOrderMain_Id from SalesOrderMain where branchid = " + nFromBranchId.ToString()+")"
             },
              new TableMap
             {
